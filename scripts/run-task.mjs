@@ -25,16 +25,43 @@ page.on('pageerror', err => pageErrors.push(String(err)));
 page.on('dialog', async dialog => {
   const policy = task.dialogPolicy || 'dismiss';
   dialogMessages.push(`[${dialog.type()}] ${dialog.message()} -> ${policy}`);
-  if (policy === 'accept') {
-    await dialog.accept(task.dialogPromptText || '');
-  } else {
-    await dialog.dismiss();
-  }
+  if (policy === 'accept') await dialog.accept(task.dialogPromptText || '');
+  else await dialog.dismiss();
 });
 
 async function screenshot(name) {
   const safe = name.replace(/[^a-z0-9._-]+/gi, '-');
   await page.screenshot({ path: path.join(outputDir, `${safe}.png`), fullPage: true });
+}
+
+async function dumpPage(name = 'page-state') {
+  const safe = name.replace(/[^a-z0-9._-]+/gi, '-');
+  const data = await page.evaluate(() => {
+    const text = document.body?.innerText || '';
+    const controls = [...document.querySelectorAll('button, input, select, textarea, a, [role]')].map((el, index) => {
+      const r = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+      return {
+        index,
+        tag: el.tagName.toLowerCase(),
+        type: el.getAttribute('type'),
+        role: el.getAttribute('role'),
+        text: (el.innerText || el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 500),
+        ariaLabel: el.getAttribute('aria-label'),
+        name: el.getAttribute('name'),
+        value: 'value' in el ? String(el.value ?? '') : null,
+        checked: 'checked' in el ? Boolean(el.checked) : null,
+        disabled: 'disabled' in el ? Boolean(el.disabled) : null,
+        href: el.getAttribute('href'),
+        id: el.id || null,
+        className: typeof el.className === 'string' ? el.className : null,
+        visible: r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none',
+        x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height)
+      };
+    });
+    return { title: document.title, url: location.href, bodyText: text, controls };
+  });
+  await fs.writeFile(path.join(outputDir, `${safe}.json`), JSON.stringify(data, null, 2));
 }
 
 async function runStep(step, index) {
@@ -69,6 +96,9 @@ async function runStep(step, index) {
     case 'screenshot':
       await screenshot(step.name || label);
       break;
+    case 'dumpPage':
+      await dumpPage(step.name || label);
+      break;
     case 'assertText': {
       const locator = page.getByText(step.text, { exact: step.exact ?? false });
       if (await locator.count() === 0) throw new Error(`Text not found: ${step.text}`);
@@ -84,9 +114,7 @@ async function runStep(step, index) {
 let ok = true;
 let failure = null;
 try {
-  for (let i = 0; i < task.steps.length; i++) {
-    await runStep(task.steps[i], i);
-  }
+  for (let i = 0; i < task.steps.length; i++) await runStep(task.steps[i], i);
   await screenshot('final');
 } catch (err) {
   ok = false;
