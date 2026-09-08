@@ -29,6 +29,10 @@
       "label": "assert-adventurers"
     },
     {
+      "action": "dumpPage",
+      "name": "base-screen-state"
+    },
+    {
       "action": "screenshot",
       "name": "base-screen"
     }
