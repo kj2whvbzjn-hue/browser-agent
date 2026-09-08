@@ -10,9 +10,12 @@
     { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
     { "action": "wait", "ms": 34000, "label": "wait-for-quest-completion" },
     { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-return-enabled", "timeout": 10000 },
-    { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return", "screenshotAfter": true },
-    { "action": "wait", "ms": 1200, "label": "settle-after-return" },
-    { "action": "dumpPage", "name": "returned-base-state" },
-    { "action": "screenshot", "name": "returned-base" }
+    { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
+    { "action": "wait", "ms": 800, "label": "settle-result-screen" },
+    { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
+    { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base", "screenshotAfter": true },
+    { "action": "wait", "ms": 1000, "label": "settle-base" },
+    { "action": "dumpPage", "name": "final-base-state" },
+    { "action": "screenshot", "name": "final-base" }
   ]
 }
