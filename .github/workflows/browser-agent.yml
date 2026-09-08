@@ -32,6 +32,10 @@ jobs:
       - name: Run browser task
         run: npm run run
 
+      - name: Generate test report
+        if: always()
+        run: node scripts/generate-report.mjs tasks/task.json
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
