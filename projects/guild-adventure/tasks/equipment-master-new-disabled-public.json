@@ -1,0 +1,24 @@
+{
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 900 },
+  "dialogPolicy": "accept",
+  "steps": [
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/", "waitUntil": "domcontentloaded", "label": "open-public-studio", "timeout": 30000 },
+    { "action": "waitForText", "text": "Studio GKS-B891", "label": "confirm-gks-b891", "timeout": 20000 },
+    { "action": "clickRole", "role": "button", "name": "プロジェクトを選ぶ", "label": "open-projects" },
+    { "action": "fillSelector", "selector": "#newProjectId", "value": "PRJ-GAS-EQP-NEW-E2E", "label": "project-id" },
+    { "action": "fillSelector", "selector": "#newProjectName", "value": "Equipment New Disabled E2E", "label": "project-name" },
+    { "action": "clickRole", "role": "button", "name": "新規作成", "label": "create-local-project" },
+    { "action": "wait", "ms": 300, "label": "settle-project" },
+    { "action": "clickSelector", "selector": "button[data-launcher-category=\"create\"]", "label": "open-create-launcher" },
+    { "action": "waitForSelector", "selector": "#launcherPanel-create.active", "label": "wait-create-panel" },
+    { "action": "clickSelector", "selector": "#launcherPanel-create.active button:has-text(\"マスター\")", "label": "open-masters" },
+    { "action": "waitForSelector", "selector": "#view-masters:not(.hidden)", "label": "wait-master-view" },
+    { "action": "clickSelector", "selector": "#view-masters button:has-text(\"＋新規\")", "label": "open-new-master-editor" },
+    { "action": "waitForSelector", "selector": "#studioInputOverlay:not(.hidden) #masterEditorPanel", "label": "wait-new-master-editor" },
+    { "action": "assertSelector", "selector": "#masterCategoryEquipmentOption:disabled", "label": "assert-equipment-create-option-disabled" },
+    { "action": "assertValueSelector", "selector": "#masterCategory", "value": "tags", "label": "assert-new-master-category-not-equipment" },
+    { "action": "screenshot", "name": "equipment-new-create-disabled" },
+    { "action": "dumpPage", "name": "equipment-new-create-disabled-state" }
+  ]
+}
