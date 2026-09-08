@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "equipment-master-ui-public",
-  "taskFile": "projects/guild-adventure/tasks/equipment-master-ui-public.json",
-  "runRequest": 5,
+  "label": "equipment-master-ui-public-v2",
+  "taskFile": "projects/guild-adventure/tasks/equipment-master-ui-public-v2.json",
+  "runRequest": 6,
   "note": "Active task selector. Increment runRequest to rerun the same project task without modifying its saved definition."
 }
