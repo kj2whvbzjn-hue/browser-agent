@@ -6,16 +6,19 @@
     { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "domcontentloaded", "label": "open-game" },
     { "action": "clickRole", "role": "button", "name": "はじめから", "label": "start-new-game" },
     { "action": "waitForText", "text": "遠征準備", "label": "wait-base-screen", "timeout": 20000 },
-    { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0006']", "label": "select-story-battle-override" },
+    { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0002']", "label": "select-random-battle-reward" },
     { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
-    { "action": "wait", "ms": 34000, "label": "wait-for-quest-completion" },
-    { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-return-enabled", "timeout": 10000 },
+    { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-quest-finished", "timeout": 90000 },
+    { "action": "dumpPage", "name": "completed-quest-state" },
+    { "action": "screenshot", "name": "completed-quest" },
     { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
-    { "action": "wait", "ms": 800, "label": "settle-result-screen" },
+    { "action": "wait", "ms": 800, "label": "settle-result" },
+    { "action": "dumpPage", "name": "reward-result-state" },
+    { "action": "screenshot", "name": "reward-result" },
     { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
-    { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base", "screenshotAfter": true },
+    { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base" },
     { "action": "wait", "ms": 1000, "label": "settle-base" },
-    { "action": "dumpPage", "name": "final-base-state" },
-    { "action": "screenshot", "name": "final-base" }
+    { "action": "dumpPage", "name": "reward-final-base-state" },
+    { "action": "screenshot", "name": "reward-final-base" }
   ]
 }
