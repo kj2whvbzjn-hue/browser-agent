@@ -1,0 +1,34 @@
+{
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 900 },
+  "steps": [
+    {
+      "action": "goto",
+      "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/",
+      "waitUntil": "domcontentloaded",
+      "label": "open-game",
+      "screenshotAfter": true
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "はじめから",
+      "label": "start-new-game",
+      "screenshotAfter": true
+    },
+    {
+      "action": "waitForText",
+      "text": "遠征準備",
+      "label": "wait-base-screen"
+    },
+    {
+      "action": "assertText",
+      "text": "現在の冒険者：",
+      "label": "assert-adventurers"
+    },
+    {
+      "action": "screenshot",
+      "name": "base-screen"
+    }
+  ]
+}
