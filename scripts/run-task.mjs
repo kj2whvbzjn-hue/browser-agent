@@ -29,13 +29,15 @@ page.on('dialog', async dialog => {
   else await dialog.dismiss();
 });
 
+function safeName(name) {
+  return String(name).replace(/[^a-z0-9._-]+/gi, '-');
+}
+
 async function screenshot(name) {
-  const safe = name.replace(/[^a-z0-9._-]+/gi, '-');
-  await page.screenshot({ path: path.join(outputDir, `${safe}.png`), fullPage: true });
+  await page.screenshot({ path: path.join(outputDir, `${safeName(name)}.png`), fullPage: true });
 }
 
 async function dumpPage(name = 'page-state') {
-  const safe = name.replace(/[^a-z0-9._-]+/gi, '-');
   const data = await page.evaluate(() => {
     const text = document.body?.innerText || '';
     const controls = [...document.querySelectorAll('button, input, select, textarea, a, [role]')].map((el, index) => {
@@ -61,7 +63,34 @@ async function dumpPage(name = 'page-state') {
     });
     return { title: document.title, url: location.href, bodyText: text, controls };
   });
-  await fs.writeFile(path.join(outputDir, `${safe}.json`), JSON.stringify(data, null, 2));
+  await fs.writeFile(path.join(outputDir, `${safeName(name)}.json`), JSON.stringify(data, null, 2));
+}
+
+async function dumpStorage(name = 'storage-state') {
+  const data = await page.evaluate(() => {
+    function read(store) {
+      const out = {};
+      for (let i = 0; i < store.length; i++) {
+        const key = store.key(i);
+        if (key == null) continue;
+        const raw = store.getItem(key);
+        let parsed = null;
+        try { parsed = JSON.parse(raw); } catch {}
+        out[key] = {
+          raw: raw == null ? null : raw.slice(0, 250000),
+          json: parsed
+        };
+      }
+      return out;
+    }
+    return {
+      url: location.href,
+      capturedAt: new Date().toISOString(),
+      localStorage: read(localStorage),
+      sessionStorage: read(sessionStorage)
+    };
+  });
+  await fs.writeFile(path.join(outputDir, `${safeName(name)}.json`), JSON.stringify(data, null, 2));
 }
 
 async function locatorForSelector(step) {
@@ -118,6 +147,9 @@ async function runStep(step, index) {
       break;
     case 'dumpPage':
       await dumpPage(step.name || label);
+      break;
+    case 'dumpStorage':
+      await dumpStorage(step.name || label);
       break;
     case 'assertText': {
       const locator = page.getByText(step.text, { exact: step.exact ?? false });
