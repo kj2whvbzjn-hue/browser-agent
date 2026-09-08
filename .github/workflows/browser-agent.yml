@@ -1,0 +1,43 @@
+name: Browser Agent
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'package.json'
+      - 'scripts/**'
+      - 'tasks/**'
+      - '.github/workflows/browser-agent.yml'
+
+jobs:
+  run-playwright-task:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser task
+        run: npm run run
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-agent-artifacts
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 7
