@@ -1,6 +1,7 @@
 {
   "outputDir": "artifacts",
   "viewport": { "width": 1440, "height": 900 },
+  "dialogPolicy": "accept",
   "steps": [
     {
       "action": "goto",
@@ -19,7 +20,8 @@
     {
       "action": "waitForText",
       "text": "遠征準備",
-      "label": "wait-base-screen"
+      "label": "wait-base-screen",
+      "timeout": 20000
     },
     {
       "action": "assertText",
