@@ -64,6 +64,11 @@ async function dumpPage(name = 'page-state') {
   await fs.writeFile(path.join(outputDir, `${safe}.json`), JSON.stringify(data, null, 2));
 }
 
+async function locatorForSelector(step) {
+  if (!step.selector) throw new Error(`${step.action} requires selector`);
+  return page.locator(step.selector).first();
+}
+
 async function runStep(step, index) {
   const label = step.label || `${index + 1}-${step.action}`;
   console.log(`STEP ${index + 1}: ${label}`);
@@ -78,6 +83,18 @@ async function runStep(step, index) {
     case 'clickText':
       await page.getByText(step.text, { exact: step.exact ?? true }).click({ timeout: step.timeout || 10000 });
       break;
+    case 'clickSelector':
+      await (await locatorForSelector(step)).click({ timeout: step.timeout || 10000 });
+      break;
+    case 'checkSelector':
+      await (await locatorForSelector(step)).check({ timeout: step.timeout || 10000 });
+      break;
+    case 'fillSelector':
+      await (await locatorForSelector(step)).fill(step.value ?? '', { timeout: step.timeout || 10000 });
+      break;
+    case 'selectSelector':
+      await (await locatorForSelector(step)).selectOption(step.value, { timeout: step.timeout || 10000 });
+      break;
     case 'fillLabel':
       await page.getByLabel(step.labelText, { exact: step.exact ?? true }).fill(step.value ?? '');
       break;
@@ -89,6 +106,9 @@ async function runStep(step, index) {
       break;
     case 'waitForText':
       await page.getByText(step.text, { exact: step.exact ?? false }).waitFor({ state: 'visible', timeout: step.timeout || 15000 });
+      break;
+    case 'waitForSelector':
+      await (await locatorForSelector(step)).waitFor({ state: step.state || 'visible', timeout: step.timeout || 15000 });
       break;
     case 'wait':
       await page.waitForTimeout(step.ms || 1000);
@@ -102,6 +122,11 @@ async function runStep(step, index) {
     case 'assertText': {
       const locator = page.getByText(step.text, { exact: step.exact ?? false });
       if (await locator.count() === 0) throw new Error(`Text not found: ${step.text}`);
+      break;
+    }
+    case 'assertSelector': {
+      const locator = await locatorForSelector(step);
+      if (await locator.count() === 0) throw new Error(`Selector not found: ${step.selector}`);
       break;
     }
     default:
