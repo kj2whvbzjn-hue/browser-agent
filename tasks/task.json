@@ -1,77 +1,8 @@
 {
-  "outputDir": "artifacts",
-  "viewport": { "width": 1440, "height": 900 },
-  "dialogPolicy": "accept",
-  "responsePatches": [
-    {
-      "label": "quest-party-formal-ai-binding-proof-fix",
-      "url": "**/guild-adventure-studio/game/assets/js/app-runtime.js*",
-      "search": "skills:clone(c.skills||[]),equipped_skill_id:c.equippedSkillId||''",
-      "replace": "formalAiBinding:c.formalAiBinding?{program_id:String(c.formalAiBinding.programId||c.formalAiBinding.program_id||''),layout_id:String(c.formalAiBinding.entryLogicId||c.formalAiBinding.layout_id||'')}:null,skills:clone(c.skills||[]),equipped_skill_id:c.equippedSkillId||''",
-      "expectedCount": 1
-    },
-    {
-      "label": "qst-0002-formal-monster-proof-fix",
-      "url": "**/guild-adventure-studio/Export/monster/monsters.json*",
-      "search": "\"updated_at\": \"2026-09-07T05:42:02.255Z\"\n    },\n    {\n      \"id\": \"MON-0002\",",
-      "replace": "\"updated_at\": \"2026-09-07T05:42:02.255Z\",\n      \"job_code\": \"MONSTER\",\n      \"level\": 1,\n      \"maxMp\": 0,\n      \"default_formation_position\": \"FRONTLINE\",\n      \"formalAiBinding\": {\n        \"program_id\": \"AIP-0001\",\n        \"layout_id\": \"AIL-0001\"\n      }\n    },\n    {\n      \"id\": \"MON-0002\",\n      \"job_code\": \"MONSTER\",\n      \"level\": 1,\n      \"maxMp\": 0,",
-      "expectedCount": 1
-    }
-  ],
-  "steps": [
-    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "domcontentloaded", "label": "open-game" },
-    { "action": "clickRole", "role": "button", "name": "はじめから", "label": "start-new-game" },
-    { "action": "waitForText", "text": "遠征準備", "label": "wait-base-screen", "timeout": 20000 },
-
-    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('アルト')", "label": "select-alto" },
-    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-alto" },
-    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-alto" },
-    { "action": "wait", "ms": 180, "label": "settle-alto" },
-
-    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('セリア')", "label": "select-celia" },
-    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-celia" },
-    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-celia" },
-    { "action": "wait", "ms": 180, "label": "settle-celia" },
-
-    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('ロウ')", "label": "select-low" },
-    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-low" },
-    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-low" },
-    { "action": "wait", "ms": 180, "label": "settle-low" },
-
-    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('フィン')", "label": "select-fin" },
-    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-fin" },
-    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-fin" },
-    { "action": "wait", "ms": 180, "label": "settle-fin" },
-
-    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('ミナ')", "label": "select-mina" },
-    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-mina" },
-    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-mina" },
-    { "action": "wait", "ms": 180, "label": "settle-mina" },
-
-    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('エル')", "label": "select-el" },
-    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-el" },
-    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-el" },
-    { "action": "wait", "ms": 500, "label": "settle-ai-bindings" },
-
-    { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0002']", "label": "select-random-battle-reward" },
-    { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
-    { "action": "dumpStorage", "name": "formal-monster-run-created-storage" },
-    { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-quest-finished", "timeout": 90000 },
-    { "action": "dumpPage", "name": "formal-monster-quest-complete-page" },
-    { "action": "dumpStorage", "name": "formal-monster-quest-complete-storage" },
-    { "action": "screenshot", "name": "formal-monster-quest-complete" },
-
-    { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
-    { "action": "wait", "ms": 800, "label": "settle-result" },
-    { "action": "dumpPage", "name": "formal-monster-reward-result-page" },
-    { "action": "dumpStorage", "name": "formal-monster-reward-result-storage" },
-    { "action": "screenshot", "name": "formal-monster-reward-result" },
-
-    { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
-    { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base" },
-    { "action": "wait", "ms": 1000, "label": "settle-base" },
-    { "action": "dumpPage", "name": "formal-monster-final-base-page" },
-    { "action": "dumpStorage", "name": "formal-monster-final-base-storage" },
-    { "action": "screenshot", "name": "formal-monster-final-base" }
-  ]
+  "schemaVersion": 1,
+  "project": "guild-adventure",
+  "label": "qst-0002",
+  "taskFile": "projects/guild-adventure/tasks/qst-0002.json",
+  "runRequest": 1,
+  "note": "Active task selector. Increment runRequest to rerun the same project task without modifying its saved definition."
 }
