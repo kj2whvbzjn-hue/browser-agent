@@ -184,6 +184,17 @@
       "label": "settle-equipment-save"
     },
     {
+      "action": "clickSelector",
+      "selector": "button[data-launcher-category=\"create\"]",
+      "label": "reopen-create-launcher-after-save"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "マスター",
+      "label": "reopen-masters-after-save"
+    },
+    {
       "action": "fillSelector",
       "selector": "#masterSearch",
       "value": "EQP-0003",
