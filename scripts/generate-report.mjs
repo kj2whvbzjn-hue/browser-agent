@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
-const taskPath = process.argv[2] || 'tasks/task.json';
+const requestedTaskPath = process.argv[2] || 'tasks/task.json';
 
 async function readText(filePath) {
   try { return await fs.readFile(filePath, 'utf8'); } catch { return ''; }
@@ -10,6 +10,25 @@ async function readText(filePath) {
 
 async function readJson(filePath) {
   try { return JSON.parse(await fs.readFile(filePath, 'utf8')); } catch { return null; }
+}
+
+async function loadTaskDefinition(requestedPath) {
+  const requested = await readJson(requestedPath) || {};
+  if (typeof requested.taskFile === 'string' && requested.taskFile.trim()) {
+    const taskPath = requested.taskFile.trim();
+    return {
+      task: await readJson(taskPath) || {},
+      taskPath,
+      selectionPath: requestedPath,
+      selection: requested,
+    };
+  }
+  return {
+    task: requested,
+    taskPath: requestedPath,
+    selectionPath: null,
+    selection: null,
+  };
 }
 
 function lines(text) {
@@ -53,7 +72,7 @@ function uniqueQuestOutcomes(items) {
   return [...map.values()].sort((a, b) => String(a.startedAt || '').localeCompare(String(b.startedAt || '')));
 }
 
-const task = await readJson(taskPath) || {};
+const { task, taskPath, selectionPath, selection } = await loadTaskDefinition(requestedTaskPath);
 const outputDir = path.resolve(task.outputDir || 'artifacts');
 await fs.mkdir(outputDir, { recursive: true });
 
@@ -98,8 +117,14 @@ const steps = Array.isArray(task.steps) ? task.steps.map((step, index) => ({
 })) : [];
 
 const report = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   generatedAt: new Date().toISOString(),
+  selection: selectionPath ? {
+    path: selectionPath,
+    project: selection?.project || null,
+    label: selection?.label || null,
+    runRequest: selection?.runRequest ?? null,
+  } : null,
   task: {
     path: taskPath,
     outputDir: task.outputDir || 'artifacts',
@@ -137,6 +162,11 @@ await fs.writeFile(path.join(outputDir, 'test-report.json'), `${JSON.stringify(r
 const md = [];
 md.push('# Browser Agent Test Report', '');
 md.push(`- Generated: ${report.generatedAt}`);
+if (report.selection) {
+  md.push(`- Project: ${safeOneLine(report.selection.project || '(unspecified)')}`);
+  md.push(`- Selection: \`${safeOneLine(report.selection.path)}\``);
+  md.push(`- Run request: ${safeOneLine(report.selection.runRequest ?? '(none)')}`);
+}
 md.push(`- Task: \`${safeOneLine(taskPath)}\``);
 md.push(`- Automation verdict: **${report.automation.verdict}**`);
 md.push(`- Final URL: ${safeOneLine(report.automation.finalUrl || '(none)')}`);
