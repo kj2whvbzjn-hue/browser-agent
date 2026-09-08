@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "qst-0002-public",
-  "taskFile": "projects/guild-adventure/tasks/qst-0002-public.json",
-  "runRequest": 3,
+  "label": "equipment-master-ui-public",
+  "taskFile": "projects/guild-adventure/tasks/equipment-master-ui-public.json",
+  "runRequest": 4,
   "note": "Active task selector. Increment runRequest to rerun the same project task without modifying its saved definition."
 }
