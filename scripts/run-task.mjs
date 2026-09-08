@@ -3,9 +3,32 @@ import path from 'node:path';
 import process from 'node:process';
 import { chromium } from 'playwright';
 
-const taskPath = process.argv[2] || 'tasks/task.json';
-const raw = await fs.readFile(taskPath, 'utf8');
-const task = JSON.parse(raw);
+const requestedTaskPath = process.argv[2] || 'tasks/task.json';
+
+async function loadTaskDefinition(requestedPath) {
+  const requestedRaw = await fs.readFile(requestedPath, 'utf8');
+  const requested = JSON.parse(requestedRaw);
+
+  if (requested && typeof requested.taskFile === 'string' && requested.taskFile.trim()) {
+    const taskPath = requested.taskFile.trim();
+    const taskRaw = await fs.readFile(taskPath, 'utf8');
+    return {
+      task: JSON.parse(taskRaw),
+      taskPath,
+      selectionPath: requestedPath,
+      selection: requested,
+    };
+  }
+
+  return {
+    task: requested,
+    taskPath: requestedPath,
+    selectionPath: null,
+    selection: null,
+  };
+}
+
+const { task, taskPath, selectionPath, selection } = await loadTaskDefinition(requestedTaskPath);
 
 const outputDir = path.resolve(task.outputDir || 'artifacts');
 await fs.mkdir(outputDir, { recursive: true });
@@ -190,6 +213,7 @@ async function runStep(step, index) {
 let ok = true;
 let failure = null;
 try {
+  console.log(`TASK ${taskPath}${selectionPath ? ` (selected by ${selectionPath})` : ''}`);
   for (let i = 0; i < task.steps.length; i++) await runStep(task.steps[i], i);
   await screenshot('final');
 } catch (err) {
@@ -202,7 +226,16 @@ try {
   await fs.writeFile(path.join(outputDir, 'page-errors.log'), pageErrors.join('\n'));
   await fs.writeFile(path.join(outputDir, 'dialogs.log'), dialogMessages.join('\n'));
   await fs.writeFile(path.join(outputDir, 'patches.log'), patchMessages.join('\n'));
-  await fs.writeFile(path.join(outputDir, 'result.json'), JSON.stringify({ ok, failure, finalUrl: page.url() }, null, 2));
+  await fs.writeFile(path.join(outputDir, 'result.json'), JSON.stringify({
+    ok,
+    failure,
+    finalUrl: page.url(),
+    taskPath,
+    selectionPath,
+    project: selection?.project || null,
+    label: selection?.label || null,
+    runRequest: selection?.runRequest ?? null,
+  }, null, 2));
   await browser.close();
 }
 
