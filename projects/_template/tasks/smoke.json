@@ -1,0 +1,11 @@
+{
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 900 },
+  "dialogPolicy": "dismiss",
+  "steps": [
+    { "action": "goto", "url": "https://example.com/", "waitUntil": "domcontentloaded", "label": "open-target" },
+    { "action": "assertText", "text": "Example Domain", "label": "assert-page-loaded" },
+    { "action": "dumpPage", "name": "smoke-page" },
+    { "action": "screenshot", "name": "smoke-final" }
+  ]
+}
