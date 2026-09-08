@@ -3,61 +3,16 @@
   "viewport": { "width": 1440, "height": 900 },
   "dialogPolicy": "accept",
   "steps": [
-    {
-      "action": "goto",
-      "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/",
-      "waitUntil": "domcontentloaded",
-      "label": "open-game"
-    },
-    {
-      "action": "clickRole",
-      "role": "button",
-      "name": "はじめから",
-      "label": "start-new-game"
-    },
-    {
-      "action": "waitForText",
-      "text": "遠征準備",
-      "label": "wait-base-screen",
-      "timeout": 20000
-    },
-    {
-      "action": "checkSelector",
-      "selector": "input[name='quest'][value='QST-0006']",
-      "label": "select-story-battle-override"
-    },
-    {
-      "action": "clickRole",
-      "role": "button",
-      "name": "冒険へ出発",
-      "label": "depart",
-      "timeout": 15000
-    },
-    {
-      "action": "wait",
-      "ms": 16000,
-      "label": "wait-to-mid-quest"
-    },
-    {
-      "action": "dumpPage",
-      "name": "mid-quest-state"
-    },
-    {
-      "action": "screenshot",
-      "name": "mid-quest"
-    },
-    {
-      "action": "wait",
-      "ms": 18000,
-      "label": "wait-past-quest-duration"
-    },
-    {
-      "action": "dumpPage",
-      "name": "post-quest-state"
-    },
-    {
-      "action": "screenshot",
-      "name": "post-quest"
-    }
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "domcontentloaded", "label": "open-game" },
+    { "action": "clickRole", "role": "button", "name": "はじめから", "label": "start-new-game" },
+    { "action": "waitForText", "text": "遠征準備", "label": "wait-base-screen", "timeout": 20000 },
+    { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0006']", "label": "select-story-battle-override" },
+    { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
+    { "action": "wait", "ms": 34000, "label": "wait-for-quest-completion" },
+    { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-return-enabled", "timeout": 10000 },
+    { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return", "screenshotAfter": true },
+    { "action": "wait", "ms": 1200, "label": "settle-after-return" },
+    { "action": "dumpPage", "name": "returned-base-state" },
+    { "action": "screenshot", "name": "returned-base" }
   ]
 }
