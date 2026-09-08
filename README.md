@@ -15,6 +15,7 @@ browser-agent/
     _template/tasks/smoke.json
     guild-adventure/tasks/qst-0002.json
     <new-project>/tasks/<test>.json
+    <new-project>/fixtures/<upload-files>
   tasks/
     task.json        # active task selector
   artifacts/         # generated during Actions
@@ -22,9 +23,10 @@ browser-agent/
 
 ## What it does
 
-- Opens public web pages with Chromium.
+- Opens public or otherwise reachable web pages with Chromium.
 - Executes browser actions from a selected project task JSON.
 - Starts each GitHub Actions run with a fresh Chromium browser context.
+- Clicks, fills, selects, checks, uploads repository fixture files, waits, and asserts page state.
 - Saves screenshots, DOM/control dumps, storage dumps, console logs, page errors, dialogs, patch logs, and `result.json` when requested by the task.
 - Generates `test-report.md` and `test-report.json`.
 - Uploads output as a GitHub Actions artifact.
@@ -32,11 +34,12 @@ browser-agent/
 ## New project operation
 
 1. Create `projects/<project-slug>/tasks/smoke.json` from `projects/_template/tasks/smoke.json`.
-2. Replace the target URL, actions, waits, and assertions for that project.
-3. Point `tasks/task.json` at the new task.
-4. Increment `runRequest` each time the same task should run again.
-5. Updating `tasks/task.json` triggers GitHub Actions.
-6. Use the generated report and artifact as the execution evidence.
+2. Put any non-secret upload fixtures under `projects/<project-slug>/fixtures/`.
+3. Replace the target URL, actions, waits, and assertions for that project.
+4. Point `tasks/task.json` at the new task.
+5. Increment `runRequest` each time the same task should run again.
+6. Updating `tasks/task.json` triggers GitHub Actions.
+7. Use the generated report and artifact as the execution evidence.
 
 Old project tasks are not deleted when switching projects. Starting a new project therefore does not require destructive initialization.
 
@@ -60,6 +63,8 @@ The runner also remains backward compatible with a full task JSON passed directl
 
 ## Supported task actions
 
+Navigation and interaction:
+
 - `goto`
 - `clickRole`
 - `clickText`
@@ -70,16 +75,57 @@ The runner also remains backward compatible with a full task JSON passed directl
 - `checkSelector`
 - `selectLabel`
 - `selectSelector`
+- `uploadLabel`
+- `uploadSelector`
+
+Waiting and evidence:
+
 - `waitForText`
 - `waitForSelector`
 - `wait`
 - `screenshot`
 - `dumpPage`
 - `dumpStorage`
+
+Assertions:
+
 - `assertText`
 - `assertSelector`
+- `assertValueLabel`
+- `assertValueSelector`
+- `assertUrl`
 
 Tasks may also define `dialogPolicy` and `responsePatches` when a test explicitly needs them.
+
+## File upload
+
+Upload actions accept `file` for one file or `files` for multiple files. Paths are relative to the repository workspace and are intentionally blocked from escaping outside the repository.
+
+```json
+{
+  "action": "uploadSelector",
+  "selector": "input[type=file]",
+  "file": "projects/my-project/fixtures/project-backup.json",
+  "label": "upload-backup"
+}
+```
+
+This is intended for sanitized test fixtures. Do not commit passwords, cookies, tokens, private backups, personal email addresses, or other secrets as fixtures.
+
+A typical import verification flow is:
+
+```json
+[
+  { "action": "goto", "url": "https://example.test/import" },
+  { "action": "uploadSelector", "selector": "input[type=file]", "file": "projects/my-project/fixtures/import.json" },
+  { "action": "clickRole", "role": "button", "name": "取り込む" },
+  { "action": "waitForText", "text": "取込完了" },
+  { "action": "assertValueLabel", "labelText": "案件名", "value": "期待する案件名" },
+  { "action": "assertText", "text": "期待する検証項目" },
+  { "action": "dumpPage", "name": "after-import" },
+  { "action": "screenshot", "name": "after-import" }
+]
+```
 
 ## Run locally
 
