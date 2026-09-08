@@ -6,37 +6,59 @@
     { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "domcontentloaded", "label": "open-game" },
     { "action": "clickRole", "role": "button", "name": "はじめから", "label": "start-new-game" },
     { "action": "waitForText", "text": "遠征準備", "label": "wait-base-screen", "timeout": 20000 },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('アルト')", "label": "select-alto" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-alto" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-alto" },
+    { "action": "wait", "ms": 250, "label": "settle-alto" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('セリア')", "label": "select-celia" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-celia" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-celia" },
+    { "action": "wait", "ms": 250, "label": "settle-celia" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('ロウ')", "label": "select-low" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-low" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-low" },
+    { "action": "wait", "ms": 250, "label": "settle-low" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('フィン')", "label": "select-fin" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-fin" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-fin" },
+    { "action": "wait", "ms": 250, "label": "settle-fin" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('ミナ')", "label": "select-mina" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-mina" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-mina" },
+    { "action": "wait", "ms": 250, "label": "settle-mina" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('エル')", "label": "select-el" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-el" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-el" },
+    { "action": "wait", "ms": 500, "label": "settle-ai-bindings" },
+
+    { "action": "dumpPage", "name": "ai-bound-base-page" },
+    { "action": "dumpStorage", "name": "ai-bound-base-storage" },
+    { "action": "screenshot", "name": "ai-bound-base" },
+
     { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0002']", "label": "select-random-battle-reward" },
     { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
+    { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-quest-finished", "timeout": 90000 },
+    { "action": "dumpPage", "name": "ai-quest-complete-page" },
+    { "action": "dumpStorage", "name": "ai-quest-complete-storage" },
+    { "action": "screenshot", "name": "ai-quest-complete" },
 
-    { "action": "wait", "ms": 13500, "label": "wait-13_5s" },
-    { "action": "dumpPage", "name": "t13-5-page" },
-    { "action": "dumpStorage", "name": "t13-5-storage" },
-    { "action": "screenshot", "name": "t13-5" },
+    { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
+    { "action": "wait", "ms": 800, "label": "settle-result" },
+    { "action": "dumpPage", "name": "ai-reward-result-page" },
+    { "action": "dumpStorage", "name": "ai-reward-result-storage" },
+    { "action": "screenshot", "name": "ai-reward-result" },
 
-    { "action": "wait", "ms": 1200, "label": "wait-14_7s" },
-    { "action": "dumpPage", "name": "t14-7-page" },
-    { "action": "dumpStorage", "name": "t14-7-storage" },
-    { "action": "screenshot", "name": "t14-7" },
-
-    { "action": "wait", "ms": 700, "label": "wait-15_4s" },
-    { "action": "dumpPage", "name": "t15-4-page" },
-    { "action": "dumpStorage", "name": "t15-4-storage" },
-    { "action": "screenshot", "name": "t15-4" },
-
-    { "action": "wait", "ms": 1100, "label": "wait-16_5s" },
-    { "action": "dumpPage", "name": "t16-5-page" },
-    { "action": "dumpStorage", "name": "t16-5-storage" },
-    { "action": "screenshot", "name": "t16-5" },
-
-    { "action": "wait", "ms": 12000, "label": "wait-28_5s" },
-    { "action": "dumpPage", "name": "t28-5-page" },
-    { "action": "dumpStorage", "name": "t28-5-storage" },
-    { "action": "screenshot", "name": "t28-5" },
-
-    { "action": "wait", "ms": 2200, "label": "wait-30_7s" },
-    { "action": "dumpPage", "name": "t30-7-page" },
-    { "action": "dumpStorage", "name": "t30-7-storage" },
-    { "action": "screenshot", "name": "t30-7" }
+    { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
+    { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base" },
+    { "action": "wait", "ms": 1000, "label": "settle-base" },
+    { "action": "dumpPage", "name": "ai-final-base-page" },
+    { "action": "dumpStorage", "name": "ai-final-base-storage" },
+    { "action": "screenshot", "name": "ai-final-base" }
   ]
 }
