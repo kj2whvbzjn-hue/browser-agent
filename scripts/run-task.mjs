@@ -15,6 +15,25 @@ const context = await browser.newContext({
   viewport: task.viewport || { width: 1440, height: 900 },
   userAgent: task.userAgent || undefined,
 });
+
+const patchMessages = [];
+for (const patch of Array.isArray(task.responsePatches) ? task.responsePatches : []) {
+  if (!patch?.url || typeof patch.search !== 'string' || typeof patch.replace !== 'string') {
+    throw new Error('responsePatches requires url/search/replace strings');
+  }
+  await context.route(patch.url, async route => {
+    const response = await route.fetch();
+    const original = await response.text();
+    const count = original.split(patch.search).length - 1;
+    if (count !== (patch.expectedCount ?? 1)) {
+      throw new Error(`Response patch ${patch.label || patch.url}: expected ${patch.expectedCount ?? 1} match(es), found ${count}`);
+    }
+    const body = original.replace(patch.search, patch.replace);
+    patchMessages.push(`${patch.label || patch.url}: applied ${count} replacement(s)`);
+    await route.fulfill({ response, body });
+  });
+}
+
 const page = await context.newPage();
 
 const consoleMessages = [];
@@ -182,6 +201,7 @@ try {
   await fs.writeFile(path.join(outputDir, 'console.log'), consoleMessages.join('\n'));
   await fs.writeFile(path.join(outputDir, 'page-errors.log'), pageErrors.join('\n'));
   await fs.writeFile(path.join(outputDir, 'dialogs.log'), dialogMessages.join('\n'));
+  await fs.writeFile(path.join(outputDir, 'patches.log'), patchMessages.join('\n'));
   await fs.writeFile(path.join(outputDir, 'result.json'), JSON.stringify({ ok, failure, finalUrl: page.url() }, null, 2));
   await browser.close();
 }
