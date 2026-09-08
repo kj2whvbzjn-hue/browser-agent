@@ -1,0 +1,13 @@
+{
+  "name": "browser-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone Playwright browser automation runner for GitHub Actions.",
+  "scripts": {
+    "run": "node scripts/run-task.mjs tasks/task.json"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}
