@@ -1,0 +1,61 @@
+{
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 900 },
+  "dialogPolicy": "accept",
+  "steps": [
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "domcontentloaded", "label": "open-game" },
+    { "action": "clickRole", "role": "button", "name": "はじめから", "label": "start-new-game" },
+    { "action": "waitForText", "text": "遠征準備", "label": "wait-base-screen", "timeout": 20000 },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('アルト')", "label": "select-alto" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-alto" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-alto" },
+    { "action": "wait", "ms": 180, "label": "settle-alto" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('セリア')", "label": "select-celia" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-celia" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-celia" },
+    { "action": "wait", "ms": 180, "label": "settle-celia" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('ロウ')", "label": "select-low" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-low" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-low" },
+    { "action": "wait", "ms": 180, "label": "settle-low" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('フィン')", "label": "select-fin" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-fin" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-fin" },
+    { "action": "wait", "ms": 180, "label": "settle-fin" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('ミナ')", "label": "select-mina" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-mina" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-mina" },
+    { "action": "wait", "ms": 180, "label": "settle-mina" },
+
+    { "action": "clickSelector", "selector": "button.adventurer-row:has-text('エル')", "label": "select-el" },
+    { "action": "selectSelector", "selector": "#characterAiBindingSelect", "value": { "label": "開発者作成: Monster共通AI: HP最少の敵へ通常攻撃" }, "label": "select-ai-el" },
+    { "action": "clickSelector", "selector": "#characterAiBindingApply", "label": "apply-ai-el" },
+    { "action": "wait", "ms": 500, "label": "settle-ai-bindings" },
+
+    { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0002']", "label": "select-random-battle-reward" },
+    { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
+    { "action": "dumpStorage", "name": "public-qst0002-run-created-storage" },
+    { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-quest-finished", "timeout": 90000 },
+    { "action": "dumpPage", "name": "public-qst0002-quest-complete-page" },
+    { "action": "dumpStorage", "name": "public-qst0002-quest-complete-storage" },
+    { "action": "screenshot", "name": "public-qst0002-quest-complete" },
+
+    { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
+    { "action": "wait", "ms": 800, "label": "settle-result" },
+    { "action": "dumpPage", "name": "public-qst0002-reward-result-page" },
+    { "action": "dumpStorage", "name": "public-qst0002-reward-result-storage" },
+    { "action": "screenshot", "name": "public-qst0002-reward-result" },
+
+    { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
+    { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base" },
+    { "action": "wait", "ms": 1000, "label": "settle-base" },
+    { "action": "dumpPage", "name": "public-qst0002-final-base-page" },
+    { "action": "dumpStorage", "name": "public-qst0002-final-base-storage" },
+    { "action": "screenshot", "name": "public-qst0002-final-base" }
+  ]
+}
