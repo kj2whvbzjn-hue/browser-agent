@@ -8,17 +8,35 @@
     { "action": "waitForText", "text": "遠征準備", "label": "wait-base-screen", "timeout": 20000 },
     { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0002']", "label": "select-random-battle-reward" },
     { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
-    { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-quest-finished", "timeout": 90000 },
-    { "action": "dumpPage", "name": "completed-quest-state" },
-    { "action": "screenshot", "name": "completed-quest" },
-    { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
-    { "action": "wait", "ms": 800, "label": "settle-result" },
-    { "action": "dumpPage", "name": "reward-result-state" },
-    { "action": "screenshot", "name": "reward-result" },
-    { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
-    { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base" },
-    { "action": "wait", "ms": 1000, "label": "settle-base" },
-    { "action": "dumpPage", "name": "reward-final-base-state" },
-    { "action": "screenshot", "name": "reward-final-base" }
+
+    { "action": "wait", "ms": 13500, "label": "wait-13_5s" },
+    { "action": "dumpPage", "name": "t13-5-page" },
+    { "action": "dumpStorage", "name": "t13-5-storage" },
+    { "action": "screenshot", "name": "t13-5" },
+
+    { "action": "wait", "ms": 1200, "label": "wait-14_7s" },
+    { "action": "dumpPage", "name": "t14-7-page" },
+    { "action": "dumpStorage", "name": "t14-7-storage" },
+    { "action": "screenshot", "name": "t14-7" },
+
+    { "action": "wait", "ms": 700, "label": "wait-15_4s" },
+    { "action": "dumpPage", "name": "t15-4-page" },
+    { "action": "dumpStorage", "name": "t15-4-storage" },
+    { "action": "screenshot", "name": "t15-4" },
+
+    { "action": "wait", "ms": 1100, "label": "wait-16_5s" },
+    { "action": "dumpPage", "name": "t16-5-page" },
+    { "action": "dumpStorage", "name": "t16-5-storage" },
+    { "action": "screenshot", "name": "t16-5" },
+
+    { "action": "wait", "ms": 12000, "label": "wait-28_5s" },
+    { "action": "dumpPage", "name": "t28-5-page" },
+    { "action": "dumpStorage", "name": "t28-5-storage" },
+    { "action": "screenshot", "name": "t28-5" },
+
+    { "action": "wait", "ms": 2200, "label": "wait-30_7s" },
+    { "action": "dumpPage", "name": "t30-7-page" },
+    { "action": "dumpStorage", "name": "t30-7-storage" },
+    { "action": "screenshot", "name": "t30-7" }
   ]
 }
