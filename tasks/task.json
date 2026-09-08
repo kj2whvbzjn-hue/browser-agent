@@ -7,15 +7,13 @@
       "action": "goto",
       "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/",
       "waitUntil": "domcontentloaded",
-      "label": "open-game",
-      "screenshotAfter": true
+      "label": "open-game"
     },
     {
       "action": "clickRole",
       "role": "button",
       "name": "はじめから",
-      "label": "start-new-game",
-      "screenshotAfter": true
+      "label": "start-new-game"
     },
     {
       "action": "waitForText",
@@ -26,29 +24,40 @@
     {
       "action": "checkSelector",
       "selector": "input[name='quest'][value='QST-0006']",
-      "label": "select-story-battle-override",
-      "screenshotAfter": true
+      "label": "select-story-battle-override"
     },
     {
       "action": "clickRole",
       "role": "button",
       "name": "冒険へ出発",
       "label": "depart",
-      "timeout": 15000,
-      "screenshotAfter": true
+      "timeout": 15000
     },
     {
       "action": "wait",
-      "ms": 1500,
-      "label": "settle-after-depart"
+      "ms": 16000,
+      "label": "wait-to-mid-quest"
     },
     {
       "action": "dumpPage",
-      "name": "after-depart-state"
+      "name": "mid-quest-state"
     },
     {
       "action": "screenshot",
-      "name": "after-depart"
+      "name": "mid-quest"
+    },
+    {
+      "action": "wait",
+      "ms": 18000,
+      "label": "wait-past-quest-duration"
+    },
+    {
+      "action": "dumpPage",
+      "name": "post-quest-state"
+    },
+    {
+      "action": "screenshot",
+      "name": "post-quest"
     }
   ]
 }
