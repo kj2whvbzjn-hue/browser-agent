@@ -24,17 +24,31 @@
       "timeout": 20000
     },
     {
-      "action": "assertText",
-      "text": "現在の冒険者：",
-      "label": "assert-adventurers"
+      "action": "checkSelector",
+      "selector": "input[name='quest'][value='QST-0006']",
+      "label": "select-story-battle-override",
+      "screenshotAfter": true
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "冒険へ出発",
+      "label": "depart",
+      "timeout": 15000,
+      "screenshotAfter": true
+    },
+    {
+      "action": "wait",
+      "ms": 1500,
+      "label": "settle-after-depart"
     },
     {
       "action": "dumpPage",
-      "name": "base-screen-state"
+      "name": "after-depart-state"
     },
     {
       "action": "screenshot",
-      "name": "base-screen"
+      "name": "after-depart"
     }
   ]
 }
