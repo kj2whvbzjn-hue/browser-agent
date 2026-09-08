@@ -1,0 +1,280 @@
+{
+  "outputDir": "artifacts",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "dialogPolicy": "accept",
+  "steps": [
+    {
+      "action": "goto",
+      "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/",
+      "waitUntil": "domcontentloaded",
+      "label": "open-public-studio",
+      "timeout": 30000
+    },
+    {
+      "action": "waitForText",
+      "text": "Studio GKS-B891",
+      "label": "confirm-gks-b891",
+      "timeout": 20000
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "プロジェクトを選ぶ",
+      "label": "open-projects"
+    },
+    {
+      "action": "fillSelector",
+      "selector": "#newProjectId",
+      "value": "PRJ-GAS-V4",
+      "label": "project-id"
+    },
+    {
+      "action": "fillSelector",
+      "selector": "#newProjectName",
+      "value": "Equipment UI E2E",
+      "label": "project-name"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "新規作成",
+      "label": "create-local-project"
+    },
+    {
+      "action": "wait",
+      "ms": 300,
+      "label": "settle-project"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "button[data-launcher-category=\"manage\"]",
+      "label": "open-manage-launcher"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "読込・出力を開く",
+      "label": "open-import-export"
+    },
+    {
+      "action": "uploadSelector",
+      "selector": "#dxImportFile",
+      "file": "projects/guild-adventure/fixtures/equipment-ui-eqp0003.json",
+      "label": "upload-equipment-fixture"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "反映確認",
+      "label": "inspect-equipment-import"
+    },
+    {
+      "action": "waitForText",
+      "text": "反映可能",
+      "label": "wait-import-can-apply",
+      "timeout": 15000
+    },
+    {
+      "action": "assertText",
+      "text": "装備 追加1",
+      "label": "assert-one-equipment-add"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "反映",
+      "label": "apply-equipment-import"
+    },
+    {
+      "action": "wait",
+      "ms": 800,
+      "label": "settle-equipment-import"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "button[data-launcher-category=\"create\"]",
+      "label": "open-create-launcher"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "マスター",
+      "label": "open-masters"
+    },
+    {
+      "action": "fillSelector",
+      "selector": "#masterSearch",
+      "value": "EQP-0003",
+      "label": "search-eqp0003"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "#masterList .item:has-text(\"EQP-0003\") button:has-text(\"編集\")",
+      "label": "edit-eqp0003"
+    },
+    {
+      "action": "waitForText",
+      "text": "装備本体（参照専用JSON）",
+      "label": "wait-equipment-readonly-label"
+    },
+    {
+      "action": "assertSelector",
+      "selector": "#masterParams[readonly]",
+      "label": "assert-equipment-json-readonly"
+    },
+    {
+      "action": "assertSelector",
+      "selector": "#masterId[readonly]",
+      "label": "assert-equipment-id-readonly"
+    },
+    {
+      "action": "assertSelector",
+      "selector": "#masterCategory:disabled",
+      "label": "assert-equipment-category-locked"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"attack\": 36",
+      "exact": false,
+      "label": "assert-attack-visible"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"weapon_critical_rate\": 0.05",
+      "exact": false,
+      "label": "assert-critical-visible"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"generation\": {",
+      "exact": false,
+      "label": "assert-generation-visible"
+    },
+    {
+      "action": "screenshot",
+      "name": "equipment-edit-readonly-visible"
+    },
+    {
+      "action": "fillSelector",
+      "selector": "#masterName",
+      "value": "鋼鉄の片手剣 E2E",
+      "label": "change-name-metadata"
+    },
+    {
+      "action": "fillSelector",
+      "selector": "#masterDescription",
+      "value": "equipment-ui-e2e",
+      "label": "change-description-metadata"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "登録・更新",
+      "label": "save-equipment-metadata"
+    },
+    {
+      "action": "wait",
+      "ms": 500,
+      "label": "settle-equipment-save"
+    },
+    {
+      "action": "fillSelector",
+      "selector": "#masterSearch",
+      "value": "EQP-0003",
+      "label": "search-eqp0003-again"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "#masterList .item:has-text(\"EQP-0003\") button:has-text(\"編集\")",
+      "label": "reopen-eqp0003"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterName",
+      "value": "鋼鉄の片手剣 E2E",
+      "label": "assert-name-saved"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterDescription",
+      "value": "equipment-ui-e2e",
+      "label": "assert-description-saved"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"attack\": 36",
+      "exact": false,
+      "label": "assert-attack-preserved"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"accuracy\": 18",
+      "exact": false,
+      "label": "assert-accuracy-preserved"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"magic_weapon_bonus\": 18",
+      "exact": false,
+      "label": "assert-magic-bonus-preserved"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"weapon_critical_rate\": 0.05",
+      "exact": false,
+      "label": "assert-critical-preserved"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterParams",
+      "value": "\"generation\": {",
+      "exact": false,
+      "label": "assert-generation-preserved"
+    },
+    {
+      "action": "screenshot",
+      "name": "equipment-edit-after-save-preserved"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "とじる",
+      "label": "close-equipment-editor"
+    },
+    {
+      "action": "clickRole",
+      "role": "button",
+      "name": "＋新規",
+      "label": "open-new-master-editor"
+    },
+    {
+      "action": "assertSelector",
+      "selector": "#masterCategoryEquipmentOption:disabled",
+      "label": "assert-equipment-create-option-disabled"
+    },
+    {
+      "action": "assertValueSelector",
+      "selector": "#masterCategory",
+      "value": "tags",
+      "label": "assert-new-master-not-equipment"
+    },
+    {
+      "action": "dumpPage",
+      "name": "equipment-ui-final-state"
+    },
+    {
+      "action": "screenshot",
+      "name": "equipment-new-create-disabled"
+    }
+  ]
+}
