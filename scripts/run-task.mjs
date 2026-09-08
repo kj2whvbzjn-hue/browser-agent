@@ -19,8 +19,18 @@ const page = await context.newPage();
 
 const consoleMessages = [];
 const pageErrors = [];
+const dialogMessages = [];
 page.on('console', msg => consoleMessages.push(`[${msg.type()}] ${msg.text()}`));
 page.on('pageerror', err => pageErrors.push(String(err)));
+page.on('dialog', async dialog => {
+  const policy = task.dialogPolicy || 'dismiss';
+  dialogMessages.push(`[${dialog.type()}] ${dialog.message()} -> ${policy}`);
+  if (policy === 'accept') {
+    await dialog.accept(task.dialogPromptText || '');
+  } else {
+    await dialog.dismiss();
+  }
+});
 
 async function screenshot(name) {
   const safe = name.replace(/[^a-z0-9._-]+/gi, '-');
@@ -86,6 +96,7 @@ try {
 } finally {
   await fs.writeFile(path.join(outputDir, 'console.log'), consoleMessages.join('\n'));
   await fs.writeFile(path.join(outputDir, 'page-errors.log'), pageErrors.join('\n'));
+  await fs.writeFile(path.join(outputDir, 'dialogs.log'), dialogMessages.join('\n'));
   await fs.writeFile(path.join(outputDir, 'result.json'), JSON.stringify({ ok, failure, finalUrl: page.url() }, null, 2));
   await browser.close();
 }
