@@ -11,10 +11,10 @@
       "expectedCount": 1
     },
     {
-      "label": "mon-0001-formal-ai-binding-proof-fix",
+      "label": "qst-0002-formal-monster-proof-fix",
       "url": "**/guild-adventure-studio/Export/monster/monsters.json*",
-      "search": "\"description\": \"実機検証用。Enemy Budget 1。撃破報酬はGold 10＋戦闘トークン1。\",\n      \"updated_at\": \"2026-09-07T05:42:02.255Z\"",
-      "replace": "\"description\": \"実機検証用。Enemy Budget 1。撃破報酬はGold 10＋戦闘トークン1。\",\n      \"updated_at\": \"2026-09-07T05:42:02.255Z\",\n      \"default_formation_position\": \"FRONTLINE\",\n      \"formalAiBinding\": {\n        \"program_id\": \"AIP-0001\",\n        \"layout_id\": \"AIL-0001\"\n      }",
+      "search": "\"updated_at\": \"2026-09-07T05:42:02.255Z\"\n    },\n    {\n      \"id\": \"MON-0002\",",
+      "replace": "\"updated_at\": \"2026-09-07T05:42:02.255Z\",\n      \"job_code\": \"MONSTER\",\n      \"level\": 1,\n      \"maxMp\": 0,\n      \"default_formation_position\": \"FRONTLINE\",\n      \"formalAiBinding\": {\n        \"program_id\": \"AIP-0001\",\n        \"layout_id\": \"AIL-0001\"\n      }\n    },\n    {\n      \"id\": \"MON-0002\",\n      \"job_code\": \"MONSTER\",\n      \"level\": 1,\n      \"maxMp\": 0,",
       "expectedCount": 1
     }
   ],
@@ -55,23 +55,23 @@
 
     { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0002']", "label": "select-random-battle-reward" },
     { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
-    { "action": "dumpStorage", "name": "double-patched-run-created-storage" },
+    { "action": "dumpStorage", "name": "formal-monster-run-created-storage" },
     { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-quest-finished", "timeout": 90000 },
-    { "action": "dumpPage", "name": "double-patched-quest-complete-page" },
-    { "action": "dumpStorage", "name": "double-patched-quest-complete-storage" },
-    { "action": "screenshot", "name": "double-patched-quest-complete" },
+    { "action": "dumpPage", "name": "formal-monster-quest-complete-page" },
+    { "action": "dumpStorage", "name": "formal-monster-quest-complete-storage" },
+    { "action": "screenshot", "name": "formal-monster-quest-complete" },
 
     { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
     { "action": "wait", "ms": 800, "label": "settle-result" },
-    { "action": "dumpPage", "name": "double-patched-reward-result-page" },
-    { "action": "dumpStorage", "name": "double-patched-reward-result-storage" },
-    { "action": "screenshot", "name": "double-patched-reward-result" },
+    { "action": "dumpPage", "name": "formal-monster-reward-result-page" },
+    { "action": "dumpStorage", "name": "formal-monster-reward-result-storage" },
+    { "action": "screenshot", "name": "formal-monster-reward-result" },
 
     { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
     { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base" },
     { "action": "wait", "ms": 1000, "label": "settle-base" },
-    { "action": "dumpPage", "name": "double-patched-final-base-page" },
-    { "action": "dumpStorage", "name": "double-patched-final-base-storage" },
-    { "action": "screenshot", "name": "double-patched-final-base" }
+    { "action": "dumpPage", "name": "formal-monster-final-base-page" },
+    { "action": "dumpStorage", "name": "formal-monster-final-base-storage" },
+    { "action": "screenshot", "name": "formal-monster-final-base" }
   ]
 }
