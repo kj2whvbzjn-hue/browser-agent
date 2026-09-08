@@ -4,6 +4,7 @@ import process from 'node:process';
 import { chromium } from 'playwright';
 
 const requestedTaskPath = process.argv[2] || 'tasks/task.json';
+const repoRoot = process.cwd();
 
 async function loadTaskDefinition(requestedPath) {
   const requestedRaw = await fs.readFile(requestedPath, 'utf8');
@@ -75,6 +76,23 @@ function safeName(name) {
   return String(name).replace(/[^a-z0-9._-]+/gi, '-');
 }
 
+function resolveUploadFiles(step) {
+  const configured = step.files ?? step.file;
+  const files = Array.isArray(configured) ? configured : [configured];
+  if (!files.length || files.some(file => typeof file !== 'string' || !file.trim())) {
+    throw new Error(`${step.action} requires file or files`);
+  }
+
+  return files.map(file => {
+    const resolved = path.resolve(repoRoot, file);
+    const relative = path.relative(repoRoot, resolved);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+      throw new Error(`Upload file must stay inside repository workspace: ${file}`);
+    }
+    return resolved;
+  });
+}
+
 async function screenshot(name) {
   await page.screenshot({ path: path.join(outputDir, `${safeName(name)}.png`), fullPage: true });
 }
@@ -140,6 +158,15 @@ async function locatorForSelector(step) {
   return page.locator(step.selector).first();
 }
 
+async function assertLocatorValue(locator, step) {
+  const expected = String(step.value ?? '');
+  const actual = await locator.inputValue({ timeout: step.timeout || 10000 });
+  const matches = step.exact === false ? actual.includes(expected) : actual === expected;
+  if (!matches) {
+    throw new Error(`Value mismatch: expected ${step.exact === false ? 'to include ' : ''}${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+  }
+}
+
 async function runStep(step, index) {
   const label = step.label || `${index + 1}-${step.action}`;
   console.log(`STEP ${index + 1}: ${label}`);
@@ -166,6 +193,9 @@ async function runStep(step, index) {
     case 'selectSelector':
       await (await locatorForSelector(step)).selectOption(step.value, { timeout: step.timeout || 10000 });
       break;
+    case 'uploadSelector':
+      await (await locatorForSelector(step)).setInputFiles(resolveUploadFiles(step), { timeout: step.timeout || 10000 });
+      break;
     case 'fillLabel':
       await page.getByLabel(step.labelText, { exact: step.exact ?? true }).fill(step.value ?? '');
       break;
@@ -174,6 +204,9 @@ async function runStep(step, index) {
       break;
     case 'selectLabel':
       await page.getByLabel(step.labelText, { exact: step.exact ?? true }).selectOption(step.value);
+      break;
+    case 'uploadLabel':
+      await page.getByLabel(step.labelText, { exact: step.exact ?? true }).setInputFiles(resolveUploadFiles(step), { timeout: step.timeout || 10000 });
       break;
     case 'waitForText':
       await page.getByText(step.text, { exact: step.exact ?? false }).waitFor({ state: 'visible', timeout: step.timeout || 15000 });
@@ -201,6 +234,19 @@ async function runStep(step, index) {
     case 'assertSelector': {
       const locator = await locatorForSelector(step);
       if (await locator.count() === 0) throw new Error(`Selector not found: ${step.selector}`);
+      break;
+    }
+    case 'assertValueSelector':
+      await assertLocatorValue(await locatorForSelector(step), step);
+      break;
+    case 'assertValueLabel':
+      await assertLocatorValue(page.getByLabel(step.labelText, { exact: step.labelExact ?? true }), step);
+      break;
+    case 'assertUrl': {
+      const expected = String(step.url ?? '');
+      const actual = page.url();
+      const matches = step.exact === false ? actual.includes(expected) : actual === expected;
+      if (!matches) throw new Error(`URL mismatch: expected ${step.exact === false ? 'to include ' : ''}${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
       break;
     }
     default:
