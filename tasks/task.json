@@ -9,6 +9,13 @@
       "search": "skills:clone(c.skills||[]),equipped_skill_id:c.equippedSkillId||''",
       "replace": "formalAiBinding:c.formalAiBinding?{program_id:String(c.formalAiBinding.programId||c.formalAiBinding.program_id||''),layout_id:String(c.formalAiBinding.entryLogicId||c.formalAiBinding.layout_id||'')}:null,skills:clone(c.skills||[]),equipped_skill_id:c.equippedSkillId||''",
       "expectedCount": 1
+    },
+    {
+      "label": "mon-0001-formal-ai-binding-proof-fix",
+      "url": "**/guild-adventure-studio/Export/monster/monsters.json*",
+      "search": "\"description\": \"実機検証用。Enemy Budget 1。撃破報酬はGold 10＋戦闘トークン1。\",\n      \"updated_at\": \"2026-09-07T05:42:02.255Z\"",
+      "replace": "\"description\": \"実機検証用。Enemy Budget 1。撃破報酬はGold 10＋戦闘トークン1。\",\n      \"updated_at\": \"2026-09-07T05:42:02.255Z\",\n      \"default_formation_position\": \"FRONTLINE\",\n      \"formalAiBinding\": {\n        \"program_id\": \"AIP-0001\",\n        \"layout_id\": \"AIL-0001\"\n      }",
+      "expectedCount": 1
     }
   ],
   "steps": [
@@ -48,23 +55,23 @@
 
     { "action": "checkSelector", "selector": "input[name='quest'][value='QST-0002']", "label": "select-random-battle-reward" },
     { "action": "clickRole", "role": "button", "name": "冒険へ出発", "label": "depart", "timeout": 15000 },
-    { "action": "dumpStorage", "name": "patched-run-created-storage" },
+    { "action": "dumpStorage", "name": "double-patched-run-created-storage" },
     { "action": "waitForSelector", "selector": "#adventureReturn:not([disabled])", "label": "wait-quest-finished", "timeout": 90000 },
-    { "action": "dumpPage", "name": "patched-quest-complete-page" },
-    { "action": "dumpStorage", "name": "patched-quest-complete-storage" },
-    { "action": "screenshot", "name": "patched-quest-complete" },
+    { "action": "dumpPage", "name": "double-patched-quest-complete-page" },
+    { "action": "dumpStorage", "name": "double-patched-quest-complete-storage" },
+    { "action": "screenshot", "name": "double-patched-quest-complete" },
 
     { "action": "clickSelector", "selector": "#adventureReturn", "label": "confirm-return" },
     { "action": "wait", "ms": 800, "label": "settle-result" },
-    { "action": "dumpPage", "name": "patched-reward-result-page" },
-    { "action": "dumpStorage", "name": "patched-reward-result-storage" },
-    { "action": "screenshot", "name": "patched-reward-result" },
+    { "action": "dumpPage", "name": "double-patched-reward-result-page" },
+    { "action": "dumpStorage", "name": "double-patched-reward-result-storage" },
+    { "action": "screenshot", "name": "double-patched-reward-result" },
 
     { "action": "waitForSelector", "selector": "#adventureReturnHome", "label": "wait-return-home", "timeout": 10000 },
     { "action": "clickSelector", "selector": "#adventureReturnHome", "label": "return-to-base" },
     { "action": "wait", "ms": 1000, "label": "settle-base" },
-    { "action": "dumpPage", "name": "patched-final-base-page" },
-    { "action": "dumpStorage", "name": "patched-final-base-storage" },
-    { "action": "screenshot", "name": "patched-final-base" }
+    { "action": "dumpPage", "name": "double-patched-final-base-page" },
+    { "action": "dumpStorage", "name": "double-patched-final-base-storage" },
+    { "action": "screenshot", "name": "double-patched-final-base" }
   ]
 }
