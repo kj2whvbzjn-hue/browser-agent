@@ -17,7 +17,7 @@
     { "action": "waitForSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 30000, "label": "qst0003-ready" },
     { "action": "checkSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 15000, "label": "select-qst0003" },
     { "action": "dumpStorage", "name": "qst0003-selected" },
-    { "action": "clickSelector", "selector": "#mobileDepart", "timeout": 60000, "label": "start-qst0003" },
+    { "action": "clickSelector", "selector": "#baseDepart", "timeout": 60000, "label": "start-qst0003" },
     { "action": "waitForSelector", "selector": "#phase-event.active", "timeout": 60000, "label": "qst0003-event-phase-reached" },
     { "action": "assertText", "text": "実機検証2：Budget必敗戦闘＋失敗後停止", "exact": true, "label": "qst0003-title" },
     { "action": "dumpStorage", "name": "qst0003-started" },
