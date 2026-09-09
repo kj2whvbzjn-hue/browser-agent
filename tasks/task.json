@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "project": "guild-adventure",
-  "label": "qst-0002-public-b893-rerun",
-  "taskFile": "projects/guild-adventure/tasks/qst-0002-public.json",
-  "runRequest": 2,
-  "note": "Re-run public Game QST-0002 after B893 Studio delta-import roundtrip verification; capture live Monster Formal AI battle evidence."
+  "project": "ai-to-ai-test",
+  "label": "chatgpt-probe",
+  "taskFile": "tasks/ai-to-ai-test.json",
+  "runRequest": 1,
+  "note": "Probe a second AI chat from GitHub Actions via Playwright."
 }
