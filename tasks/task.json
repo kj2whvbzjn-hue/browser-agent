@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "reorg-r30-phase1-public-game-e2e",
-  "taskFile": "projects/guild-adventure/tasks/reorg-r30-phase1-public-game-e2e.json",
-  "runRequest": 19,
-  "note": "Final TASK-R30-012 public Game E2E rerun after fixing hidden recovery-modal assertion; capture complete before/after save storage evidence."
+  "label": "reorg-r31-qst0003-save-recovery-b896-public-e2e",
+  "taskFile": "projects/guild-adventure/tasks/reorg-r31-qst0003-save-recovery-b896-public-e2e.json",
+  "runRequest": 20,
+  "note": "Verify public GA-B486.227 / GKS-B896 after QST-0003 freeze/save-loss hardening: large forced-defeat quest reaches Event phase, failed return preserves six starter characters, and explicit six-character backup restore succeeds."
 }
