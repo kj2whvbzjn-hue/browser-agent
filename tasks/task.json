@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "project": "ai-to-ai-test",
-  "label": "chatgpt-probe",
-  "taskFile": "tasks/ai-to-ai-test.json",
+  "project": "guild-adventure",
+  "label": "development-sync-discovery-b893",
+  "taskFile": "projects/guild-adventure/tasks/development-sync-discovery-b893.json",
   "runRequest": 1,
-  "note": "Probe a second AI chat from GitHub Actions via Playwright."
+  "note": "Read-only discovery of Current public Studio development management UI before synchronization."
 }
