@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "qst-0002-public-b893",
-  "taskFile": "projects/guild-adventure/tasks/qst-0002-public.json",
+  "label": "monster-formal-ai-b893-public",
+  "taskFile": "projects/guild-adventure/tasks/monster-formal-ai-b893-public.json",
   "runRequest": 1,
-  "note": "Public Game battle verification after GKS-B893 Monster formal AI update."
+  "note": "Public Studio Monster formal AI edit/save persistence verification after GKS-B893."
 }
