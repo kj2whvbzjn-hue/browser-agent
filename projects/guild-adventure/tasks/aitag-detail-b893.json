@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "name": "Inspect Player AI Tag progress controls B893",
+  "name": "Inspect Player AI Tag task controls B893",
   "outputDir": "artifacts",
-  "viewport": { "width": 1440, "height": 1600 },
+  "viewport": { "width": 1440, "height": 1800 },
   "dialogPolicy": "accept",
   "steps": [
     { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/", "waitUntil": "networkidle", "timeout": 60000 },
@@ -11,10 +11,10 @@
     { "action": "wait", "ms": 500 },
     { "action": "clickText", "text": "Player AI パーツTag基盤・段階接続", "exact": true, "timeout": 15000 },
     { "action": "wait", "ms": 700 },
-    { "action": "clickRole", "role": "button", "name": "進行・確認", "exact": true, "timeout": 15000 },
+    { "action": "clickRole", "role": "button", "name": "構成・作業", "exact": true, "timeout": 15000 },
     { "action": "wait", "ms": 900 },
-    { "action": "dumpPage", "name": "aitag-progress" },
-    { "action": "dumpStorage", "name": "aitag-progress-storage" },
-    { "action": "screenshot", "name": "aitag-progress" }
+    { "action": "dumpPage", "name": "aitag-work" },
+    { "action": "dumpStorage", "name": "aitag-work-storage" },
+    { "action": "screenshot", "name": "aitag-work" }
   ]
 }
