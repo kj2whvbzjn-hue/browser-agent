@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "qst0003-b897-hybrid-predeploy-e2e-v2",
+  "label": "qst0003-b897-hybrid-predeploy-e2e-v3",
   "taskFile": "projects/guild-adventure/tasks/qst0003-b897-hybrid-predeploy-e2e.json",
-  "runRequest": 27,
-  "note": "Predeploy validation v2 for planned B897 source + authoritative Monster accuracy=1 Game Data. Verify real QST-0003 failure path, six-character persistence, and backup restore resumes the saved adventure with six characters."
+  "runRequest": 28,
+  "note": "Predeploy validation v3: simulate imported Monster accuracy=1 at adventure content load, plus planned B897 runtime forwarding/required consumer. Verify actual QST-0003 battle failure path, six-character persistence, and backup restore."
 }
