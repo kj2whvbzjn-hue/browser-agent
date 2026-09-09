@@ -3,6 +3,6 @@
   "project": "guild-adventure",
   "label": "aitag-sync-b893-local",
   "taskFile": "projects/guild-adventure/tasks/aitag-sync-b893-local.json",
-  "runRequest": 9,
+  "runRequest": 10,
   "note": "Operate Current B893 Studio Development Management: sync TASK-AITAG-029 Todo->Doing while preserving task Human approval Pending, then verify Git save credential boundary."
 }
