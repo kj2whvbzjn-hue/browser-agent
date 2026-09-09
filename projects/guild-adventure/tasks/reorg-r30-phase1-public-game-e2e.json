@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "name": "REORG TASK-R30-012 public Game Phase1 E2E",
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 1700 },
+  "dialogPolicy": "accept",
+  "steps": [
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "networkidle", "timeout": 60000, "label": "open-public-game" },
+    { "action": "waitForSelector", "selector": "#phase-title.active", "timeout": 20000, "label": "title-ready" },
+    { "action": "clickSelector", "selector": "#titleStart", "timeout": 20000, "label": "new-game" },
+    { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "new-game-reaches-base" },
+    { "action": "waitForText", "text": "アルト", "timeout": 20000, "label": "starter-roster-visible" },
+    { "action": "dumpStorage", "name": "phase1-after-new-game" },
+    { "action": "screenshot", "name": "phase1-new-game-base" },
+    { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"guild\"]", "timeout": 15000, "label": "open-guild-menu" },
+    { "action": "waitForSelector", "selector": "#guildToTitle", "timeout": 15000, "label": "guild-title-button-ready" },
+    { "action": "clickSelector", "selector": "#guildToTitle", "timeout": 15000, "label": "return-title" },
+    { "action": "waitForSelector", "selector": "#phase-title.active", "timeout": 15000, "label": "title-returned" },
+    { "action": "clickSelector", "selector": "#titleContinue", "timeout": 20000, "label": "continue-after-first-save" },
+    { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "continue-reaches-base" },
+    { "action": "waitForText", "text": "セーブデータを読み込みました。", "timeout": 20000, "label": "continue-success-notice" },
+    { "action": "waitForSelector", "selector": "#saveRecoveryModal[aria-hidden=\"true\"]", "timeout": 10000, "label": "no-recovery-modal" },
+    { "action": "dumpStorage", "name": "phase1-after-continue" },
+    { "action": "dumpPage", "name": "phase1-after-continue-page" },
+    { "action": "screenshot", "name": "phase1-continue-base" }
+  ]
+}
