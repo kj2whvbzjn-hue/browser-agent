@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "name": "Inspect Player AI Tag expanded work tree B893",
+  "name": "Inspect Player AI Tag state node B893",
   "outputDir": "artifacts",
   "viewport": { "width": 1440, "height": 2200 },
   "dialogPolicy": "accept",
@@ -13,10 +13,9 @@
     { "action": "wait", "ms": 700 },
     { "action": "clickRole", "role": "button", "name": "構成・作業", "exact": true, "timeout": 15000 },
     { "action": "wait", "ms": 500 },
-    { "action": "clickRole", "role": "button", "name": "展開", "exact": true, "timeout": 15000 },
+    { "action": "clickText", "text": "状態管理語彙・Condition接続", "exact": true, "timeout": 15000 },
     { "action": "wait", "ms": 800 },
-    { "action": "dumpPage", "name": "aitag-work-expanded" },
-    { "action": "dumpStorage", "name": "aitag-work-storage" },
-    { "action": "screenshot", "name": "aitag-work-expanded" }
+    { "action": "dumpPage", "name": "aitag-state-node" },
+    { "action": "screenshot", "name": "aitag-state-node" }
   ]
 }
