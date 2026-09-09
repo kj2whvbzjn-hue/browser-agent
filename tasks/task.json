@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "qst0003-b896-max100-diagnostic",
+  "label": "qst0003-b896-max100-diagnostic-instrumented",
   "taskFile": "projects/guild-adventure/tasks/qst0003-b896-max100-diagnostic.json",
-  "runRequest": 22,
-  "note": "Diagnostic only: cap Formal Adventure Battle maxTicks at 100 to determine whether QST-0003 freeze is long-running tick simulation or per-tick work."
+  "runRequest": 23,
+  "note": "Diagnostic: cap maxTicks at 100 and expose action/alive/HP/log-tail at tick limit to isolate QST-0003 non-termination."
 }
