@@ -5,7 +5,7 @@
   "viewport": { "width": 1440, "height": 1800 },
   "dialogPolicy": "accept",
   "steps": [
-    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/?appv=893", "waitUntil": "networkidle", "timeout": 60000, "label": "open-b893" },
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/", "waitUntil": "networkidle", "timeout": 60000, "label": "open-b893" },
     { "action": "waitForText", "text": "Studio GKS-B893", "timeout": 20000, "label": "confirm-b893" },
     { "action": "clickText", "text": "開発管理を開く", "exact": true, "timeout": 15000, "label": "open-development" },
     { "action": "waitForSelector", "selector": "#developmentProjectListView:not(.hidden)", "timeout": 15000, "label": "wait-development-list" },
