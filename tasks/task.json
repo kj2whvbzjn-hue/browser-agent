@@ -3,6 +3,6 @@
   "project": "guild-adventure",
   "label": "reorg-r30-phase1-public-game-e2e",
   "taskFile": "projects/guild-adventure/tasks/reorg-r30-phase1-public-game-e2e.json",
-  "runRequest": 14,
-  "note": "Run TASK-R30-012 New Game -> first Auto Save -> Title -> Continue/Load on the public Game and capture storage evidence."
+  "runRequest": 15,
+  "note": "Rerun TASK-R30-012 public Game New Game -> first Auto Save -> Title -> Continue/Load with hardened selectors and storage capture."
 }
