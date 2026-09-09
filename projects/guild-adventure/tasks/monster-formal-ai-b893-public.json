@@ -1,0 +1,52 @@
+{
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 1100 },
+  "dialogPolicy": "accept",
+  "steps": [
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/", "waitUntil": "domcontentloaded", "label": "open-public-studio", "timeout": 30000 },
+    { "action": "waitForText", "text": "Studio GKS-B893", "label": "confirm-gks-b893", "timeout": 20000 },
+
+    { "action": "clickRole", "role": "button", "name": "プロジェクトを選ぶ", "label": "open-projects" },
+    { "action": "fillSelector", "selector": "#newProjectId", "value": "PRJ-GAS-MON-AI-E2E", "label": "project-id" },
+    { "action": "fillSelector", "selector": "#newProjectName", "value": "Monster Formal AI E2E", "label": "project-name" },
+    { "action": "clickRole", "role": "button", "name": "新規作成", "label": "create-local-project" },
+    { "action": "wait", "ms": 300, "label": "settle-project" },
+
+    { "action": "clickSelector", "selector": "button[data-launcher-category=\"manage\"]", "label": "open-manage-launcher" },
+    { "action": "waitForSelector", "selector": "#launcherPanel-manage.active", "label": "wait-manage-panel" },
+    { "action": "clickSelector", "selector": "#launcherPanel-manage.active button:has-text(\"読込・出力を開く\")", "label": "open-import-export" },
+    { "action": "uploadSelector", "selector": "#importFile", "file": "projects/guild-adventure/fixtures/monster-formal-ai-b893-project.json", "label": "upload-full-project-fixture" },
+    { "action": "clickRole", "role": "button", "name": "検証して全件読込", "label": "apply-full-project-import" },
+    { "action": "waitForText", "text": "全件読込完了", "label": "wait-full-import-complete", "timeout": 20000 },
+
+    { "action": "clickSelector", "selector": "button[data-launcher-category=\"create\"]", "label": "open-create-launcher" },
+    { "action": "waitForSelector", "selector": "#launcherPanel-create.active", "label": "wait-create-panel" },
+    { "action": "clickSelector", "selector": "#launcherPanel-create.active button:has-text(\"マスター\")", "label": "open-masters" },
+    { "action": "waitForSelector", "selector": "#masterSearch", "label": "wait-master-view" },
+    { "action": "fillSelector", "selector": "#masterSearch", "value": "MON-0001", "label": "search-mon0001" },
+    { "action": "clickSelector", "selector": "#masterList .item:has-text(\"MON-0001\") button:has-text(\"編集\")", "label": "edit-mon0001" },
+
+    { "action": "waitForSelector", "selector": "#masterMonsterFormalAiField:not(.hidden)", "label": "wait-formal-ai-field" },
+    { "action": "assertValueSelector", "selector": "#masterMonsterFormationPosition", "value": "FRONTLINE", "label": "assert-formation-frontline" },
+    { "action": "assertValueSelector", "selector": "#masterMonsterFormalAiBinding", "value": "AIL-0001", "label": "assert-formal-ai-layout" },
+    { "action": "assertText", "text": "Monster共通AI: HP最少の敵へ通常攻撃", "label": "assert-formal-ai-name" },
+    { "action": "screenshot", "name": "monster-formal-ai-before-save" },
+
+    { "action": "fillSelector", "selector": "#masterDescription", "value": "monster-formal-ai-b893-e2e", "label": "change-description" },
+    { "action": "clickRole", "role": "button", "name": "登録・更新", "label": "save-monster" },
+    { "action": "wait", "ms": 500, "label": "settle-monster-save" },
+
+    { "action": "clickSelector", "selector": "button[data-launcher-category=\"create\"]", "label": "reopen-create-launcher" },
+    { "action": "waitForSelector", "selector": "#launcherPanel-create.active", "label": "wait-create-panel-after-save" },
+    { "action": "clickSelector", "selector": "#launcherPanel-create.active button:has-text(\"マスター\")", "label": "reopen-masters" },
+    { "action": "waitForSelector", "selector": "#masterSearch", "label": "wait-master-view-after-save" },
+    { "action": "fillSelector", "selector": "#masterSearch", "value": "MON-0001", "label": "search-mon0001-again" },
+    { "action": "clickSelector", "selector": "#masterList .item:has-text(\"MON-0001\") button:has-text(\"編集\")", "label": "reopen-mon0001" },
+
+    { "action": "assertValueSelector", "selector": "#masterDescription", "value": "monster-formal-ai-b893-e2e", "label": "assert-description-saved" },
+    { "action": "assertValueSelector", "selector": "#masterMonsterFormationPosition", "value": "FRONTLINE", "label": "assert-formation-preserved" },
+    { "action": "assertValueSelector", "selector": "#masterMonsterFormalAiBinding", "value": "AIL-0001", "label": "assert-formal-ai-preserved" },
+    { "action": "screenshot", "name": "monster-formal-ai-after-save" },
+    { "action": "dumpPage", "name": "monster-formal-ai-final-state" }
+  ]
+}
