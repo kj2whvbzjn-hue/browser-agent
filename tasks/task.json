@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "monster-formal-ai-b893-public-v2",
-  "taskFile": "projects/guild-adventure/tasks/monster-formal-ai-public-b893-v2.json",
+  "label": "qst-0002-public-b893-rerun",
+  "taskFile": "projects/guild-adventure/tasks/qst-0002-public.json",
   "runRequest": 2,
-  "note": "Public Studio B893 delta-import + Monster Formal AI formation/save/storage roundtrip verification."
+  "note": "Re-run public Game QST-0002 after B893 Studio delta-import roundtrip verification; capture live Monster Formal AI battle evidence."
 }
