@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "name": "REORG R30 Phase 1 game UI probe",
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 1700 },
+  "dialogPolicy": "accept",
+  "steps": [
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "networkidle", "timeout": 60000, "label": "open-game" },
+    { "action": "wait", "ms": 2500, "label": "wait-game-init" },
+    { "action": "dumpPage", "name": "game-title-page" },
+    { "action": "dumpStorage", "name": "game-title-storage" },
+    { "action": "screenshot", "name": "game-title" }
+  ]
+}
