@@ -19,7 +19,7 @@
     { "action": "clickSelector", "selector": "#titleContinue", "timeout": 20000, "label": "continue-after-first-save" },
     { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "continue-reaches-base" },
     { "action": "assertText", "text": "セーブデータを読み込みました。", "exact": true, "label": "continue-success-notice-recorded" },
-    { "action": "waitForSelector", "selector": "#saveRecoveryModal[aria-hidden=\"true\"]", "timeout": 10000, "label": "no-recovery-modal" },
+    { "action": "assertSelector", "selector": "#saveRecoveryModal[aria-hidden=\"true\"]", "label": "no-recovery-modal" },
     { "action": "dumpStorage", "name": "phase1-after-continue" },
     { "action": "dumpPage", "name": "phase1-after-continue-page" },
     { "action": "screenshot", "name": "phase1-continue-base" }
