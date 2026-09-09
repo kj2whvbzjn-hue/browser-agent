@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "monster-formal-ai-public-b893",
-  "taskFile": "projects/guild-adventure/tasks/monster-formal-ai-public-b893.json",
-  "runRequest": 2,
-  "note": "B893 Monster Formal AI Studio browser verification."
+  "label": "monster-formal-ai-public-b893-v2",
+  "taskFile": "projects/guild-adventure/tasks/monster-formal-ai-public-b893-v2.json",
+  "runRequest": 1,
+  "note": "Stable B893 Monster Formal AI Studio browser verification."
 }
