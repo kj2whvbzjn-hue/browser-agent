@@ -1,22 +1,15 @@
 {
   "schemaVersion": 1,
-  "name": "QST-0003 B896 maxTicks100 diagnostic",
+  "name": "QST-0003 B896 enemy-accuracy diagnostic",
   "outputDir": "artifacts",
   "viewport": { "width": 390, "height": 844 },
   "dialogPolicy": "accept",
   "responsePatches": [
     {
       "url": "**/game/assets/js/battle-control.js*",
-      "label": "cap-formal-adventure-battle-maxTicks-100",
-      "search": "function simulateFormalAdventureBattle({party,formation,monsters,seed=1,maxTicks=200000}={}){",
-      "replace": "function simulateFormalAdventureBattle({party,formation,monsters,seed=1,maxTicks=100}={}){",
-      "expectedCount": 1
-    },
-    {
-      "url": "**/game/assets/js/battle-control.js*",
-      "label": "diagnose-formal-battle-tick-limit",
-      "search": "if(!battle.result){const error=new Error(`Formal Adventure Battle exceeded maxTicks: ${cap}`);error.code='FORMAL_ADVENTURE_BATTLE_TICK_LIMIT';throw error;}",
-      "replace": "if(!battle.result){const aliveA=battle.units.filter(u=>u.alive&&u.side==='味方'),aliveE=battle.units.filter(u=>u.alive&&u.side==='敵');const error=new Error(`Formal Adventure Battle exceeded maxTicks: ${cap}; actions=${battle.actions}; allyAlive=${aliveA.length}; enemyAlive=${aliveE.length}; allyHp=${aliveA.reduce((s,u)=>s+u.hp,0)}; enemyHp=${aliveE.reduce((s,u)=>s+u.hp,0)}; tail=${battle.log.slice(-12).join(' || ')}`);error.code='FORMAL_ADVENTURE_BATTLE_TICK_LIMIT';throw error;}",
+      "label": "diagnostic-enemy-accuracy-100",
+      "search": "ownedSkillIds:clone(row.skillIds||[]),agi:row.agi,attack:row.attack,maxHp:row.maxHp",
+      "replace": "ownedSkillIds:clone(row.skillIds||[]),agi:row.agi,attack:row.attack,accuracy:100,maxHp:row.maxHp",
       "expectedCount": 1
     }
   ],
