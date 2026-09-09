@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "reorg-r30-phase1-game-probe",
-  "taskFile": "projects/guild-adventure/tasks/reorg-r30-phase1-game-probe.json",
-  "runRequest": 13,
-  "note": "Probe the public Game UI for REORG TASK-R30-012 Phase 1 Save/New Game E2E using Playwright."
+  "label": "reorg-r30-phase1-public-game-e2e",
+  "taskFile": "projects/guild-adventure/tasks/reorg-r30-phase1-public-game-e2e.json",
+  "runRequest": 14,
+  "note": "Run TASK-R30-012 New Game -> first Auto Save -> Title -> Continue/Load on the public Game and capture storage evidence."
 }
