@@ -3,6 +3,6 @@
   "project": "guild-adventure",
   "label": "reorg-r31-qst0003-save-recovery-b896-public-e2e",
   "taskFile": "projects/guild-adventure/tasks/reorg-r31-qst0003-save-recovery-b896-public-e2e.json",
-  "runRequest": 20,
-  "note": "Verify public GA-B486.227 / GKS-B896 after QST-0003 freeze/save-loss hardening: large forced-defeat quest reaches Event phase, failed return preserves six starter characters, and explicit six-character backup restore succeeds."
+  "runRequest": 21,
+  "note": "Rerun B896 QST-0003 save recovery public E2E with visible #baseDepart selector; verify no freeze, six-character persistence, and backup restore."
 }
