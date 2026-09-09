@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "aitag-work-expanded-b893",
-  "taskFile": "projects/guild-adventure/tasks/aitag-detail-b893.json",
-  "runRequest": 8,
-  "note": "Expand the Player AI Tag work tree to locate the remaining task and its Current update control."
+  "label": "aitag-sync-b893-local",
+  "taskFile": "projects/guild-adventure/tasks/aitag-sync-b893-local.json",
+  "runRequest": 9,
+  "note": "Operate Current B893 Studio Development Management: sync TASK-AITAG-029 Todo->Doing while preserving task Human approval Pending, then verify Git save credential boundary."
 }
