@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "monster-formal-ai-b893-public",
-  "taskFile": "projects/guild-adventure/tasks/monster-formal-ai-b893-public.json",
-  "runRequest": 1,
-  "note": "Public Studio Monster formal AI edit/save persistence verification after GKS-B893."
+  "label": "monster-formal-ai-b893-public-v2",
+  "taskFile": "projects/guild-adventure/tasks/monster-formal-ai-public-b893-v2.json",
+  "runRequest": 2,
+  "note": "Public Studio B893 delta-import + Monster Formal AI formation/save/storage roundtrip verification."
 }
