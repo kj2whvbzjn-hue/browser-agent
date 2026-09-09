@@ -3,6 +3,6 @@
   "project": "guild-adventure",
   "label": "reorg-r30-phase1-public-game-e2e",
   "taskFile": "projects/guild-adventure/tasks/reorg-r30-phase1-public-game-e2e.json",
-  "runRequest": 18,
-  "note": "Final TASK-R30-012 public Game E2E: New Game -> first Auto Save -> Title -> Continue/Load, assert success state and capture before/after storage."
+  "runRequest": 19,
+  "note": "Final TASK-R30-012 public Game E2E rerun after fixing hidden recovery-modal assertion; capture complete before/after save storage evidence."
 }
