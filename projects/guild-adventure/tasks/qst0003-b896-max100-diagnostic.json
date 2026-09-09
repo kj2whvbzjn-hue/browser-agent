@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "name": "QST-0003 B896 enemy-accuracy diagnostic",
+  "name": "QST-0003 B896 authoritative enemy-accuracy diagnostic",
   "outputDir": "artifacts",
   "viewport": { "width": 390, "height": 844 },
   "dialogPolicy": "accept",
   "responsePatches": [
     {
       "url": "**/game/assets/js/battle-control.js*",
-      "label": "diagnostic-enemy-accuracy-100",
+      "label": "diagnostic-enemy-accuracy-1",
       "search": "ownedSkillIds:clone(row.skillIds||[]),agi:row.agi,attack:row.attack,maxHp:row.maxHp",
-      "replace": "ownedSkillIds:clone(row.skillIds||[]),agi:row.agi,attack:row.attack,accuracy:100,maxHp:row.maxHp",
+      "replace": "ownedSkillIds:clone(row.skillIds||[]),agi:row.agi,attack:row.attack,accuracy:1,maxHp:row.maxHp",
       "expectedCount": 1
     }
   ],
