@@ -1,0 +1,169 @@
+{
+  "schema_version": "4.0.0-draft",
+  "project": {
+    "id": "PRJ-GAS-MON-AI-E2E",
+    "name": "Monster Formal AI E2E",
+    "product_version": "4.0.0",
+    "status": "development",
+    "description": "browser test",
+    "updated_at": "2026-09-09T00:00:00.000Z"
+  },
+  "decisions": [],
+  "chapters": [],
+  "characters": [],
+  "organizations": [],
+  "terms": [],
+  "relationships": [],
+  "timeline": [],
+  "quests": [],
+  "events": [],
+  "flags": [],
+  "rules": [],
+  "battle_tests": [],
+  "battle_snapshots": [],
+  "entities": [],
+  "tags": [],
+  "tag_categories": [],
+  "ai_programs": [
+    {
+      "id": "AIP-0001",
+      "data_version": "0.1.0-draft",
+      "name": "Monster共通AI: HP最少の敵へ通常攻撃",
+      "updated_at": "2026-09-01T08:55:08.072Z",
+      "status": "valid",
+      "entry_node_id": "AIN-0001",
+      "nodes": [
+        {
+          "instance_id": "AIN-0001",
+          "master_node_id": "AIA-0001",
+          "master_data_version": "0.1.0-draft",
+          "node_type": "action",
+          "position": {"x": 0, "y": 0},
+          "parameters": {},
+          "target_selector": {"selector_id": "ATS-0001", "params": {}},
+          "comment": "Human-fixed P9 Developer Program mapping"
+        }
+      ],
+      "edges": [],
+      "subroutines": [],
+      "tags": [],
+      "description": "Human-fixed P9 Developer Program: HP最少の敵 → 通常攻撃.",
+      "schema_version": "2.0.0",
+      "version": 1,
+      "result_slots": []
+    }
+  ],
+  "ai_program_layouts": [
+    {
+      "schema_version": "2.0.0",
+      "data_version": "0.1.0-draft",
+      "layout_id": "AIL-0001",
+      "program_id": "AIP-0001",
+      "width": 8,
+      "height": 8,
+      "chips": [{"instance_id": "AIN-0001", "x": 0, "y": 0, "rotation": 0}],
+      "extensions": []
+    }
+  ],
+  "ai_program_runtime": [
+    {
+      "compiler_version": "2.0.0",
+      "content_hash": "794ae7031859051619ead42ac4be9739145fa85a8f1f4c062213878b8083b5d4",
+      "data_version": "0.1.0-draft",
+      "entry_instruction": "I-0001",
+      "instructions": [
+        {
+          "evaluator": "action.attack",
+          "instruction_id": "I-0001",
+          "master_node_id": "AIA-0001",
+          "op": "ACTION",
+          "origin_part_id": "AIN-0001",
+          "params": {},
+          "source_node_id": "AIN-0001",
+          "target_selector": {"params": {}, "selector_id": "ATS-0001"}
+        }
+      ],
+      "limits": {"max_steps": 1, "max_subroutine_depth": 0},
+      "program_id": "AIP-0001",
+      "program_version": 1,
+      "schema_version": "2.0.0",
+      "source_map": {"I-0001": {"origin_part_id": "AIN-0001", "source_node_id": "AIN-0001"}}
+    }
+  ],
+  "history": [],
+  "masters": {
+    "stats": [],
+    "jobs": [],
+    "skills": [],
+    "equipment": [],
+    "passives": [],
+    "mods": [],
+    "monsters": [
+      {
+        "id": "MON-0001",
+        "name": "訓練用スライム",
+        "status": "active",
+        "enabled": true,
+        "tags": [],
+        "params": {
+          "maxHp": 21,
+          "attack": 2,
+          "agi": 0.4,
+          "enemy_budget_cost": 1,
+          "spawn_weight": 1,
+          "spawn_tags": {"any": [], "all": [], "none": []},
+          "drop_table_ids": [],
+          "level": 1,
+          "maxMp": 0,
+          "str": 1.5,
+          "vit": 1.3,
+          "dex": 1,
+          "int": 0.7,
+          "mnd": 0.8,
+          "luk": 0.3
+        },
+        "description": "Monster Formal AI browser E2E",
+        "updated_at": "2026-09-09T00:00:00.000Z",
+        "default_formation_position": "FRONTLINE",
+        "formalAiBinding": {"program_id": "AIP-0001", "layout_id": "AIL-0001"}
+      }
+    ],
+    "status_effects": [],
+    "tablets": [],
+    "maps": [],
+    "exploration_outcomes": [],
+    "reward_tables": [],
+    "adventure_settings": [],
+    "ai_searches": [],
+    "ai_conditions": [],
+    "ai_target_selectors": [
+      {
+        "schema_version": "2.0.0",
+        "id": "ATS-0001",
+        "name": "HP割合が最も低い対象",
+        "evaluator": "selector.lowest_hp_ratio",
+        "parameter_schema": {"type": "object", "properties": {}, "required": [], "additionalProperties": false},
+        "tags": [],
+        "enabled": true,
+        "status": "draft",
+        "description": ""
+      }
+    ],
+    "ai_actions": [
+      {
+        "schema_version": "2.0.0",
+        "id": "AIA-0001",
+        "name": "通常攻撃",
+        "node_type": "action",
+        "status": "active",
+        "data_version": "0.1.0-draft",
+        "description": "通常攻撃を予約する終端チップ。",
+        "tags": [],
+        "evaluator": "action.attack",
+        "ports": {"inputs": [{"id": "in", "kind": "flow", "data_type": "flow", "label": "入口"}], "outputs": []},
+        "parameter_schema": {"type": "object", "properties": {}, "required": [], "additionalProperties": false},
+        "unlock": {}
+      }
+    ]
+  }
+}
