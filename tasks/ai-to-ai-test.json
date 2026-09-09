@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "label": "ai-to-ai-chatgpt-probe",
+  "label": "ai-to-ai-duckai-probe",
   "outputDir": "artifacts",
   "steps": [
     {
       "action": "goto",
-      "url": "https://chatgpt.com/",
+      "url": "https://duck.ai/",
       "waitUntil": "domcontentloaded",
       "timeout": 30000
     },
@@ -15,11 +15,11 @@
     },
     {
       "action": "dumpPage",
-      "name": "chatgpt-home"
+      "name": "duckai-home"
     },
     {
       "action": "screenshot",
-      "name": "chatgpt-home"
+      "name": "duckai-home"
     }
   ]
 }
