@@ -11,6 +11,13 @@
       "search": "function simulateFormalAdventureBattle({party,formation,monsters,seed=1,maxTicks=200000}={}){",
       "replace": "function simulateFormalAdventureBattle({party,formation,monsters,seed=1,maxTicks=100}={}){",
       "expectedCount": 1
+    },
+    {
+      "url": "**/game/assets/js/battle-control.js*",
+      "label": "diagnose-formal-battle-tick-limit",
+      "search": "if(!battle.result){const error=new Error(`Formal Adventure Battle exceeded maxTicks: ${cap}`);error.code='FORMAL_ADVENTURE_BATTLE_TICK_LIMIT';throw error;}",
+      "replace": "if(!battle.result){const aliveA=battle.units.filter(u=>u.alive&&u.side==='味方'),aliveE=battle.units.filter(u=>u.alive&&u.side==='敵');const error=new Error(`Formal Adventure Battle exceeded maxTicks: ${cap}; actions=${battle.actions}; allyAlive=${aliveA.length}; enemyAlive=${aliveE.length}; allyHp=${aliveA.reduce((s,u)=>s+u.hp,0)}; enemyHp=${aliveE.reduce((s,u)=>s+u.hp,0)}; tail=${battle.log.slice(-12).join(' || ')}`);error.code='FORMAL_ADVENTURE_BATTLE_TICK_LIMIT';throw error;}",
+      "expectedCount": 1
     }
   ],
   "steps": [
@@ -22,8 +29,8 @@
     { "action": "waitForSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 30000, "label": "qst-ready" },
     { "action": "checkSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 15000, "label": "select-qst0003" },
     { "action": "clickSelector", "selector": "#baseDepart", "timeout": 60000, "label": "depart" },
-    { "action": "dumpPage", "name": "after-depart" },
     { "action": "dumpStorage", "name": "after-depart-storage" },
+    { "action": "dumpPage", "name": "after-depart" },
     { "action": "screenshot", "name": "after-depart" }
   ]
 }
