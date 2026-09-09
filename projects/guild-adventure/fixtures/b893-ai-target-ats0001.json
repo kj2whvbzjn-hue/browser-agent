@@ -1,1 +1,21 @@
-{"format":"GKS_DATA_EXCHANGE","version":"1.0.0-draft","project_id":"PRJ-GAS-V4","mode":"partial","permissions":{"writable":["ai_target_selectors"],"read_only":[]},"metadata":{"generated_at":"2026-09-09T05:20:51.400Z","source":"studio-data-exchange","studio_version":"GKS-B893","schema_version":"4.0.0-draft","dependency_mode":"none","record_count":{"ai_target_selectors":1},"base_project_revision":"","base_hash":"b72f5227171a57be4bfe0ad1803e3958e4def462a3fd592a8cb0ac1f14813037","record_hashes":{"ai_target_selectors":{"ATS-0001":"75f67187ca97405d72308f49bba76c021301478e3cf5c6b1cce21591a11e17a3"}},"package_hash":"6ae1000d6b1dd1a9011f2412ffdeae866d603f49028df34e593732b0f47b46df","hash_algorithm":"SHA-256"},"datasets":{"ai_target_selectors":[{"schema_version":"2.0.0","id":"ATS-0001","name":"HP割合が最も低い対象","evaluator":"selector.lowest_hp_ratio","parameter_schema":{"type":"object","properties":{},"required":[],"additionalProperties":false},"tags":[],"enabled":true,"status":"draft","description":""}]}}
+{
+  "format": "GKS_DATA_EXCHANGE",
+  "version": "1.0.0-draft",
+  "project_id": "PRJ-GAS-V4",
+  "mode": "partial",
+  "permissions": {"writable": ["ai_target_selectors"], "read_only": []},
+  "metadata": {
+    "generated_at": "2026-09-09T05:34:47.094Z",
+    "source": "studio-data-exchange",
+    "studio_version": "GKS-B893",
+    "schema_version": "4.0.0-draft",
+    "dependency_mode": "none",
+    "record_count": {"ai_target_selectors": 1},
+    "base_project_revision": "",
+    "base_hash": "cb44527fc22a34d3f8c04277fb41ace4f73e1bd5276bade2b2609e1c86ac5375",
+    "record_hashes": {"ai_target_selectors": {"ATS-0001": "7d270d563475576abd5baf80039799bb40b54c6de5968e958b9fa067180f3ac1"}},
+    "package_hash": "8ea591989fb0cc6a6f692d8d560556a5bc9303c0ba515522227c553690f2ad68",
+    "hash_algorithm": "SHA-256"
+  },
+  "datasets": {"ai_target_selectors": [{"schema_version":"2.0.0","id":"ATS-0001","name":"HP割合が最も低い対象","evaluator":"selector.lowest_hp_ratio","parameter_schema":{"type":"object","properties":{},"required":[],"additionalProperties":false},"tags":[]}]}
+}
