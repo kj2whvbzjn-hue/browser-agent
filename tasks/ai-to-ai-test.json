@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "label": "ai-to-ai-chatgpt-probe",
+  "outputDir": "artifacts",
+  "steps": [
+    {
+      "action": "goto",
+      "url": "https://chatgpt.com/",
+      "waitUntil": "domcontentloaded",
+      "timeout": 30000
+    },
+    {
+      "action": "wait",
+      "ms": 5000
+    },
+    {
+      "action": "dumpPage",
+      "name": "chatgpt-home"
+    },
+    {
+      "action": "screenshot",
+      "name": "chatgpt-home"
+    }
+  ]
+}
