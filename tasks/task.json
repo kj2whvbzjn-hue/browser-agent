@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "qst0003-b896-enemy-accuracy-diagnostic",
+  "label": "qst0003-b896-authoritative-accuracy1-diagnostic",
   "taskFile": "projects/guild-adventure/tasks/qst0003-b896-max100-diagnostic.json",
-  "runRequest": 24,
-  "note": "Diagnostic only: inject enemy accuracy to confirm QST-0003 non-termination comes from missing Monster accuracy propagation."
+  "runRequest": 25,
+  "note": "Diagnostic only: inject authoritative SWD Lv1 Monster accuracy=1 to confirm QST-0003 terminates without arbitrary accuracy inflation."
 }
