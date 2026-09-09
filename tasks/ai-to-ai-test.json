@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "label": "ai-to-ai-duckai-call",
+  "label": "ai-to-ai-duckai-models",
   "outputDir": "artifacts",
   "steps": [
     {
@@ -14,28 +14,23 @@
       "ms": 3000
     },
     {
-      "action": "fillSelector",
-      "selector": "textarea[name=\"user-prompt\"]",
-      "value": "あなたは別のAIエージェントです。AIからAIへの引き継ぎテストです。『引き継ぎ成功』と、その後に一文だけ短い日本語の返答をしてください。"
-    },
-    {
       "action": "clickRole",
       "role": "button",
-      "name": "Ask",
+      "name": "5.6 Luna",
       "exact": true,
       "timeout": 10000
     },
     {
       "action": "wait",
-      "ms": 12000
+      "ms": 1000
     },
     {
       "action": "dumpPage",
-      "name": "duckai-response"
+      "name": "duckai-models"
     },
     {
       "action": "screenshot",
-      "name": "duckai-response"
+      "name": "duckai-models"
     }
   ]
 }
