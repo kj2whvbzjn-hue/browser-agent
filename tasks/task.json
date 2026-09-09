@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "aitag-progress-b893",
+  "label": "aitag-work-b893",
   "taskFile": "projects/guild-adventure/tasks/aitag-detail-b893.json",
-  "runRequest": 6,
-  "note": "Inspect Player AI Tag progress/status controls in Current B893 Studio before synchronization."
+  "runRequest": 7,
+  "note": "Inspect the remaining Player AI Tag task controls in Current B893 Studio before closing the implementation record."
 }
