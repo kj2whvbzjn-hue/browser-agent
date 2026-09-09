@@ -1,24 +1,20 @@
 {
   "schemaVersion": 1,
-  "name": "Inspect Player AI Tag development project B893",
+  "name": "Inspect Player AI Tag progress controls B893",
   "outputDir": "artifacts",
-  "viewport": { "width": 1440, "height": 1400 },
+  "viewport": { "width": 1440, "height": 1600 },
   "dialogPolicy": "accept",
   "steps": [
-    {
-      "action": "goto",
-      "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/",
-      "waitUntil": "networkidle",
-      "timeout": 60000,
-      "label": "open-studio"
-    },
-    { "action": "wait", "ms": 1000 },
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/", "waitUntil": "networkidle", "timeout": 60000 },
+    { "action": "wait", "ms": 900 },
     { "action": "clickText", "text": "開発管理を開く", "exact": true, "timeout": 15000 },
-    { "action": "wait", "ms": 700 },
+    { "action": "wait", "ms": 500 },
     { "action": "clickText", "text": "Player AI パーツTag基盤・段階接続", "exact": true, "timeout": 15000 },
-    { "action": "wait", "ms": 1200 },
-    { "action": "dumpPage", "name": "aitag-detail" },
-    { "action": "dumpStorage", "name": "aitag-storage" },
-    { "action": "screenshot", "name": "aitag-detail" }
+    { "action": "wait", "ms": 700 },
+    { "action": "clickText", "text": "進行・確認", "exact": true, "timeout": 15000 },
+    { "action": "wait", "ms": 900 },
+    { "action": "dumpPage", "name": "aitag-progress" },
+    { "action": "dumpStorage", "name": "aitag-progress-storage" },
+    { "action": "screenshot", "name": "aitag-progress" }
   ]
 }
