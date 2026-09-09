@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "name": "Open Studio development management B893",
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 1200 },
+  "steps": [
+    {
+      "action": "goto",
+      "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/",
+      "waitUntil": "networkidle",
+      "timeout": 60000,
+      "label": "open-studio"
+    },
+    { "action": "wait", "ms": 1200, "label": "settle" },
+    { "action": "clickText", "text": "開発管理を開く", "exact": true, "timeout": 15000, "label": "open-development-management" },
+    { "action": "wait", "ms": 1000, "label": "settle-development-management" },
+    { "action": "dumpPage", "name": "development-management" },
+    { "action": "dumpStorage", "name": "development-management-storage" },
+    { "action": "screenshot", "name": "development-management" }
+  ]
+}
