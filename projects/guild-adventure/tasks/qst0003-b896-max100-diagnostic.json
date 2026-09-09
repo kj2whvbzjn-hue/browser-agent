@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "name": "QST-0003 B896 maxTicks100 diagnostic",
+  "outputDir": "artifacts",
+  "viewport": { "width": 390, "height": 844 },
+  "dialogPolicy": "accept",
+  "responsePatches": [
+    {
+      "url": "**/game/assets/js/battle-control.js*",
+      "label": "cap-formal-adventure-battle-maxTicks-100",
+      "search": "function simulateFormalAdventureBattle({party,formation,monsters,seed=1,maxTicks=200000}={}){",
+      "replace": "function simulateFormalAdventureBattle({party,formation,monsters,seed=1,maxTicks=100}={}){",
+      "expectedCount": 1
+    }
+  ],
+  "steps": [
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "networkidle", "timeout": 60000, "label": "open-public-game" },
+    { "action": "waitForSelector", "selector": "#phase-title.active", "timeout": 20000, "label": "title-ready" },
+    { "action": "clickSelector", "selector": "#titleStart", "timeout": 20000, "label": "new-game" },
+    { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "base-ready" },
+    { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"quest\"]", "timeout": 15000, "label": "quest-tab" },
+    { "action": "waitForSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 30000, "label": "qst-ready" },
+    { "action": "checkSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 15000, "label": "select-qst0003" },
+    { "action": "clickSelector", "selector": "#baseDepart", "timeout": 60000, "label": "depart" },
+    { "action": "dumpPage", "name": "after-depart" },
+    { "action": "dumpStorage", "name": "after-depart-storage" },
+    { "action": "screenshot", "name": "after-depart" }
+  ]
+}
