@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "name": "QST-0003 B897 hybrid predeploy E2E",
+  "name": "QST-0003 B897 hybrid predeploy E2E v2",
   "outputDir": "artifacts",
   "viewport": { "width": 390, "height": 844 },
   "dialogPolicy": "accept",
@@ -21,31 +21,10 @@
     },
     {
       "url": "**/Export/monster/monsters.json*",
-      "label": "mon0001-accuracy",
-      "search": "\"attack\": 2,\n        \"agi\": 0.4,",
-      "replace": "\"attack\": 2,\n        \"accuracy\": 1,\n        \"agi\": 0.4,",
-      "expectedCount": 1
-    },
-    {
-      "url": "**/Export/monster/monsters.json*",
-      "label": "mon0002-accuracy",
-      "search": "\"attack\": 3,\n        \"agi\": 0.4,",
-      "replace": "\"attack\": 3,\n        \"accuracy\": 1,\n        \"agi\": 0.4,",
-      "expectedCount": 1
-    },
-    {
-      "url": "**/Export/monster/monsters.json*",
-      "label": "mon0003-accuracy",
-      "search": "\"attack\": 58,\n        \"agi\": 0.4,",
-      "replace": "\"attack\": 58,\n        \"accuracy\": 1,\n        \"agi\": 0.4,",
-      "expectedCount": 1
-    },
-    {
-      "url": "**/Export/monster/monsters.json*",
-      "label": "mon0004-accuracy",
-      "search": "\"attack\": 4,\n        \"agi\": 0.4,",
-      "replace": "\"attack\": 4,\n        \"accuracy\": 1,\n        \"agi\": 0.4,",
-      "expectedCount": 1
+      "label": "formal-monster-accuracy1-data",
+      "search": "\"maxMp\": 0,\n        \"str\": 1.5,",
+      "replace": "\"maxMp\": 0,\n        \"accuracy\": 1,\n        \"str\": 1.5,",
+      "expectedCount": 4
     }
   ],
   "steps": [
@@ -54,36 +33,36 @@
     { "action": "assertText", "text": "GA-B486.227", "exact": false, "label": "public-baseline-b896" },
     { "action": "clickSelector", "selector": "#titleStart", "timeout": 20000, "label": "new-game" },
     { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "new-game-reaches-base" },
-    { "action": "dumpStorage", "name": "predeploy-after-new-game" },
+    { "action": "dumpStorage", "name": "predeploy2-after-new-game" },
     { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"quest\"]", "timeout": 15000, "label": "open-quest-tab" },
     { "action": "waitForSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 30000, "label": "qst0003-ready" },
     { "action": "checkSelector", "selector": "#questList input[name=\"quest\"][value=\"QST-0003\"]", "timeout": 15000, "label": "select-qst0003" },
     { "action": "clickSelector", "selector": "#baseDepart", "timeout": 60000, "label": "start-qst0003" },
     { "action": "waitForSelector", "selector": "#phase-event.active", "timeout": 60000, "label": "qst0003-event-phase-reached" },
     { "action": "assertText", "text": "実機検証2：Budget必敗戦闘＋失敗後停止", "exact": true, "label": "qst0003-title" },
-    { "action": "dumpStorage", "name": "predeploy-qst0003-started" },
-    { "action": "screenshot", "name": "predeploy-qst0003-started" },
+    { "action": "dumpStorage", "name": "predeploy2-qst0003-started" },
+    { "action": "screenshot", "name": "predeploy2-qst0003-started" },
     { "action": "wait", "ms": 35000, "label": "wait-qst0003-playback-complete" },
     { "action": "waitForText", "text": "冒険は失敗しました。帰還すると今回の報酬は反映されません。", "exact": true, "timeout": 20000, "label": "failure-playback-complete" },
     { "action": "clickSelector", "selector": "#adventureReturn", "timeout": 20000, "label": "commit-failed-adventure-return" },
     { "action": "waitForSelector", "selector": "#adventureReturnResult:not(.hidden)", "timeout": 20000, "label": "return-result-visible" },
     { "action": "assertText", "text": "冒険失敗", "exact": false, "label": "failed-adventure-result" },
-    { "action": "dumpStorage", "name": "predeploy-after-return-commit" },
+    { "action": "dumpStorage", "name": "predeploy2-after-return-commit" },
     { "action": "clickSelector", "selector": "#adventureReturnHome", "timeout": 15000, "label": "return-home" },
     { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 20000, "label": "base-after-failed-adventure" },
     { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"adventurer\"]", "timeout": 15000, "label": "open-adventurer-tab" },
     { "action": "assertText", "text": "アルト", "exact": true, "label": "starter-roster-still-present" },
-    { "action": "dumpStorage", "name": "predeploy-roster-after-failure" },
-    { "action": "screenshot", "name": "predeploy-roster-after-failure" },
+    { "action": "dumpStorage", "name": "predeploy2-roster-after-failure" },
+    { "action": "screenshot", "name": "predeploy2-roster-after-failure" },
     { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"guild\"]", "timeout": 15000, "label": "open-guild-tab" },
     { "action": "clickSelector", "selector": "#guildToTitle", "timeout": 15000, "label": "return-title" },
     { "action": "waitForSelector", "selector": "#phase-title.active", "timeout": 15000, "label": "title-returned" },
     { "action": "waitForSelector", "selector": "#titleRestoreBackup:not([hidden])", "timeout": 15000, "label": "backup-recovery-visible" },
     { "action": "assertText", "text": "バックアップから復旧（6名）", "exact": true, "label": "backup-has-six-characters" },
     { "action": "clickSelector", "selector": "#titleRestoreBackup", "timeout": 20000, "label": "restore-backup" },
-    { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "backup-restore-reaches-base" },
+    { "action": "waitForSelector", "selector": "#phase-event.active", "timeout": 30000, "label": "backup-restore-resumes-saved-adventure" },
     { "action": "assertText", "text": "直前バックアップからセーブデータを復旧しました。", "exact": true, "label": "backup-restore-success-notice" },
-    { "action": "dumpStorage", "name": "predeploy-after-backup-restore" },
-    { "action": "screenshot", "name": "predeploy-after-backup-restore" }
+    { "action": "dumpStorage", "name": "predeploy2-after-backup-restore" },
+    { "action": "screenshot", "name": "predeploy2-after-backup-restore" }
   ]
 }
