@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "development-sync-discovery-b893",
-  "taskFile": "projects/guild-adventure/tasks/development-sync-discovery-b893.json",
-  "runRequest": 1,
-  "note": "Read-only discovery of Current public Studio development management UI before synchronization."
+  "label": "development-management-open-b893",
+  "taskFile": "projects/guild-adventure/tasks/development-management-open-b893.json",
+  "runRequest": 2,
+  "note": "Read-only discovery of the Current Studio development management screen before synchronization."
 }
