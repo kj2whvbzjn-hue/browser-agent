@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "name": "Guild Adventure Studio development management sync discovery B893",
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 1200 },
+  "steps": [
+    {
+      "action": "goto",
+      "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/",
+      "waitUntil": "networkidle",
+      "timeout": 60000,
+      "label": "open-studio"
+    },
+    { "action": "wait", "ms": 1500, "label": "settle" },
+    { "action": "dumpPage", "name": "studio-home" },
+    { "action": "dumpStorage", "name": "studio-storage" },
+    { "action": "screenshot", "name": "studio-home" }
+  ]
+}
