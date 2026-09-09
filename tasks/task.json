@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "reorg-r31-qst0003-save-recovery-b896-public-e2e",
-  "taskFile": "projects/guild-adventure/tasks/reorg-r31-qst0003-save-recovery-b896-public-e2e.json",
-  "runRequest": 21,
-  "note": "Rerun B896 QST-0003 save recovery public E2E with visible #baseDepart selector; verify no freeze, six-character persistence, and backup restore."
+  "label": "qst0003-b896-max100-diagnostic",
+  "taskFile": "projects/guild-adventure/tasks/qst0003-b896-max100-diagnostic.json",
+  "runRequest": 22,
+  "note": "Diagnostic only: cap Formal Adventure Battle maxTicks at 100 to determine whether QST-0003 freeze is long-running tick simulation or per-tick work."
 }
