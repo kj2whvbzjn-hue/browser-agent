@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "qst0003-b896-authoritative-accuracy1-diagnostic",
-  "taskFile": "projects/guild-adventure/tasks/qst0003-b896-max100-diagnostic.json",
-  "runRequest": 25,
-  "note": "Diagnostic only: inject authoritative SWD Lv1 Monster accuracy=1 to confirm QST-0003 terminates without arbitrary accuracy inflation."
+  "label": "qst0003-b897-hybrid-predeploy-e2e",
+  "taskFile": "projects/guild-adventure/tasks/qst0003-b897-hybrid-predeploy-e2e.json",
+  "runRequest": 26,
+  "note": "Predeploy validation for planned B897 source + Monster accuracy Game Data. Verify QST-0003 terminates, failed return preserves six-character roster, and explicit backup recovery succeeds."
 }
