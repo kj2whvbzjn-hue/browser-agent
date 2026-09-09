@@ -3,6 +3,6 @@
   "project": "guild-adventure",
   "label": "aitag-detail-b893",
   "taskFile": "projects/guild-adventure/tasks/aitag-detail-b893.json",
-  "runRequest": 3,
-  "note": "Read-only inspection of Player AI Tag development project before synchronization."
+  "runRequest": 4,
+  "note": "Open the Player AI Tag project and inspect its Current development-management controls before synchronization."
 }
