@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "name": "Inspect Player AI Tag development project B893",
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 1400 },
+  "steps": [
+    {
+      "action": "goto",
+      "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/",
+      "waitUntil": "networkidle",
+      "timeout": 60000,
+      "label": "open-studio"
+    },
+    { "action": "wait", "ms": 1000 },
+    { "action": "clickText", "text": "開発管理を開く", "exact": true, "timeout": 15000 },
+    { "action": "wait", "ms": 700 },
+    { "action": "clickText", "text": "Player AI パーツTag基盤・段階接続", "exact": true, "timeout": 15000 },
+    { "action": "wait", "ms": 800 },
+    { "action": "dumpPage", "name": "aitag-detail" },
+    { "action": "dumpStorage", "name": "aitag-storage" },
+    { "action": "screenshot", "name": "aitag-detail" }
+  ]
+}
