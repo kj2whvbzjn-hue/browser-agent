@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "qst0003-b896-max100-diagnostic-instrumented",
+  "label": "qst0003-b896-enemy-accuracy-diagnostic",
   "taskFile": "projects/guild-adventure/tasks/qst0003-b896-max100-diagnostic.json",
-  "runRequest": 23,
-  "note": "Diagnostic: cap maxTicks at 100 and expose action/alive/HP/log-tail at tick limit to isolate QST-0003 non-termination."
+  "runRequest": 24,
+  "note": "Diagnostic only: inject enemy accuracy to confirm QST-0003 non-termination comes from missing Monster accuracy propagation."
 }
