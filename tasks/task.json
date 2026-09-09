@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "equipment-master-new-disabled-public",
-  "taskFile": "projects/guild-adventure/tasks/equipment-master-new-disabled-public.json",
-  "runRequest": 7,
-  "note": "Active task selector. Increment runRequest to rerun the same project task without modifying its saved definition."
+  "label": "monster-formal-ai-public-b893",
+  "taskFile": "projects/guild-adventure/tasks/monster-formal-ai-public-b893.json",
+  "runRequest": 1,
+  "note": "B893 Monster Formal AI Studio browser verification."
 }
