@@ -19,7 +19,7 @@
     { "action": "assertText", "text": "布の軽装頭", "exact": true, "label": "row-light-head-equipped" },
     { "action": "clickSelector", "selector": "[data-character-unequip=\"head\"]", "timeout": 15000, "label": "unequip-row-head" },
     { "action": "waitForText", "text": "布の軽装頭", "exact": true, "timeout": 15000, "label": "light-head-moved-to-inventory" },
-    { "action": "clickSelector", "selector": "[data-open-base-view=\"adventurer\"]", "timeout": 15000, "label": "back-to-adventurer" },
+    { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"adventurer\"]", "timeout": 15000, "label": "back-to-adventurer" },
     { "action": "waitForSelector", "selector": "#roster .adventurer-row:has-text(\"アルト\")", "timeout": 15000, "label": "alto-ready" },
     { "action": "clickSelector", "selector": "#roster .adventurer-row:has-text(\"アルト\")", "timeout": 15000, "label": "select-alto" },
     { "action": "waitForSelector", "selector": "#openEquipView", "timeout": 15000, "label": "alto-detail-ready" },
