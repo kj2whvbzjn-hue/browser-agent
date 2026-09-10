@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "reorg-r31-004-b899-equipment-comparison-public-e2e-v3",
-  "taskFile": "projects/guild-adventure/tasks/reorg-r31-004-b899-equipment-comparison-public-e2e.json",
-  "runRequest": 34,
-  "note": "Public B899 validation v3 using visible mobile navigation: GA-B486.230, equipment comparison preview shows battle-value deltas, returned equipment, MOD summary, and commits the selected equipment swap."
+  "label": "reorg-r31-005-006-007-b904-skill-passive-public-e2e",
+  "taskFile": "projects/guild-adventure/tasks/reorg-r31-005-006-007-b904-skill-passive-public-e2e.json",
+  "runRequest": 35,
+  "note": "Public B904 validation: Level Up grants configured Skill Point, PAS-0001 acquisition spends SP, individual Respec refunds exact SP and consumes Gold, reacquisition succeeds, and all Respec refunds exact SP while consuming configured Gold."
 }
