@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "reorg-r31-004-b899-equipment-comparison-public-e2e-v2",
+  "label": "reorg-r31-004-b899-equipment-comparison-public-e2e-v3",
   "taskFile": "projects/guild-adventure/tasks/reorg-r31-004-b899-equipment-comparison-public-e2e.json",
-  "runRequest": 33,
-  "note": "Public B899 validation v2 after narrowing adventurer selectors: GA-B486.230, equipment comparison preview shows battle-value deltas, returned equipment, MOD summary, and commits the selected equipment swap."
+  "runRequest": 34,
+  "note": "Public B899 validation v3 using visible mobile navigation: GA-B486.230, equipment comparison preview shows battle-value deltas, returned equipment, MOD summary, and commits the selected equipment swap."
 }
