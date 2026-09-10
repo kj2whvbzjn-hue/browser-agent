@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "reorg-r31-qst0003-b897-public-e2e-v2",
-  "taskFile": "projects/guild-adventure/tasks/reorg-r31-qst0003-b897-public-e2e.json",
-  "runRequest": 30,
-  "note": "Public B897 validation v2: GA-B486.228, QST-0003 completes without freeze, six-character roster persists, backup remains six characters, and restoring the previous mid-quest backup correctly resumes the active event phase."
+  "label": "reorg-r31-qst0003-b898-public-e2e",
+  "taskFile": "projects/guild-adventure/tasks/reorg-r31-qst0003-b898-public-e2e.json",
+  "runRequest": 31,
+  "note": "Public B898 validation: GA-B486.229, QST-0003 completes without freeze, six-character roster persists, backup remains six characters, and restoring the previous mid-quest backup resumes the active event phase."
 }
