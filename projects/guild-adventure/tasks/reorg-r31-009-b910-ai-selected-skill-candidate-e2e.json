@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "REORG R31-009 B910 Player AI selected Active Skill candidate E2E",
+  "purpose": "Verify Player AI Skill choices follow the battle-selected Active Skill loadout and exclude learned-but-unselected Skills.",
   "outputDir": "artifacts",
   "viewport": { "width": 390, "height": 844 },
   "dialogPolicy": "accept",
