@@ -1,4 +1,4 @@
-name: TSUGU OpenAI Isolated Smoke
+name: TSUGU ChatGPT Handoff Smoke
 
 on:
   workflow_dispatch:
@@ -9,14 +9,13 @@ on:
       - '.github/workflows/tsugu-continuation-smoke.yml'
       - '.github/workflows/tsugu-ai-continuation.yml'
       - 'projects/tsugu/**'
-      - 'scripts/build-tsugu-codex-prompt.mjs'
-      - 'scripts/check-tsugu-changes.mjs'
+      - 'scripts/build-tsugu-chatgpt-handoff.mjs'
 
 permissions:
   contents: read
 
 concurrency:
-  group: tsugu-openai-isolated-smoke
+  group: tsugu-chatgpt-handoff-smoke
   cancel-in-progress: true
 
 env:
@@ -60,10 +59,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate continuation scripts
-        run: |
-          node --check browser-agent/scripts/build-tsugu-codex-prompt.mjs
-          node --check browser-agent/scripts/check-tsugu-changes.mjs
+      - name: Validate handoff script
+        run: node --check browser-agent/scripts/build-tsugu-chatgpt-handoff.mjs
 
       - name: Run TSUGU unit tests independently
         working-directory: tsugu
@@ -89,23 +86,7 @@ jobs:
           set -euo pipefail
           rm -rf tsugu/_site
           mkdir -p tsugu/_site artifacts
-          cp \
-            tsugu/static/index.html \
-            tsugu/static/styles.css \
-            tsugu/static/favicon.svg \
-            tsugu/static/core-reference.js \
-            tsugu/static/core-architecture.js \
-            tsugu/static/core-changeset.js \
-            tsugu/static/core-box.js \
-            tsugu/static/core-box-changeset.js \
-            tsugu/static/core-rule-test.js \
-            tsugu/static/core-rule-test-changeset.js \
-            tsugu/static/core-sync.js \
-            tsugu/static/core-sync-storage.js \
-            tsugu/static/core-sync-reconcile.js \
-            tsugu/static/core-sync-admin.js \
-            tsugu/static/core-guard.js \
-            tsugu/_site/
+          cp tsugu/static/index.html tsugu/static/styles.css tsugu/static/favicon.svg tsugu/static/core-*.js tsugu/_site/
           base64 --decode tsugu/static/app.js.gz.b64 | gzip --decompress > tsugu/_site/app.js
           node --check tsugu/_site/app.js
           for file in tsugu/_site/core-*.js; do node --check "$file"; done
@@ -132,33 +113,35 @@ jobs:
         if: always()
         run: node browser-agent/scripts/generate-report.mjs browser-agent/projects/tsugu/tasks/smoke-local.json
 
-      - name: Build dry-run continuation prompt
+      - name: Build dry-run ChatGPT handoff
         if: always()
         env:
           TSUGU_WORKSPACE: tsugu
           BROWSER_REPORT: artifacts/test-report.md
-          PROMPT_OUTPUT: artifacts/tsugu-codex-prompt.md
+          HANDOFF_OUTPUT: artifacts/chatgpt-continuation.md
           SOURCE_REF: automation/openai-tsugu
           SOURCE_SHA: isolated-smoke
           CYCLE: '0'
           BROWSER_OUTCOME: smoke
           CONTINUATION_TEXT: 続行
-        run: node browser-agent/scripts/build-tsugu-codex-prompt.mjs
+        run: node browser-agent/scripts/build-tsugu-chatgpt-handoff.mjs
 
-      - name: Verify generated prompt
+      - name: Verify handoff and no TSUGU source edits
         if: always()
         shell: bash
         run: |
           set -euo pipefail
-          test -s artifacts/tsugu-codex-prompt.md
-          grep -q '続行' artifacts/tsugu-codex-prompt.md
-          grep -q 'TSUGU autonomous continuation' artifacts/tsugu-codex-prompt.md
+          test -s artifacts/chatgpt-continuation.md
+          grep -q '続行' artifacts/chatgpt-continuation.md
+          grep -q 'must not delegate development work to Codex' artifacts/chatgpt-continuation.md
+          git -C tsugu diff --exit-code
+          test -z "$(git -C tsugu status --short --untracked-files=no)"
 
-      - name: Upload isolated smoke evidence
+      - name: Upload handoff smoke evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tsugu-openai-isolated-smoke
+          name: tsugu-chatgpt-handoff-smoke
           path: artifacts/
           if-no-files-found: warn
           retention-days: 14
