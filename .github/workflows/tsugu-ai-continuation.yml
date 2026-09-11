@@ -1,29 +1,15 @@
-name: TSUGU AI Continuation
+name: TSUGU OpenAI Isolated Continuation
 
 on:
   workflow_dispatch:
     inputs:
-      source_ref:
-        description: TSUGU ref that triggered this continuation
-        required: true
-        default: main
-        type: string
-      source_sha:
-        description: TSUGU commit SHA that triggered this continuation
-        required: true
-        type: string
-      target_ref:
-        description: TSUGU branch Codex may update
-        required: true
-        default: main
-        type: string
       cycle:
-        description: Continuation cycle number
+        description: Continuation cycle number (max 5)
         required: true
         default: '1'
         type: string
       write_back:
-        description: Commit and push validated Codex edits
+        description: Commit and push validated Codex edits to the isolated TSUGU branch
         required: true
         default: 'false'
         type: choice
@@ -40,8 +26,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: tsugu-ai-${{ inputs.target_ref }}
+  group: tsugu-openai-isolated-continuation
   cancel-in-progress: false
+
+env:
+  BROWSER_AGENT_REF: feature/tsugu-ai-isolated
+  TSUGU_TARGET_REF: automation/openai-tsugu
 
 jobs:
   continue-tsugu:
@@ -49,7 +39,7 @@ jobs:
     timeout-minutes: 35
 
     steps:
-      - name: Validate cycle
+      - name: Validate isolated execution
         shell: bash
         env:
           CYCLE: ${{ inputs.cycle }}
@@ -63,48 +53,72 @@ jobs:
             echo "Maximum continuation cycles reached; stopping."
             exit 78
           fi
+          test "$BROWSER_AGENT_REF" = "feature/tsugu-ai-isolated"
+          test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
+          test "$TSUGU_TARGET_REF" != "main"
 
-      - name: Checkout browser-agent
+      - name: Checkout isolated browser-agent branch
         uses: actions/checkout@v6
+        with:
+          repository: kj2whvbzjn-hue/browser-agent
+          ref: ${{ env.BROWSER_AGENT_REF }}
+          path: browser-agent
+          persist-credentials: false
 
-      - name: Checkout TSUGU target branch
+      - name: Checkout isolated TSUGU branch
         uses: actions/checkout@v6
         with:
           repository: kj2whvbzjn-hue/tsugu
-          ref: ${{ inputs.target_ref }}
+          ref: ${{ env.TSUGU_TARGET_REF }}
           token: ${{ secrets.TSUGU_AUTOMATION_TOKEN }}
           fetch-depth: 0
           path: tsugu
 
-      - name: Merge triggering TSUGU revision into target branch
-        id: sync
+      - name: Record isolated baseline
+        id: baseline
         shell: bash
-        env:
-          SOURCE_REF: ${{ inputs.source_ref }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
-          TARGET_REF: ${{ inputs.target_ref }}
         run: |
           set -euo pipefail
-          cd tsugu
-          git config user.name 'tsugu-ai[bot]'
-          git config user.email 'tsugu-ai[bot]@users.noreply.github.com'
-          echo "target_base_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          git fetch origin "$SOURCE_REF"
-          git cat-file -e "$SOURCE_SHA^{commit}"
-          if [ "$SOURCE_REF" != "$TARGET_REF" ] && ! git merge-base --is-ancestor "$SOURCE_SHA" HEAD; then
-            git merge --no-edit "$SOURCE_SHA"
-          fi
-          echo "prepared_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          mkdir -p artifacts
+          git -C tsugu config user.name 'tsugu-openai[bot]'
+          git -C tsugu config user.email 'tsugu-openai[bot]@users.noreply.github.com'
+          TSUGU_SHA=$(git -C tsugu rev-parse HEAD)
+          echo "sha=$TSUGU_SHA" >> "$GITHUB_OUTPUT"
+          {
+            echo "browser_agent_ref=${BROWSER_AGENT_REF}"
+            echo "browser_agent_sha=$(git -C browser-agent rev-parse HEAD)"
+            echo "tsugu_ref=${TSUGU_TARGET_REF}"
+            echo "tsugu_sha=${TSUGU_SHA}"
+            echo "cycle=${{ inputs.cycle }}"
+            echo "write_back=${{ inputs.write_back }}"
+          } | tee artifacts/isolation.txt
 
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: '22'
 
+      - name: Validate controller scripts
+        run: |
+          node --check browser-agent/scripts/build-tsugu-codex-prompt.mjs
+          node --check browser-agent/scripts/check-tsugu-changes.mjs
+
+      - name: Run TSUGU baseline unit tests
+        working-directory: tsugu
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test_file in tests/*.test.cjs; do
+            echo "==> $test_file"
+            node --test "$test_file"
+          done
+
       - name: Install browser-agent dependencies
+        working-directory: browser-agent
         run: npm install
 
       - name: Install Chromium
+        working-directory: browser-agent
         run: npx playwright install --with-deps chromium
 
       - name: Build local TSUGU site
@@ -113,7 +127,23 @@ jobs:
           set -euo pipefail
           rm -rf tsugu/_site
           mkdir -p tsugu/_site artifacts
-          cp tsugu/static/index.html tsugu/static/styles.css tsugu/static/favicon.svg tsugu/static/core-reference.js tsugu/static/core-architecture.js tsugu/static/core-changeset.js tsugu/static/core-box.js tsugu/static/core-box-changeset.js tsugu/static/core-sync.js tsugu/static/core-sync-storage.js tsugu/static/core-sync-reconcile.js tsugu/static/core-sync-admin.js tsugu/static/core-guard.js tsugu/_site/
+          cp \
+            tsugu/static/index.html \
+            tsugu/static/styles.css \
+            tsugu/static/favicon.svg \
+            tsugu/static/core-reference.js \
+            tsugu/static/core-architecture.js \
+            tsugu/static/core-changeset.js \
+            tsugu/static/core-box.js \
+            tsugu/static/core-box-changeset.js \
+            tsugu/static/core-rule-test.js \
+            tsugu/static/core-rule-test-changeset.js \
+            tsugu/static/core-sync.js \
+            tsugu/static/core-sync-storage.js \
+            tsugu/static/core-sync-reconcile.js \
+            tsugu/static/core-sync-admin.js \
+            tsugu/static/core-guard.js \
+            tsugu/_site/
           base64 --decode tsugu/static/app.js.gz.b64 | gzip --decompress > tsugu/_site/app.js
           node --check tsugu/_site/app.js
           for file in tsugu/_site/core-*.js; do node --check "$file"; done
@@ -133,14 +163,14 @@ jobs:
           cat artifacts/tsugu-server.log
           exit 1
 
-      - name: Run browser-agent against local TSUGU
+      - name: Run browser-agent against isolated TSUGU
         id: browser
         continue-on-error: true
-        run: node scripts/run-task.mjs projects/tsugu/tasks/smoke-local.json
+        run: node browser-agent/scripts/run-task.mjs browser-agent/projects/tsugu/tasks/smoke-local.json
 
       - name: Generate browser-agent report
         if: always()
-        run: node scripts/generate-report.mjs projects/tsugu/tasks/smoke-local.json
+        run: node browser-agent/scripts/generate-report.mjs browser-agent/projects/tsugu/tasks/smoke-local.json
 
       - name: Build continuation prompt
         if: always()
@@ -148,12 +178,12 @@ jobs:
           TSUGU_WORKSPACE: tsugu
           BROWSER_REPORT: artifacts/test-report.md
           PROMPT_OUTPUT: artifacts/tsugu-codex-prompt.md
-          SOURCE_REF: ${{ inputs.source_ref }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
+          SOURCE_REF: automation/openai-tsugu
+          SOURCE_SHA: ${{ steps.baseline.outputs.sha }}
           CYCLE: ${{ inputs.cycle }}
           BROWSER_OUTCOME: ${{ steps.browser.outcome }}
           CONTINUATION_TEXT: ${{ inputs.continuation_text }}
-        run: node scripts/build-tsugu-codex-prompt.mjs
+        run: node browser-agent/scripts/build-tsugu-codex-prompt.mjs
 
       - name: Continue TSUGU with Codex
         id: codex
@@ -172,25 +202,42 @@ jobs:
         env:
           MAX_CHANGED_FILES: '20'
           MAX_CHANGED_LINES: '4000'
-        run: node scripts/check-tsugu-changes.mjs tsugu
+        run: node browser-agent/scripts/check-tsugu-changes.mjs tsugu
 
       - name: Validate TSUGU after Codex
         if: steps.guard.outputs.has_changes == 'true'
+        working-directory: tsugu
         shell: bash
         run: |
           set -euo pipefail
-          cd tsugu
           for test_file in tests/*.test.cjs; do
+            echo "==> $test_file"
             node --test "$test_file"
           done
-          rm -rf /tmp/tsugu-ai-build
-          mkdir -p /tmp/tsugu-ai-build
-          cp static/index.html static/styles.css static/favicon.svg static/core-reference.js static/core-architecture.js static/core-changeset.js static/core-box.js static/core-box-changeset.js static/core-sync.js static/core-sync-storage.js static/core-sync-reconcile.js static/core-sync-admin.js static/core-guard.js /tmp/tsugu-ai-build/
-          base64 --decode static/app.js.gz.b64 | gzip --decompress > /tmp/tsugu-ai-build/app.js
-          node --check /tmp/tsugu-ai-build/app.js
-          for file in /tmp/tsugu-ai-build/core-*.js; do node --check "$file"; done
+          rm -rf /tmp/tsugu-openai-build
+          mkdir -p /tmp/tsugu-openai-build
+          cp \
+            static/index.html \
+            static/styles.css \
+            static/favicon.svg \
+            static/core-reference.js \
+            static/core-architecture.js \
+            static/core-changeset.js \
+            static/core-box.js \
+            static/core-box-changeset.js \
+            static/core-rule-test.js \
+            static/core-rule-test-changeset.js \
+            static/core-sync.js \
+            static/core-sync-storage.js \
+            static/core-sync-reconcile.js \
+            static/core-sync-admin.js \
+            static/core-guard.js \
+            /tmp/tsugu-openai-build/
+          base64 --decode static/app.js.gz.b64 | gzip --decompress > /tmp/tsugu-openai-build/app.js
+          node --check /tmp/tsugu-openai-build/app.js
+          for file in /tmp/tsugu-openai-build/core-*.js; do node --check "$file"; done
 
-      - name: Save generated patch
+      - name: Save generated evidence
         if: always()
         shell: bash
         run: |
@@ -199,35 +246,35 @@ jobs:
           git -C tsugu status --short > artifacts/tsugu-status.txt || true
           git -C tsugu diff --stat > artifacts/tsugu-diff-stat.txt || true
 
-      - name: Commit validated TSUGU changes
+      - name: Commit validated changes to isolated branch
         id: commit
         if: inputs.write_back == 'true' && steps.guard.outputs.has_changes == 'true'
         shell: bash
         env:
           CYCLE: ${{ inputs.cycle }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
         run: |
           set -euo pipefail
+          test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
+          test "$TSUGU_TARGET_REF" != "main"
           cd tsugu
           git add -A
-          git commit -m "Continue TSUGU development (AI cycle ${CYCLE})" -m "TSUGU-AI-CYCLE:${CYCLE}" -m "Source-SHA:${SOURCE_SHA}"
+          git commit -m "OpenAI continuation cycle ${CYCLE}" -m "TSUGU-OPENAI-ISOLATED:true" -m "Baseline-SHA:${{ steps.baseline.outputs.sha }}"
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Push TSUGU continuation branch
-        if: inputs.write_back == 'true' && (steps.guard.outputs.has_changes == 'true' || steps.sync.outputs.prepared_sha != steps.sync.outputs.target_base_sha)
+      - name: Push only the isolated TSUGU branch
+        if: inputs.write_back == 'true' && steps.guard.outputs.has_changes == 'true'
         shell: bash
-        env:
-          TARGET_REF: ${{ inputs.target_ref }}
         run: |
           set -euo pipefail
-          cd tsugu
-          git push origin "HEAD:${TARGET_REF}"
+          test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
+          test "$TSUGU_TARGET_REF" != "main"
+          git -C tsugu push origin "HEAD:automation/openai-tsugu"
 
       - name: Upload continuation evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tsugu-ai-continuation-${{ inputs.cycle }}
+          name: tsugu-openai-isolated-${{ inputs.cycle }}
           path: artifacts/
           if-no-files-found: warn
           retention-days: 14
