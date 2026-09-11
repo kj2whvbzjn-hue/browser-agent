@@ -1,0 +1,56 @@
+name: B910 Public Playwright E2E
+
+on:
+  push:
+    branches:
+      - b910-e2e-now
+    paths:
+      - 'scripts/b910-public-e2e.mjs'
+      - '.github/workflows/b910-public-e2e.yml'
+  workflow_dispatch:
+
+jobs:
+  public-b910-playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout browser agent
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify public B910 source marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 30); do
+            html=$(curl -fsSL --retry 2 --retry-delay 1 'https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/?e2e=b910' || true)
+            if printf '%s' "$html" | grep -q 'GA-B486.241'; then
+              echo 'PUBLIC_B910_MARKER_OK'
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'PUBLIC_B910_MARKER_NOT_FOUND' >&2
+          exit 1
+
+      - name: Run public B910 Playwright E2E
+        run: node scripts/b910-public-e2e.mjs
+
+      - name: Upload public B910 E2E evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b910-public-e2e
+          path: artifacts-public-b910/
+          if-no-files-found: warn
+          retention-days: 14
