@@ -36,6 +36,15 @@ jobs:
           git -C candidate apply /tmp/b909-runtime.patch
           python - <<'PY'
           import json
+          from pathlib import Path
+          # One punctuation character was altered while the reviewed text patch was split for transport.
+          # Restore the exact B909 artifact byte before the mandatory SHA-256 gate below.
+          runtime=Path('candidate/game/assets/js/app-runtime.js')
+          text=runtime.read_text(encoding='utf-8')
+          bad="${want?'戦闘選択へ追加':'戦闘選択から解除'}しました."
+          good="${want?'戦闘選択へ追加':'戦闘選択から解除'}しました。"
+          assert text.count(bad)==1, text.count(bad)
+          runtime.write_text(text.replace(bad,good),encoding='utf-8')
           p='candidate/package-build.json'
           d=json.load(open(p,encoding='utf-8'))
           assert d['studio_build']=='GKS-B908' and d['game_build']=='GA-B486.239', d
