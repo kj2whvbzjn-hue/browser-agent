@@ -2,7 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
 
-const TARGET = 'https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/?e2e=b910';
+const GAME_TARGET = 'https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/?e2e=b910';
+const STUDIO_TARGET = 'https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/?e2e=b910';
 const OUT = path.resolve('artifacts-public-b910');
 await fs.mkdir(OUT, { recursive: true });
 
@@ -37,12 +38,12 @@ async function assertBodyIncludes(text, label) {
   if (!body.includes(text)) throw new Error(`${label}: missing text ${JSON.stringify(text)}`);
 }
 
-let result = { ok: false, target: TARGET, checks: [] };
+let result = { ok: false, gameTarget: GAME_TARGET, studioTarget: STUDIO_TARGET, checks: [] };
 try {
-  await page.goto(TARGET, { waitUntil: 'networkidle', timeout: 60000 });
+  await page.goto(GAME_TARGET, { waitUntil: 'networkidle', timeout: 60000 });
   await visible('#phase-title.active', 30000);
-  await assertBodyIncludes('GA-B486.241', 'public-build');
-  result.checks.push('public build GA-B486.241');
+  await assertBodyIncludes('GA-B486.241', 'public-game-build');
+  result.checks.push('public Game build GA-B486.241');
 
   await click('#titleStart');
   await visible('#phase-base.active', 30000);
@@ -69,7 +70,7 @@ try {
   await assertAtLeast('[data-ai-action-choice] option[value*="SKL-0001"]', 1, 'selected SKL-0001 must be AI candidate');
   await assertCount('[data-ai-action-choice] option[value*="SKL-0002"]', 0, 'unselected SKL-0002 must not be AI candidate');
   result.checks.push('AI candidate follows selected SKL-0001 only');
-  await shot('selected-0001');
+  await shot('game-selected-0001');
 
   await click('#aiConfigBack');
   await visible('#aiCandidateScreen.open');
@@ -93,7 +94,12 @@ try {
   await assertAtLeast('[data-ai-action-choice] option[value*="SKL-0002"]', 1, 'selected SKL-0002 must be AI candidate');
   await assertCount('[data-ai-action-choice] option[value*="SKL-0001"]', 0, 'unselected SKL-0001 must not be AI candidate');
   result.checks.push('AI candidate follows selected SKL-0002 only after swap');
-  await shot('selected-0002');
+  await shot('game-selected-0002');
+
+  await page.goto(STUDIO_TARGET, { waitUntil: 'networkidle', timeout: 60000 });
+  await assertBodyIncludes('GKS-B910', 'public-studio-build');
+  result.checks.push('public Studio build GKS-B910');
+  await shot('studio-b910');
 
   if (pageErrors.length) throw new Error(`page errors: ${pageErrors.join(' | ')}`);
   result.checks.push('page errors = 0');
