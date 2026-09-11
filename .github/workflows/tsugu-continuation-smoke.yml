@@ -1,10 +1,10 @@
-name: TSUGU Continuation Smoke
+name: TSUGU OpenAI Isolated Smoke
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - feature/tsugu-ai-continuation
+      - feature/tsugu-ai-isolated
     paths:
       - '.github/workflows/tsugu-continuation-smoke.yml'
       - '.github/workflows/tsugu-ai-continuation.yml'
@@ -15,24 +15,45 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: tsugu-openai-isolated-smoke
+  cancel-in-progress: true
+
+env:
+  TSUGU_REF: automation/openai-tsugu
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
-      - name: Checkout browser-agent
+      - name: Checkout browser-agent isolated branch
         uses: actions/checkout@v6
         with:
           path: browser-agent
 
-      - name: Checkout TSUGU feature branch
+      - name: Checkout isolated TSUGU branch
         uses: actions/checkout@v6
         with:
           repository: kj2whvbzjn-hue/tsugu
-          ref: feature/tsugu-ai-continuation
+          ref: ${{ env.TSUGU_REF }}
           path: tsugu
           persist-credentials: false
+
+      - name: Record isolation facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          {
+            echo "browser_agent_ref=${GITHUB_REF_NAME}"
+            echo "browser_agent_sha=${GITHUB_SHA}"
+            echo "tsugu_ref=${TSUGU_REF}"
+            echo "tsugu_sha=$(git -C tsugu rev-parse HEAD)"
+          } | tee artifacts/isolation.txt
+          test "$GITHUB_REF_NAME" = "feature/tsugu-ai-isolated"
+          test "$TSUGU_REF" = "automation/openai-tsugu"
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -44,12 +65,13 @@ jobs:
           node --check browser-agent/scripts/build-tsugu-codex-prompt.mjs
           node --check browser-agent/scripts/check-tsugu-changes.mjs
 
-      - name: Run TSUGU unit tests
+      - name: Run TSUGU unit tests independently
         working-directory: tsugu
         shell: bash
         run: |
           set -euo pipefail
           for test_file in tests/*.test.cjs; do
+            echo "==> $test_file"
             node --test "$test_file"
           done
 
@@ -67,7 +89,23 @@ jobs:
           set -euo pipefail
           rm -rf tsugu/_site
           mkdir -p tsugu/_site artifacts
-          cp tsugu/static/index.html tsugu/static/styles.css tsugu/static/favicon.svg tsugu/static/core-reference.js tsugu/static/core-architecture.js tsugu/static/core-changeset.js tsugu/static/core-box.js tsugu/static/core-box-changeset.js tsugu/static/core-sync.js tsugu/static/core-sync-storage.js tsugu/static/core-sync-reconcile.js tsugu/static/core-sync-admin.js tsugu/static/core-guard.js tsugu/_site/
+          cp \
+            tsugu/static/index.html \
+            tsugu/static/styles.css \
+            tsugu/static/favicon.svg \
+            tsugu/static/core-reference.js \
+            tsugu/static/core-architecture.js \
+            tsugu/static/core-changeset.js \
+            tsugu/static/core-box.js \
+            tsugu/static/core-box-changeset.js \
+            tsugu/static/core-rule-test.js \
+            tsugu/static/core-rule-test-changeset.js \
+            tsugu/static/core-sync.js \
+            tsugu/static/core-sync-storage.js \
+            tsugu/static/core-sync-reconcile.js \
+            tsugu/static/core-sync-admin.js \
+            tsugu/static/core-guard.js \
+            tsugu/_site/
           base64 --decode tsugu/static/app.js.gz.b64 | gzip --decompress > tsugu/_site/app.js
           node --check tsugu/_site/app.js
           for file in tsugu/_site/core-*.js; do node --check "$file"; done
@@ -100,8 +138,8 @@ jobs:
           TSUGU_WORKSPACE: tsugu
           BROWSER_REPORT: artifacts/test-report.md
           PROMPT_OUTPUT: artifacts/tsugu-codex-prompt.md
-          SOURCE_REF: feature/tsugu-ai-continuation
-          SOURCE_SHA: ${{ github.sha }}
+          SOURCE_REF: automation/openai-tsugu
+          SOURCE_SHA: isolated-smoke
           CYCLE: '0'
           BROWSER_OUTCOME: smoke
           CONTINUATION_TEXT: 続行
@@ -116,11 +154,11 @@ jobs:
           grep -q '続行' artifacts/tsugu-codex-prompt.md
           grep -q 'TSUGU autonomous continuation' artifacts/tsugu-codex-prompt.md
 
-      - name: Upload smoke evidence
+      - name: Upload isolated smoke evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tsugu-continuation-smoke
+          name: tsugu-openai-isolated-smoke
           path: artifacts/
           if-no-files-found: warn
           retention-days: 14
