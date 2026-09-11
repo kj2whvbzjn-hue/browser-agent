@@ -1,23 +1,15 @@
-name: TSUGU OpenAI Isolated Continuation
+name: TSUGU ChatGPT Handoff
 
 on:
   workflow_dispatch:
     inputs:
       cycle:
-        description: Continuation cycle number (max 5)
+        description: Continuation cycle number
         required: true
         default: '1'
         type: string
-      write_back:
-        description: Commit and push validated Codex edits to the isolated TSUGU branch
-        required: true
-        default: 'false'
-        type: choice
-        options:
-          - 'false'
-          - 'true'
       continuation_text:
-        description: Message sent to the coding agent
+        description: Message for the ChatGPT handoff
         required: true
         default: 続行
         type: string
@@ -31,37 +23,32 @@ permissions:
   contents: read
 
 concurrency:
-  group: tsugu-openai-isolated-continuation
-  cancel-in-progress: false
+  group: tsugu-chatgpt-handoff
+  cancel-in-progress: true
 
 env:
   BROWSER_AGENT_REF: feature/tsugu-ai-isolated
   TSUGU_TARGET_REF: automation/openai-tsugu
   CONTINUE_CYCLE: ${{ inputs.cycle || '1' }}
-  CONTINUE_WRITE_BACK: ${{ inputs.write_back || 'false' }}
   CONTINUE_TEXT: ${{ inputs.continuation_text || '続行' }}
 
 jobs:
-  continue-tsugu:
+  handoff:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
 
     steps:
       - name: Validate isolated execution
         shell: bash
         run: |
           set -euo pipefail
+          test "$BROWSER_AGENT_REF" = "feature/tsugu-ai-isolated"
+          test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
+          test "$TSUGU_TARGET_REF" != "main"
           if ! [[ "$CONTINUE_CYCLE" =~ ^[0-9]+$ ]]; then
             echo "Invalid cycle: $CONTINUE_CYCLE" >&2
             exit 1
           fi
-          if [ "$CONTINUE_CYCLE" -gt 5 ]; then
-            echo "Maximum continuation cycles reached; stopping."
-            exit 78
-          fi
-          test "$BROWSER_AGENT_REF" = "feature/tsugu-ai-isolated"
-          test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
-          test "$TSUGU_TARGET_REF" != "main"
 
       - name: Checkout isolated browser-agent branch
         uses: actions/checkout@v6
@@ -71,39 +58,14 @@ jobs:
           path: browser-agent
           persist-credentials: false
 
-      - name: Check OpenAI API key is configured
-        shell: bash
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          set -euo pipefail
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY is not configured in browser-agent Actions secrets." >&2
-            exit 1
-          fi
-          echo "OPENAI_API_KEY is configured."
-
-      - name: Check write token when write-back is enabled
-        if: env.CONTINUE_WRITE_BACK == 'true'
-        shell: bash
-        env:
-          TSUGU_AUTOMATION_TOKEN: ${{ secrets.TSUGU_AUTOMATION_TOKEN }}
-        run: |
-          set -euo pipefail
-          if [ -z "$TSUGU_AUTOMATION_TOKEN" ]; then
-            echo "TSUGU_AUTOMATION_TOKEN is required when write_back=true." >&2
-            exit 1
-          fi
-          echo "TSUGU_AUTOMATION_TOKEN is configured."
-
-      - name: Checkout isolated TSUGU branch
+      - name: Checkout isolated TSUGU branch read-only
         uses: actions/checkout@v6
         with:
           repository: kj2whvbzjn-hue/tsugu
           ref: ${{ env.TSUGU_TARGET_REF }}
-          token: ${{ secrets.TSUGU_AUTOMATION_TOKEN || github.token }}
           fetch-depth: 0
           path: tsugu
+          persist-credentials: false
 
       - name: Record isolated baseline
         id: baseline
@@ -111,8 +73,6 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts
-          git -C tsugu config user.name 'tsugu-openai[bot]'
-          git -C tsugu config user.email 'tsugu-openai[bot]@users.noreply.github.com'
           TSUGU_SHA=$(git -C tsugu rev-parse HEAD)
           echo "sha=$TSUGU_SHA" >> "$GITHUB_OUTPUT"
           {
@@ -121,7 +81,7 @@ jobs:
             echo "tsugu_ref=${TSUGU_TARGET_REF}"
             echo "tsugu_sha=${TSUGU_SHA}"
             echo "cycle=${CONTINUE_CYCLE}"
-            echo "write_back=${CONTINUE_WRITE_BACK}"
+            echo "mode=read-only-chatgpt-handoff"
           } | tee artifacts/isolation.txt
 
       - name: Setup Node
@@ -129,12 +89,10 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate controller scripts
-        run: |
-          node --check browser-agent/scripts/build-tsugu-codex-prompt.mjs
-          node --check browser-agent/scripts/check-tsugu-changes.mjs
+      - name: Validate handoff script
+        run: node --check browser-agent/scripts/build-tsugu-chatgpt-handoff.mjs
 
-      - name: Run TSUGU baseline unit tests
+      - name: Run TSUGU unit tests
         working-directory: tsugu
         shell: bash
         run: |
@@ -158,23 +116,7 @@ jobs:
           set -euo pipefail
           rm -rf tsugu/_site
           mkdir -p tsugu/_site artifacts
-          cp \
-            tsugu/static/index.html \
-            tsugu/static/styles.css \
-            tsugu/static/favicon.svg \
-            tsugu/static/core-reference.js \
-            tsugu/static/core-architecture.js \
-            tsugu/static/core-changeset.js \
-            tsugu/static/core-box.js \
-            tsugu/static/core-box-changeset.js \
-            tsugu/static/core-rule-test.js \
-            tsugu/static/core-rule-test-changeset.js \
-            tsugu/static/core-sync.js \
-            tsugu/static/core-sync-storage.js \
-            tsugu/static/core-sync-reconcile.js \
-            tsugu/static/core-sync-admin.js \
-            tsugu/static/core-guard.js \
-            tsugu/_site/
+          cp tsugu/static/index.html tsugu/static/styles.css tsugu/static/favicon.svg tsugu/static/core-*.js tsugu/_site/
           base64 --decode tsugu/static/app.js.gz.b64 | gzip --decompress > tsugu/_site/app.js
           node --check tsugu/_site/app.js
           for file in tsugu/_site/core-*.js; do node --check "$file"; done
@@ -194,116 +136,44 @@ jobs:
           cat artifacts/tsugu-server.log
           exit 1
 
-      - name: Run browser-agent against isolated TSUGU
+      - name: Run Playwright against isolated TSUGU
         id: browser
         continue-on-error: true
         run: node browser-agent/scripts/run-task.mjs browser-agent/projects/tsugu/tasks/smoke-local.json
 
-      - name: Generate browser-agent report
+      - name: Generate browser report
         if: always()
         run: node browser-agent/scripts/generate-report.mjs browser-agent/projects/tsugu/tasks/smoke-local.json
 
-      - name: Build continuation prompt
+      - name: Build ChatGPT continuation handoff
         if: always()
         env:
           TSUGU_WORKSPACE: tsugu
           BROWSER_REPORT: artifacts/test-report.md
-          PROMPT_OUTPUT: artifacts/tsugu-codex-prompt.md
+          HANDOFF_OUTPUT: artifacts/chatgpt-continuation.md
           SOURCE_REF: automation/openai-tsugu
           SOURCE_SHA: ${{ steps.baseline.outputs.sha }}
           CYCLE: ${{ env.CONTINUE_CYCLE }}
           BROWSER_OUTCOME: ${{ steps.browser.outcome }}
           CONTINUATION_TEXT: ${{ env.CONTINUE_TEXT }}
-        run: node browser-agent/scripts/build-tsugu-codex-prompt.mjs
+        run: node browser-agent/scripts/build-tsugu-chatgpt-handoff.mjs
 
-      - name: Continue TSUGU with Codex
-        id: codex
-        uses: openai/codex-action@v1
-        with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          working-directory: tsugu
-          permission-profile: ':workspace'
-          prompt-file: ${{ github.workspace }}/artifacts/tsugu-codex-prompt.md
-          output-file: ${{ github.workspace }}/artifacts/codex-final-message.md
-          effort: high
-          safety-strategy: drop-sudo
-
-      - name: Guard generated changes
-        id: guard
-        env:
-          MAX_CHANGED_FILES: '20'
-          MAX_CHANGED_LINES: '4000'
-        run: node browser-agent/scripts/check-tsugu-changes.mjs tsugu
-
-      - name: Validate TSUGU after Codex
-        if: steps.guard.outputs.has_changes == 'true'
-        working-directory: tsugu
-        shell: bash
-        run: |
-          set -euo pipefail
-          for test_file in tests/*.test.cjs; do
-            echo "==> $test_file"
-            node --test "$test_file"
-          done
-          rm -rf /tmp/tsugu-openai-build
-          mkdir -p /tmp/tsugu-openai-build
-          cp \
-            static/index.html \
-            static/styles.css \
-            static/favicon.svg \
-            static/core-reference.js \
-            static/core-architecture.js \
-            static/core-changeset.js \
-            static/core-box.js \
-            static/core-box-changeset.js \
-            static/core-rule-test.js \
-            static/core-rule-test-changeset.js \
-            static/core-sync.js \
-            static/core-sync-storage.js \
-            static/core-sync-reconcile.js \
-            static/core-sync-admin.js \
-            static/core-guard.js \
-            /tmp/tsugu-openai-build/
-          base64 --decode static/app.js.gz.b64 | gzip --decompress > /tmp/tsugu-openai-build/app.js
-          node --check /tmp/tsugu-openai-build/app.js
-          for file in /tmp/tsugu-openai-build/core-*.js; do node --check "$file"; done
-
-      - name: Save generated evidence
+      - name: Verify handoff and prove no TSUGU edits
         if: always()
         shell: bash
         run: |
-          mkdir -p artifacts
-          git -C tsugu diff --binary > artifacts/tsugu-generated.patch || true
-          git -C tsugu status --short > artifacts/tsugu-status.txt || true
-          git -C tsugu diff --stat > artifacts/tsugu-diff-stat.txt || true
-
-      - name: Commit validated changes to isolated branch
-        id: commit
-        if: env.CONTINUE_WRITE_BACK == 'true' && steps.guard.outputs.has_changes == 'true'
-        shell: bash
-        run: |
           set -euo pipefail
-          test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
-          test "$TSUGU_TARGET_REF" != "main"
-          cd tsugu
-          git add -A
-          git commit -m "OpenAI continuation cycle ${CONTINUE_CYCLE}" -m "TSUGU-OPENAI-ISOLATED:true" -m "Baseline-SHA:${{ steps.baseline.outputs.sha }}"
-          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          test -s artifacts/chatgpt-continuation.md
+          grep -q '続行' artifacts/chatgpt-continuation.md
+          grep -q 'must not delegate development work to Codex' artifacts/chatgpt-continuation.md
+          git -C tsugu diff --exit-code
+          test -z "$(git -C tsugu status --short --untracked-files=no)"
 
-      - name: Push only the isolated TSUGU branch
-        if: env.CONTINUE_WRITE_BACK == 'true' && steps.guard.outputs.has_changes == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
-          test "$TSUGU_TARGET_REF" != "main"
-          git -C tsugu push origin "HEAD:automation/openai-tsugu"
-
-      - name: Upload continuation evidence
+      - name: Upload ChatGPT handoff evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tsugu-openai-isolated-${{ env.CONTINUE_CYCLE }}
+          name: tsugu-chatgpt-handoff-${{ env.CONTINUE_CYCLE }}
           path: artifacts/
           if-no-files-found: warn
           retention-days: 14
