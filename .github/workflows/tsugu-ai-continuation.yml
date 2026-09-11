@@ -180,7 +180,9 @@ jobs:
         run: |
           set -euo pipefail
           cd tsugu
-          node --test tests/*.test.cjs
+          for test_file in tests/*.test.cjs; do
+            node --test "$test_file"
+          done
           rm -rf /tmp/tsugu-ai-build
           mkdir -p /tmp/tsugu-ai-build
           cp static/index.html static/styles.css static/favicon.svg static/core-reference.js static/core-architecture.js static/core-changeset.js static/core-box.js static/core-box-changeset.js static/core-sync.js static/core-sync-storage.js static/core-sync-reconcile.js static/core-sync-admin.js static/core-guard.js /tmp/tsugu-ai-build/
