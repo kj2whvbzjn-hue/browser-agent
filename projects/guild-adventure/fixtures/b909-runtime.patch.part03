@@ -1,0 +1,237 @@
+n equipOwnedSkill(character,skillId,resolveSkill,compileSkill){
+-    normalizeCharacterSkillState(character);
+-    const id=asId(skillId);if(!id||!character.skills.includes(id))return{ok:false,reason:'SKILL_NOT_OWNED',changed:false};
+-    const skill=typeof resolveSkill==='function'?resolveSkill(id):null;if(!skill)return{ok:false,reason:'SKILL_NOT_AVAILABLE',changed:false};
+-    if(typeof compileSkill==='function'){
+-      const compiled=compileSkill(skill);if(!compiled?.ok)return{ok:false,reason:'SKILL_COMPILE_FAILED',errors:[...(compiled?.errors||[])],changed:false};
+-    }
++    normalizeCharacterSkillState(character);const id=asId(skillId);if(!id||!character.skills.includes(id))return{ok:false,reason:'SKILL_NOT_OWNED',changed:false};
++    const skill=typeof resolveSkill==='function'?resolveSkill(id):null;if(!skill)return{ok:false,reason:'SKILL_NOT_AVAILABLE',changed:false};if(typeof compileSkill==='function'){const compiled=compileSkill(skill);if(!compiled?.ok)return{ok:false,reason:'SKILL_COMPILE_FAILED',errors:[...(compiled?.errors||[])],changed:false};}
+     const changed=character.equippedSkillId!==id;character.equippedSkillId=id;return{ok:true,changed,id,skill};
+   }
+-  function unavailableOwnedSkillIds(character,resolveSkill,compileSkill){
+-    normalizeCharacterSkillState(character);
+-    return character.skills.filter(id=>{const skill=typeof resolveSkill==='function'?resolveSkill(id):null;if(!skill)return true;if(typeof compileSkill!=='function')return false;return !compileSkill(skill)?.ok;});
+-  }
+-  return Object.freeze({DEFAULT_SKILL_IDS,FORMAL_SKILL_ID,normalizeSkillIds,normalizeCharacterSkillState,formalProductionSkillCheck,assignFormalProductionSkill,skillUseCheck,equipOwnedSkill,unavailableOwnedSkillIds});
++  function unavailableOwnedSkillIds(character,resolveSkill,compileSkill){normalizeCharacterSkillState(character);return character.skills.filter(id=>{const skill=typeof resolveSkill==='function'?resolveSkill(id):null;if(!skill)return true;if(typeof compileSkill!=='function')return false;return !compileSkill(skill)?.ok;});}
++  return Object.freeze({DEFAULT_SKILL_IDS,FORMAL_SKILL_ID,normalizeSkillIds,validateActiveSkillLoadout,selectedSkillIds,normalizeCharacterSkillState,formalProductionSkillCheck,assignFormalProductionSkill,setSkillSelected,skillUseCheck,equipOwnedSkill,unavailableOwnedSkillIds});
+ });
+diff --git a/game/index.html b/game/index.html
+index 213df13..97cc964 100644
+--- a/game/index.html
++++ b/game/index.html
+@@ -2,11 +2,11 @@
+ <html lang="ja">
+ <head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+-<title>ギルド冒険物語 V9 正式版 GA-B486.239</title>
++<title>ギルド冒険物語 V9 正式版 GA-B486.240</title>
+ 
+-<script src="../assets/shared/config/runtime-config.js?v=486239b908"></script>
++<script src="../assets/shared/config/runtime-config.js?v=486240b909"></script>
+ <script src="../assets/shared/js/formal-contribution-resolver.js?v=1"></script>
+-<script src="../assets/shared/js/combat-capability-runtime.js?v=486239b908"></script>
++<script src="../assets/shared/js/combat-capability-runtime.js?v=486240b909"></script>
+ <script src="../assets/shared/js/game-shell-common.js?v=486215"></script>
+ <script src="../assets/shared/js/apply-lifecycle-engine.js?v=486215"></script>
+ <script src="../assets/shared/js/trigger-engine.js?v=486215"></script>
+@@ -542,7 +542,7 @@ body:not(.dev-enabled) #phase-battle #sceneAuto{min-height:58px;font-size:18px;f
+ .ga-project-nav .build{margin-left:auto;opacity:.8}
+ @media(max-width:640px){.ga-project-nav .build{width:100%;margin-left:0}}
+ </style>
+-<nav class="ga-project-nav" aria-label="プロジェクト共通ナビ"><a href="../">入口</a><a href="../game/" aria-current="page">ゲーム</a><a href="../studio/">Studio</a><a href="../docs/">資料</a><span class="build">GA-B486.239 / GKS-B908</span></nav>
++<nav class="ga-project-nav" aria-label="プロジェクト共通ナビ"><a href="../">入口</a><a href="../game/" aria-current="page">ゲーム</a><a href="../studio/">Studio</a><a href="../docs/">資料</a><span class="build">GA-B486.240 / GKS-B909</span></nav>
+ 
+ <div class="ai-editor-overlay" id="aiEditor" aria-hidden="true">
+  <div class="ai-editor-head"><button id="aiEditorClose" type="button">戻る</button><strong id="aiEditorTitle">AIチップ編集</strong><button id="aiEditorSave" class="primary" type="button" disabled>保存</button></div>
+@@ -570,7 +570,7 @@ body:not(.dev-enabled) #phase-battle #sceneAuto{min-height:58px;font-size:18px;f
+ 
+ <div id="fixedCanvasHost"><div id="fixedCanvas">
+ <a class="studio-back" id="studioBackLink" href="../studio/" aria-label="GK Studioへ戻る">GK Studioへ戻る</a>
+-<header><div class="header-line"><div><h1>ギルド冒険物語 V9 正式版</h1><div class="sub">GA-B486.239 — 正式装備10スロット整合</div><div class="phase-dev-nav" id="phaseDevNav"><button data-phase="title">タイトル</button><button data-phase="base">拠点</button><button data-phase="event">イベント</button><button data-phase="battle">戦闘</button><button data-phase="result">リザルト</button></div></div><button id="developerModeBtn" class="developer-toggle" aria-pressed="false">開発者モード</button></div></header>
++<header><div class="header-line"><div><h1>ギルド冒険物語 V9 正式版</h1><div class="sub">GA-B486.240 — 正式装備10スロット整合</div><div class="phase-dev-nav" id="phaseDevNav"><button data-phase="title">タイトル</button><button data-phase="base">拠点</button><button data-phase="event">イベント</button><button data-phase="battle">戦闘</button><button data-phase="result">リザルト</button></div></div><button id="developerModeBtn" class="developer-toggle" aria-pressed="false">開発者モード</button></div></header>
+ <div class="wrap">
+ <main id="phaseRoot">
+ <section class="phase-screen dev-workspace" id="phase-devhome" data-phase="devhome"><div class="phase-shell">
+@@ -582,7 +582,7 @@ body:not(.dev-enabled) #phase-battle #sceneAuto{min-height:58px;font-size:18px;f
+ <section class="phase-screen active" id="phase-title" data-phase="title"><div class="phase-shell phase-title">
+  <div class="title-visual" aria-hidden="true"><div class="title-shine"></div><div class="title-emblem"><div class="title-kicker">GUILD CHRONICLE</div><div class="title-logo">ギルド冒険物語<small>GUILD ADVENTURE</small></div><div class="title-rule"></div></div></div>
+  <div class="title-menu" aria-label="タイトルメニュー"><h2>冒険を始める</h2><button class="primary" id="titleStart">はじめから</button><button id="titleContinue">つづきから</button><button id="titleRestoreBackup" hidden>バックアップから復旧</button><button id="titleSettings">設定</button><p class="small">タイトルから拠点、イベント、戦闘、リザルトまで横持ちで統一します。</p></div>
+- <div class="title-version">V9 / GA-B486.239</div><div class="title-copyright">GK Studio</div>
++ <div class="title-version">V9 / GA-B486.240</div><div class="title-copyright">GK Studio</div>
+ </div></section>
+ <section class="phase-screen" id="phase-base" data-phase="base"><div class="phase-shell">
+  <div class="phase-banner"><div><div class="phase-name">拠点フェーズ</div><div class="small">ギルドで編成・育成・保存を行い、準備が整ったら冒険へ出発します。</div></div><div class="phase-actions"><button class="primary" id="baseDepart">冒険へ出発</button></div></div>
+@@ -686,39 +686,39 @@ body:not(.dev-enabled) #phase-battle #sceneAuto{min-height:58px;font-size:18px;f
+  <button class="mobile-auto-start" id="mobileAutoStart" type="button">▶ オート開始</button>
+ </div>
+ <div id="canvasScaleBadge" aria-hidden="true">1600×900 / 100%</div>
+-<script src="../assets/shared/js/formation-target-resolver.js?v=486239b908"></script>
+-<script src="./assets/js/tag-skill-runtime.js?v=486239b908"></script>
+-<script src="./assets/js/studio-skill-bridge.js?v=486239b908"></script>
++<script src="../assets/shared/js/formation-target-resolver.js?v=486240b909"></script>
++<script src="./assets/js/tag-skill-runtime.js?v=486240b909"></script>
++<script src="./assets/js/studio-skill-bridge.js?v=486240b909"></script>
+ <script src="../assets/shared/config/adventure-runtime-config.js?v=1"></script>
+ <script src="../assets/shared/js/adventure-story-system.js?v=11"></script>
+ <script src="../assets/shared/js/adventure-encounter-resolver.js?v=3"></script>
+ <script src="../assets/shared/js/adventure-reward-resolver.js?v=1"></script>
+ <script src="../assets/shared/js/adventure-battle-core.js?v=5"></script>
+-<script src="../shared/ai/ai-program-model.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-layout-model.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-master-adapter.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-connection-resolver.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-program-validator.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-program-compiler.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-program-trace.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-decision-engine.js?v=486239b908"></script>
+-<script src="../shared/ai/ai-battle-runtime-context.js?v=486239b908"></script>
+-<script src="./assets/js/ai-catalog-loader.js?v=486239b908"></script>
+-<script src="./assets/js/ai-save-bridge.js?v=486239b908"></script>
+-<script src="./assets/js/ai-battle-bridge.js?v=486239b908"></script>
+-<script src="./assets/js/ai-editor-ui.js?v=486239b908"></script>
+-<script src="./assets/js/skill-loadout-runtime.js?v=486239b908"></script>
+-<script src="./assets/js/skill-acquisition-runtime.js?v=486239b908"></script>
+-<script src="./assets/js/skill-respec-runtime.js?v=486239b908"></script>
+-<script src="./assets/js/save-domain-bridge.js?v=486239b908"></script>
+-<script src="./assets/js/inventory-equipment-save-bridge.js?v=486239b908"></script>
+-<script src="./assets/js/skill-passive-ai-save-bridge.js?v=486239b908"></script>
+-<script src="./assets/js/settings-tutorial-save-bridge.js?v=486239b908"></script>
+-<script src="./assets/js/quest-run-save-bridge.js?v=486239b908"></script>
+-<script src="./assets/js/app-runtime.js?v=486239b908"></script>
+-<script src="./assets/js/battle-control.js?v=486239b908"></script>
++<script src="../shared/ai/ai-program-model.js?v=486240b909"></script>
++<script src="../shared/ai/ai-layout-model.js?v=486240b909"></script>
++<script src="../shared/ai/ai-master-adapter.js?v=486240b909"></script>
++<script src="../shared/ai/ai-connection-resolver.js?v=486240b909"></script>
++<script src="../shared/ai/ai-program-validator.js?v=486240b909"></script>
++<script src="../shared/ai/ai-program-compiler.js?v=486240b909"></script>
++<script src="../shared/ai/ai-program-trace.js?v=486240b909"></script>
++<script src="../shared/ai/ai-decision-engine.js?v=486240b909"></script>
++<script src="../shared/ai/ai-battle-runtime-context.js?v=486240b909"></script>
++<script src="./assets/js/ai-catalog-loader.js?v=486240b909"></script>
++<script src="./assets/js/ai-save-bridge.js?v=486240b909"></script>
++<script src="./assets/js/ai-battle-bridge.js?v=486240b909"></script>
++<script src="./assets/js/ai-editor-ui.js?v=486240b909"></script>
++<script src="./assets/js/skill-loadout-runtime.js?v=486240b909"></script>
++<script src="./assets/js/skill-acquisition-runtime.js?v=486240b909"></script>
++<script src="./assets/js/skill-respec-runtime.js?v=486240b909"></script>
++<script src="./assets/js/save-domain-bridge.js?v=486240b909"></script>
++<script src="./assets/js/inventory-equipment-save-bridge.js?v=486240b909"></script>
++<script src="./assets/js/skill-passive-ai-save-bridge.js?v=486240b909"></script>
++<script src="./assets/js/settings-tutorial-save-bridge.js?v=486240b909"></script>
++<script src="./assets/js/quest-run-save-bridge.js?v=486240b909"></script>
++<script src="./assets/js/app-runtime.js?v=486240b909"></script>
++<script src="./assets/js/battle-control.js?v=486240b909"></script>
+ <script src="./assets/js/ui-bootstrap.js?v=486215"></script>
+-<script src="../assets/shared/js/device-game-test-harness.js?v=486239"></script>
++<script src="../assets/shared/js/device-game-test-harness.js?v=486240"></script>
+ 
+ 
+ 
+@@ -731,8 +731,8 @@ body:not(.dev-enabled) #phase-battle #sceneAuto{min-height:58px;font-size:18px;f
+ <script id="build448-mobile-polish">
+ (function(){
+   const BUILD='448';
+-  document.querySelectorAll('.sub').forEach(el=>{if(/BUILD4[0-9]{2}|Build 4[0-9]{2}|Mobile One-Tap|Mobile Quick Actions/i.test(el.textContent))el.textContent='GA-B486.239 — 正式装備10スロット整合';});
+-  const tv=document.querySelector('.title-version'); if(tv) tv.textContent='V9 / GA-B486.239';
++  document.querySelectorAll('.sub').forEach(el=>{if(/BUILD4[0-9]{2}|Build 4[0-9]{2}|Mobile One-Tap|Mobile Quick Actions/i.test(el.textContent))el.textContent='GA-B486.240 — 正式装備10スロット整合';});
++  const tv=document.querySelector('.title-version'); if(tv) tv.textContent='V9 / GA-B486.240';
+   document.querySelectorAll('[data-open-base-view]').forEach(btn=>{
+     btn.addEventListener('click',()=>setTimeout(()=>window.scrollTo({top:0,behavior:'instant'}),0));
+   });
+diff --git a/game/sw.js b/game/sw.js
+index 8175ad2..cebfb22 100644
+--- a/game/sw.js
++++ b/game/sw.js
+@@ -1,38 +1,38 @@
+-const CACHE_NAME="ga-game-b486239-b908";
++const CACHE_NAME="ga-game-b486240-b909";
+ const CACHE_PREFIX="ga-game-";
+-const OFFLINE_URL='./index.html?appv=486239b908';
++const OFFLINE_URL='./index.html?appv=486240b909';
+ const APP_SHELL=[
+   "./",
+-  "./index.html?appv=486239b908",
+-  "./manifest.webmanifest?v=486239",
+-  "./icon-192.png?v=486239",
+-  "./icon-512.png?v=486239",
+-  "../Export/skill/skills.json?v=486239b908",
+-  "../Export/equipment/equipment.json?v=486239b908",
+-  "../Export/master/jobs.json?v=486239b908",
+-  "../Export/system/adventure_settings.json?v=486239b908",
+-  "../Export/ai/ai_nodes.json?v=486239b908",
+-  "../Export/ai/ai_target_selectors.json?v=486239b908",
+-  "../Export/ai/ai_programs.json?v=486239b908",
+-  "../Export/ai/ai_program_layouts.json?v=486239b908",
+-  "../Export/ai/ai_program_runtime.json?v=486239b908",
+-  "../shared/ai/ai-program-model.js?v=486239b908",
+-  "../shared/ai/ai-layout-model.js?v=486239b908",
+-  "../shared/ai/ai-master-adapter.js?v=486239b908",
+-  "../shared/ai/ai-connection-resolver.js?v=486239b908",
+-  "../shared/ai/ai-program-validator.js?v=486239b908",
+-  "../shared/ai/ai-program-compiler.js?v=486239b908",
+-  "../shared/ai/ai-program-trace.js?v=486239b908",
+-  "../shared/ai/ai-decision-engine.js?v=486239b908",
+-  "./assets/js/ai-catalog-loader.js?v=486239b908",
+-  "./assets/js/ai-save-bridge.js?v=486239b908",
+-  "./assets/js/ai-battle-bridge.js?v=486239b908",
+-  "./assets/js/ai-editor-ui.js?v=486239b908",
+-  "./assets/js/skill-loadout-runtime.js?v=486239b908",
+-  "./assets/js/skill-acquisition-runtime.js?v=486239b908",
+-  "./assets/js/skill-respec-runtime.js?v=486239b908",
+-  "../assets/shared/config/runtime-config.js?v=486239b908",
+-  "../assets/shared/js/combat-capability-runtime.js?v=486239b908",
++  "./index.html?appv=486240b909",
++  "./manifest.webmanifest?v=486240",
++  "./icon-192.png?v=486240",
++  "./icon-512.png?v=486240",
++  "../Export/skill/skills.json?v=486240b909",
++  "../Export/equipment/equipment.json?v=486240b909",
++  "../Export/master/jobs.json?v=486240b909",
++  "../Export/system/adventure_settings.json?v=486240b909",
++  "../Export/ai/ai_nodes.json?v=486240b909",
++  "../Export/ai/ai_target_selectors.json?v=486240b909",
++  "../Export/ai/ai_programs.json?v=486240b909",
++  "../Export/ai/ai_program_layouts.json?v=486240b909",
++  "../Export/ai/ai_program_runtime.json?v=486240b909",
++  "../shared/ai/ai-program-model.js?v=486240b909",
++  "../shared/ai/ai-layout-model.js?v=486240b909",
++  "../shared/ai/ai-master-adapter.js?v=486240b909",
++  "../shared/ai/ai-connection-resolver.js?v=486240b909",
++  "../shared/ai/ai-program-validator.js?v=486240b909",
++  "../shared/ai/ai-program-compiler.js?v=486240b909",
++  "../shared/ai/ai-program-trace.js?v=486240b909",
++  "../shared/ai/ai-decision-engine.js?v=486240b909",
++  "./assets/js/ai-catalog-loader.js?v=486240b909",
++  "./assets/js/ai-save-bridge.js?v=486240b909",
++  "./assets/js/ai-battle-bridge.js?v=486240b909",
++  "./assets/js/ai-editor-ui.js?v=486240b909",
++  "./assets/js/skill-loadout-runtime.js?v=486240b909",
++  "./assets/js/skill-acquisition-runtime.js?v=486240b909",
++  "./assets/js/skill-respec-runtime.js?v=486240b909",
++  "../assets/shared/config/runtime-config.js?v=486240b909",
++  "../assets/shared/js/combat-capability-runtime.js?v=486240b909",
+   "../assets/shared/js/formal-contribution-resolver.js?v=2",
+   "../assets/shared/js/game-shell-common.js?v=486215",
+   "../assets/shared/js/apply-lifecycle-engine.js?v=486215",
+@@ -45,12 +45,12 @@ const APP_SHELL=[
+   "../assets/shared/js/adventure-battle-core.js?v=5",
+   "../assets/shared/js/skill-compiler.js?v=486215",
+   "../assets/shared/js/skill-compile-service.js?v=486215",
+-  "../assets/shared/js/device-game-test-harness.js?v=486239",
+-  "../assets/shared/config/skill-registry.json?v=486239",
+-  "./assets/js/app-runtime.js?v=486239b908",
+-  "./assets/js/tag-skill-runtime.js?v=486239b908",
+-  "./assets/js/studio-skill-bridge.js?v=486239b908",
+-  "./assets/js/battle-control.js?v=486239b908",
++  "../assets/shared/js/device-game-test-harness.js?v=486240",
++  "../assets/shared/config/skill-registry.json?v=486240",
++  "./assets/js/app-runtime.js?v=486240b909",
++  "./assets/js/tag-skill-runtime.js?v=486240b909",
++  "./assets/js/studio-skill-bridge.js?v=486240b909",
++  "./assets/js/battle-control.js?v=486240b909",
+   "./assets/js/ui-bootstrap.js?v=486215"
+ ];
+ 
