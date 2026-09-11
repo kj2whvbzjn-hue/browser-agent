@@ -1,0 +1,99 @@
+name: B909 Candidate Playwright E2E
+
+on:
+  push:
+    branches:
+      - b909-e2e-now
+    paths:
+      - '.github/workflows/b909-candidate-e2e.yml'
+      - 'projects/guild-adventure/fixtures/b909-runtime.patch.part*'
+      - 'projects/guild-adventure/tasks/reorg-r31-008-b909-loadout-candidate-e2e.json'
+  workflow_dispatch:
+
+jobs:
+  b909-playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout browser agent
+        uses: actions/checkout@v4
+
+      - name: Checkout exact Current B908 source
+        uses: actions/checkout@v4
+        with:
+          repository: kj2whvbzjn-hue/guild-adventure-studio
+          ref: sub
+          path: candidate
+
+      - name: Build B909 candidate from reviewed runtime patch
+        shell: bash
+        run: |
+          cat projects/guild-adventure/fixtures/b909-runtime.patch.part00 \
+              projects/guild-adventure/fixtures/b909-runtime.patch.part01 \
+              projects/guild-adventure/fixtures/b909-runtime.patch.part02 \
+              projects/guild-adventure/fixtures/b909-runtime.patch.part03 > /tmp/b909-runtime.patch
+          git -C candidate apply --check /tmp/b909-runtime.patch
+          git -C candidate apply /tmp/b909-runtime.patch
+          python - <<'PY'
+          import json
+          p='candidate/package-build.json'
+          d=json.load(open(p,encoding='utf-8'))
+          assert d['studio_build']=='GKS-B908' and d['game_build']=='GA-B486.239', d
+          d['studio_build']='GKS-B909'; d['game_build']='GA-B486.240'
+          open(p,'w',encoding='utf-8').write(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+          PY
+
+      - name: Verify exact B909 runtime payload hashes
+        shell: bash
+        working-directory: candidate
+        run: |
+          echo '2e66b85a25ac58c20aa6cfd4b4af458231a1ffcdbf5f38aca24d67d8fb285efd  assets/shared/config/runtime-config.js' > /tmp/b909.sha256
+          echo 'f3fb6b6d87da65cc0a4903dee2e45418a950f6e444fa9074a5f33b2263370035  game/assets/js/ai-save-bridge.js' >> /tmp/b909.sha256
+          echo '4f2afde3288eb9a3a4fbaf10e02bad65d8c7bcf46934297df17039ddc9892898  game/assets/js/app-runtime.js' >> /tmp/b909.sha256
+          echo 'dcb3baebd0f0e02eb84a2c6231a6561d649d67b55b131ea195a2ba4450866760  game/assets/js/skill-acquisition-runtime.js' >> /tmp/b909.sha256
+          echo '6154ea0d4ee0d897ee5ecabc2d614f900c65a01fbdabc6e0ef4d981887b0c12f  game/assets/js/skill-loadout-runtime.js' >> /tmp/b909.sha256
+          echo 'b754897c63b2a31a0b785da277bb29bb632470ccfe2d454cd22bf1ff6e42f420  game/index.html' >> /tmp/b909.sha256
+          echo '4c2e87cf889cbff617f29ca074118261ea794e851ca772186bdb8608d7f14f29  game/sw.js' >> /tmp/b909.sha256
+          sha256sum -c /tmp/b909.sha256
+          grep -q 'GA-B486.240' game/index.html
+          grep -q 'GKS-B909' assets/shared/config/runtime-config.js
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Browser Agent dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve B909 candidate
+        shell: bash
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory candidate >/tmp/b909-http.log 2>&1 &
+          echo $! > /tmp/b909-http.pid
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/game/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/b909-http.log
+          exit 1
+
+      - name: Run Browser Agent Playwright B909 E2E
+        run: node scripts/run-task.mjs projects/guild-adventure/tasks/reorg-r31-008-b909-loadout-candidate-e2e.json
+
+      - name: Require zero page errors
+        shell: bash
+        run: test ! -s artifacts/page-errors.log
+
+      - name: Generate report
+        if: always()
+        run: node scripts/generate-report.mjs projects/guild-adventure/tasks/reorg-r31-008-b909-loadout-candidate-e2e.json
+
+      - name: Upload B909 E2E evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b909-candidate-e2e
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 14
