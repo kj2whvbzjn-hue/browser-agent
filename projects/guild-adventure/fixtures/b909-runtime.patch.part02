@@ -1,0 +1,123 @@
+meSkillAcquisitionRuntime?GKGameSkillAcquisitionRuntime.previewAcquirePassive(c,passive,progression,passiveAcquisitionPolicy(c)):{ok:false,reason:owned?'PASSIVE_ALREADY_OWNED':progressionError||'ACQUISITION_RUNTIME_UNAVAILABLE'},cost=progression&&window.GKGameSkillAcquisitionRuntime?GKGameSkillAcquisitionRuntime.acquisitionCost(passive,'passive',progression):null,respec=owned&&progression&&window.GKGameSkillRespecRuntime?GKGameSkillRespecRuntime.previewIndividual(data,c,'passive',passive.id,progression,{validateAfterRemoval:validateCharacterAfterPassiveRemoval}):{ok:false,reason:'PASSIVE_NOT_OWNED'};return `<div class="skill-choice ${owned?'selected':''}"><div><b>${escapeHtml(passive.name)}</b><span class="tag">${escapeHtml(passive.id)}</span><span class="tag">${owned?(active?'有効':'条件未成立'):'未習得'}</span><div class="small">常時効果: ${escapeHtml(passiveEffectText(passive))}</div><div class="small">習得条件: ${escapeHtml(skillProgressionRequirementText(passive,'passive'))}</div><div class="small">必要Skill Point: ${cost??'—'}</div>${owned?`<div class="small">Respec: ${respec.ok?`${respec.cost} G / ${respec.skillPointsRefund} SP返還`:escapeHtml(skillProgressionFailureText(respec))}</div>`:`<div class="small">${preview.ok?'習得可能':escapeHtml(skillProgressionFailureText(preview))}</div>`}</div>${owned?`<button type="button" data-respec-passive="${escapeHtml(passive.id)}" ${respec.ok?'':'disabled'}>Respec</button>`:`<button type="button" class="primary" data-acquire-passive="${escapeHtml(passive.id)}" ${preview.ok?'':'disabled'}>習得する</button>`}</div>`}).join(''):`<div class="skill-empty">正式Passive Masterがありません。${passiveStateError?` ${escapeHtml(passiveStateError)}`:''}</div>`;passiveList.querySelectorAll('[data-acquire-passive]').forEach(btn=>btn.onclick=()=>{if(!progression||!window.GKGameSkillAcquisitionRuntime)return;const passive=formalPassiveCatalog.get(btn.dataset.acquirePassive),result=GKGameSkillAcquisitionRuntime.acquirePassive(c,passive,progression,passiveAcquisitionPolicy(c));if(!result.ok){notify(skillProgressionFailureText(result),'bad');return}autoSave();render();notify(`${passive.name}を習得しました。Skill Point -${result.skillPointsSpent}。`,'ok')});passiveList.querySelectorAll('[data-respec-passive]').forEach(btn=>btn.onclick=()=>{if(!progression||!window.GKGameSkillRespecRuntime)return;const id=btn.dataset.respecPassive,preview=GKGameSkillRespecRuntime.previewIndividual(data,c,'passive',id,progression,{validateAfterRemoval:validateCharacterAfterPassiveRemoval});if(!preview.ok){notify(skillProgressionFailureText(preview),'bad');return}if(!confirm(`PassiveをRespecします。${preview.cost} Gを消費し、${preview.skillPointsRefund} SPを返還します。消費したGoldは戻りません。`))return;const result=GKGameSkillRespecRuntime.respecIndividual(data,c,'passive',id,progression,{validateAfterRemoval:validateCharacterAfterPassiveRemoval});if(!result.ok){notify(skillProgressionFailureText(result),'bad');return}autoSave();render();notify(`PassiveをRespecしました。Skill Point +${result.skillPointsRefund} / ${result.cost} G消費。`,'ok')})}
+  if(respecAllPanel){const preview=progression&&window.GKGameSkillRespecRuntime?GKGameSkillRespecRuntime.previewAll(data,c,progression,{validateAfterRemoval:validateCharacterAfterPassiveRemoval}):{ok:false,reason:progressionError||'RESPEC_RUNTIME_UNAVAILABLE'};respecAllPanel.innerHTML=`<b>全Respec</b><div class="small">${preview.ok?`${preview.cost} Gを消費 / ${preview.skillPointsRefund} SP返還。消費したGoldは戻りません。`:escapeHtml(skillProgressionFailureText(preview))}</div><button type="button" id="characterRespecAll" ${preview.ok?'':'disabled'}>Skill / Passiveを全Respec</button>`;const btn=$('characterRespecAll');if(btn)btn.onclick=()=>{const check=GKGameSkillRespecRuntime.previewAll(data,c,progression,{validateAfterRemoval:validateCharacterAfterPassiveRemoval});if(!check.ok){notify(skillProgressionFailureText(check),'bad');return}if(!confirm(`Skill / Passiveを全Respecします。${check.cost} Gを消費し、${check.skillPointsRefund} SPを返還します。消費したGoldは戻りません。`))return;const result=GKGameSkillRespecRuntime.respecAll(data,c,progression,{validateAfterRemoval:validateCharacterAfterPassiveRemoval});if(!result.ok){notify(skillProgressionFailureText(result),'bad');return}autoSave();render();notify(`全Respecしました。Skill Point +${result.skillPointsRefund} / ${result.cost} G消費。`,'ok')}}
+  if(catalog){const candidates=productionSkills.filter(skill=>!c.skills.includes(skill.id));catalog.innerHTML=candidates.length?`<div class="small">開発者用の直接割当です。Player習得は上のSkill Point経路を使用します。</div>${candidates.map(skill=>`<button type="button" class="unit" data-assign-formal-skill="${skill.id}"><b>${escapeHtml(skill.name)}</b><span class="tag">${escapeHtml(skill.id)}</span><div class="small">この冒険者へ直接割当</div></button>`).join('')}`:'<div class="small">未割当の正式Production Skillはありません。</div>';catalog.querySelectorAll('[data-assign-formal-skill]').forEach(btn=>btn.onclick=()=>{const skill=findSkill(btn.dataset.assignFormalSkill),result=window.GKGameSkillLoadout?GKGameSkillLoadout.assignFormalProductionSkill(c,skill,compileSkillForRuntime):{ok:false,reason:'LOADOUT_RUNTIME_UNAVAILABLE'};if(!result.ok){notify(`正式Skillを割当できません: ${result.reason}`,'bad');return}autoSave();render();notify(`${c.name}へ${skill.name}を開発者割当しました。`)})}
+ }
+diff --git a/game/assets/js/skill-acquisition-runtime.js b/game/assets/js/skill-acquisition-runtime.js
+index eac4d05..6529162 100644
+--- a/game/assets/js/skill-acquisition-runtime.js
++++ b/game/assets/js/skill-acquisition-runtime.js
+@@ -82,25 +82,32 @@
+     const branch=kind==='skill'?'skill':kind==='passive'?'passive':null;if(!branch)throw new Error(`unsupported skill-point spend kind: ${kind}`);
+     return Number(character.skillPointSpend?.[branch]?.[target])||0;
+   }
+-  function preview(character,record,kind,balanceValue){
++  function passiveSelectionCheck(character,record,options){
++    const policy=options&&typeof options==='object'?options:{};if(!policy)return{ok:true};
++    const maxOwned=policy.maxOwned==null?null:integer(policy.maxOwned,'passive.maxOwned',{min:1});if(maxOwned!=null&&character.passiveIds.length>=maxOwned)return{ok:false,reason:'PASSIVE_SLOT_CAPACITY_REACHED',capacity:maxOwned,count:character.passiveIds.length};
++    if(typeof policy.validateAfterAdd==='function'){try{const result=policy.validateAfterAdd([...character.passiveIds,idOf(record)]);if(result===false||result?.ok===false)return{ok:false,reason:result?.reason||'PASSIVE_SELECTION_INVALID',detail:result?.detail||''};}catch(error){return{ok:false,reason:'PASSIVE_SELECTION_INVALID',detail:String(error?.message||error)};}}
++    return{ok:true};
++  }
++  function preview(character,record,kind,balanceValue,options){
+     normalizeCharacterState(character);const id=idOf(record);if(!id)return{ok:false,reason:'ID_REQUIRED'};
+     const owned=kind==='skill'?character.skills:character.passiveIds;if(owned.includes(id))return{ok:false,reason:kind==='skill'?'SKILL_ALREADY_OWNED':'PASSIVE_ALREADY_OWNED',id};
+     const requirements=requirementCheck(character,record,kind);if(!requirements.ok)return{ok:false,reason:'ABILITY_REQUIREMENT_NOT_MET',id,...requirements};
++    if(kind==='passive'){const selection=passiveSelectionCheck(character,record,options);if(!selection.ok)return{...selection,id};}
+     const cost=acquisitionCost(record,kind,balanceValue),before=character.skillPoints;if(before<cost)return{ok:false,reason:'SKILL_POINTS_SHORTAGE',id,cost,skillPointsBefore:before,skillPointsAfter:before,...requirements};
+     return{ok:true,id,kind,cost,skillPointsBefore:before,skillPointsAfter:before-cost,...requirements};
+   }
+-  function acquire(character,record,kind,balanceValue){
+-    const result=preview(character,record,kind,balanceValue);if(!result.ok)return{...result,changed:false};
++  function acquire(character,record,kind,balanceValue,options){
++    const result=preview(character,record,kind,balanceValue,options);if(!result.ok)return{...result,changed:false};
+     character.skillPoints=result.skillPointsAfter;
+     if(kind==='skill')character.skills.push(result.id);else character.passiveIds.push(result.id);
+     character.skillPointSpend[kind][result.id]=result.cost;
+     return{...result,changed:true,skillPointsSpent:result.cost};
+   }
+   function acquireSkill(character,skill,balance){return acquire(character,skill,'skill',balance);}
+-  function acquirePassive(character,passive,balance){return acquire(character,passive,'passive',balance);}
++  function acquirePassive(character,passive,balance,options){return acquire(character,passive,'passive',balance,options);}
+   function grantLevelUpSkillPoints(character,balanceValue,{levels=1}={}){
+     normalizeCharacterState(character);const balance=normalizeBalance(balanceValue),levelCount=integer(levels,'levels',{min:1}),gained=balance.skill_points_per_level*levelCount,before=character.skillPoints;character.skillPoints=before+gained;
+     return{ok:true,changed:gained>0,gained,skillPointsBefore:before,skillPointsAfter:character.skillPoints,levels:levelCount};
+   }
+-  return Object.freeze({STATS,normalizeBalance,normalizeSkillPointSpend,normalizeCharacterState,skillRequirements,passiveRequirements,requirementCheck,acquisitionCost,spentSkillPoints,previewAcquireSkill:(c,r,b)=>preview(c,r,'skill',b),previewAcquirePassive:(c,r,b)=>preview(c,r,'passive',b),acquireSkill,acquirePassive,grantLevelUpSkillPoints});
++  return Object.freeze({STATS,normalizeBalance,normalizeSkillPointSpend,normalizeCharacterState,skillRequirements,passiveRequirements,requirementCheck,acquisitionCost,spentSkillPoints,previewAcquireSkill:(c,r,b)=>preview(c,r,'skill',b),previewAcquirePassive:(c,r,b,o)=>preview(c,r,'passive',b,o),acquireSkill,acquirePassive,grantLevelUpSkillPoints});
+ });
+diff --git a/game/assets/js/skill-loadout-runtime.js b/game/assets/js/skill-loadout-runtime.js
+index 833ccf3..d7fde0b 100644
+--- a/game/assets/js/skill-loadout-runtime.js
++++ b/game/assets/js/skill-loadout-runtime.js
+@@ -14,54 +14,61 @@
+     if(ids.length)return ids;
+     return (Array.isArray(fallback)?fallback:[]).map(asId).filter(Boolean).filter((id,index,rows)=>rows.indexOf(id)===index);
+   }
+-  function normalizeCharacterSkillState(character,{fallback=DEFAULT_SKILL_IDS}={}){
++  function validateActiveSkillLoadout(character,{capacity=null}={}){
++    if(!character||typeof character!=='object')return{ok:false,reason:'CHARACTER_REQUIRED',ids:[]};
++    const owned=normalizeSkillIds(character.skills,{fallback:[]}),raw=character.skillLoadoutIds;
++    if(raw==null)return{ok:true,ids:[],ownedSkillIds:owned,capacity:capacity==null?null:Number(capacity)};
++    if(!Array.isArray(raw))return{ok:false,reason:'SKILL_LOADOUT_ARRAY_REQUIRED',ids:[],ownedSkillIds:owned};
++    const ids=[],seen=new Set();
++    for(const row of raw){const id=asId(row);if(!id)return{ok:false,reason:'SKILL_LOADOUT_ID_REQUIRED',ids:[...ids],ownedSkillIds:owned};if(seen.has(id))return{ok:false,reason:'SKILL_LOADOUT_DUPLICATE',id,ids:[...ids],ownedSkillIds:owned};seen.add(id);ids.push(id);}
++    const limit=capacity==null?null:Number(capacity);if(limit!=null&&(!Number.isInteger(limit)||limit<1))return{ok:false,reason:'SKILL_LOADOUT_CAPACITY_INVALID',capacity};
++    if(limit!=null&&ids.length>limit)return{ok:false,reason:'SKILL_LOADOUT_CAPACITY_EXCEEDED',capacity:limit,count:ids.length,ids,ownedSkillIds:owned};
++    const missing=ids.filter(id=>!owned.includes(id));if(missing.length)return{ok:false,reason:'SKILL_LOADOUT_NOT_OWNED',missing,ids,ownedSkillIds:owned,capacity:limit};
++    return{ok:true,ids,ownedSkillIds:owned,capacity:limit};
++  }
++  function normalizeCharacterSkillState(character,{fallback=DEFAULT_SKILL_IDS,capacity=null}={}){
+     if(!character||typeof character!=='object')throw new Error('character is required');
+     const skills=normalizeSkillIds(character.skills,{fallback});
+     const requested=asId(character.equippedSkillId);
+     const equippedSkillId=requested&&skills.includes(requested)?requested:(skills[0]||'');
+     character.skills=skills;character.equippedSkillId=equippedSkillId;
++    const loadout=validateActiveSkillLoadout(character,{capacity});if(!loadout.ok)throw Object.assign(new Error(loadout.reason),{code:loadout.reason,details:loadout});
+     return character;
+   }
++  function selectedSkillIds(character,{capacity=null}={}){const result=validateActiveSkillLoadout(character,{capacity});if(!result.ok)throw Object.assign(new Error(result.reason),{code:result.reason,details:result});return result.ids;}
+   function formalProductionSkillCheck(skill,compileSkill){
+     if(!skill||typeof skill!=='object')return{ok:false,reason:'SKILL_NOT_FOUND'};
+     const id=asId(skill.id);if(!FORMAL_SKILL_ID.test(id))return{ok:false,reason:'FORMAL_SKILL_ID_REQUIRED'};
+     if(String(skill.source||'')!=='studio_export')return{ok:false,reason:'STUDIO_EXPORT_REQUIRED'};
+     if(String(skill.environment||'production').toLowerCase()!=='production')return{ok:false,reason:'PRODUCTION_SKILL_REQUIRED'};
+     if(!skill.runtimeContracts||Number(skill.schemaVersion)!==1)return{ok:false,reason:'FORMAL_RUNTIME_CONTRACT_REQUIRED'};
+-    if(typeof compileSkill==='function'){
+-      const compiled=compileSkill(skill);if(!compiled?.ok)return{ok:false,reason:'SKILL_COMPILE_FAILED',errors:[...(compiled?.errors||[])]};
+-    }
++    if(typeof compileSkill==='function'){const compiled=compileSkill(skill);if(!compiled?.ok)return{ok:false,reason:'SKILL_COMPILE_FAILED',errors:[...(compiled?.errors||[])]};}
+     return{ok:true,id};
+   }
+   function assignFormalProductionSkill(character,skill,compileSkill){
+-    normalizeCharacterSkillState(character);
+-    const checked=formalProductionSkillCheck(skill,compileSkill);if(!checked.ok)return{...checked,changed:false};
+-    if(character.skills.includes(checked.id))return{ok:true,changed:false,id:checked.id,alreadyOwned:true};
+-    character.skills.push(checked.id);
+-    if(!character.equippedSkillId)character.equippedSkillId=checked.id;
+-    return{ok:true,changed:true,id:checked.id,alreadyOwned:false};
++    normalizeCharacterSkillState(character);const checked=formalProductionSkillCheck(skill,compileSkill);if(!checked.ok)return{...checked,changed:false};
++    if(character.skills.includes(checked.id))return{ok:true,changed:false,id:checked.id,alreadyOwned:true};character.skills.push(checked.id);return{ok:true,changed:true,id:checked.id,alreadyOwned:false};
++  }
++  function setSkillSelected(character,skillId,selected,{capacity,resolveSkill,compileSkill}={}){
++    if(!character||typeof character!=='object')return{ok:false,reason:'CHARACTER_REQUIRED',changed:false};
++    const id=asId(skillId);if(!id)return{ok:false,reason:'SKILL_ID_REQUIRED',changed:false};
++    const before=validateActiveSkillLoadout(character,{capacity});if(!before.ok)return{...before,changed:false};
++    if(!before.ownedSkillIds.includes(id))return{ok:false,reason:'SKILL_NOT_OWNED',id,changed:false};
++    if(selected){const skill=typeof resolveSkill==='function'?resolveSkill(id):null;if(typeof resolveSkill==='function'&&!skill)return{ok:false,reason:'SKILL_NOT_AVAILABLE',id,changed:false};if(skill&&typeof compileSkill==='function'&&!compileSkill(skill)?.ok)return{ok:false,reason:'SKILL_COMPILE_FAILED',id,changed:false};if(before.ids.includes(id))return{ok:true,changed:false,id,selected:true,ids:before.ids,capacity:before.capacity};if(before.capacity!=null&&before.ids.length>=before.capacity)return{ok:false,reason:'SKILL_LOADOUT_CAPACITY_EXCEEDED',id,capacity:before.capacity,count:before.ids.length,changed:false};character.skillLoadoutIds=[...before.ids,id];return{ok:true,changed:true,id,selected:true,ids:[...character.skillLoadoutIds],capacity:before.capacity};}
++    if(!before.ids.includes(id))return{ok:true,changed:false,id,selected:false,ids:before.ids,capacity:before.capacity};character.skillLoadoutIds=before.ids.filter(x=>x!==id);return{ok:true,changed:true,id,selected:false,ids:[...character.skillLoadoutIds],capacity:before.capacity};
+   }
+-  function skillUseCheck(character,skillId,{requireEquipped=true}={}){
+-    if(!character||typeof character!=='object')return{ok:false,reason:'CHARACTER_REQUIRED'};
+-    const id=asId(skillId);if(!id)return{ok:false,reason:'SKILL_ID_REQUIRED'};
+-    const owned=normalizeSkillIds(character.skills,{fallback:[]});
+-    if(!owned.includes(id))return{ok:false,reason:'SKILL_NOT_OWNED',id,ownedSkillIds:owned};
+-    const equippedSkillId=asId(character.equippedSkillId);
+-    if(requireEquipped&&equippedSkillId!==id)return{ok:false,reason:'SKILL_NOT_EQUIPPED',id,equippedSkillId,ownedSkillIds:owned};
+-    return{ok:true,id,equippedSkillId,ownedSkillIds:owned};
++  function skillUseCheck(character,skillId,{requireEquipped=true,requireSelected=false,capacity=null}={}){
++    if(!character||typeof character!=='object')return{ok:false,reason:'CHARACTER_REQUIRED'};const id=asId(skillId);if(!id)return{ok:false,reason:'SKILL_ID_REQUIRED'};
++    const owned=normalizeSkillIds(character.skills,{fallback:[]});if(!owned.includes(id))return{ok:false,reason:'SKILL_NOT_OWNED',id,ownedSkillIds:owned};
++    if(requireSelected){const loadout=validateActiveSkillLoadout(character,{capacity});if(!loadout.ok)return loadout;if(!loadout.ids.includes(id))return{ok:false,reason:'SKILL_NOT_SELECTED',id,selectedSkillIds:loadout.ids,ownedSkillIds:owned};}
++    const equippedSkillId=asId(character.equippedSkillId);if(requireEquipped&&equippedSkillId!==id)return{ok:false,reason:'SKILL_NOT_EQUIPPED',id,equippedSkillId,ownedSkillIds:owned};
++    return{ok:true,id,equippedSkillId,ownedSkillIds:owned,...(requireSelected?{selectedSkillIds:selectedSkillIds(character,{capacity})}:{})};
+   }
+   functio
