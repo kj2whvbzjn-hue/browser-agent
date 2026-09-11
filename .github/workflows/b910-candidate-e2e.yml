@@ -1,0 +1,138 @@
+name: B910 Candidate Playwright E2E
+
+on:
+  push:
+    branches:
+      - b910-e2e-now
+    paths:
+      - '.github/workflows/b910-candidate-e2e.yml'
+      - 'projects/guild-adventure/fixtures/b910-r31-009.patch.gz.b64'
+      - 'projects/guild-adventure/tasks/reorg-r31-009-b910-ai-selected-skill-candidate-e2e.json'
+  workflow_dispatch:
+
+jobs:
+  b910-playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout browser agent
+        uses: actions/checkout@v4
+
+      - name: Checkout exact Current B908 source
+        uses: actions/checkout@v4
+        with:
+          repository: kj2whvbzjn-hue/guild-adventure-studio
+          ref: sub
+          path: candidate
+
+      - name: Build B909 loadout base from reviewed patch
+        shell: bash
+        run: |
+          cat projects/guild-adventure/fixtures/b909-runtime.patch.part00 \
+              projects/guild-adventure/fixtures/b909-runtime.patch.part01 \
+              projects/guild-adventure/fixtures/b909-runtime.patch.part02 \
+              projects/guild-adventure/fixtures/b909-runtime.patch.part03 > /tmp/b909-runtime.patch
+          git -C candidate apply --check /tmp/b909-runtime.patch
+          git -C candidate apply /tmp/b909-runtime.patch
+          python - <<'PY'
+          from pathlib import Path
+          runtime=Path('candidate/game/assets/js/app-runtime.js')
+          text=runtime.read_text(encoding='utf-8')
+          bad="${want?'戦闘選択へ追加':'戦闘選択から解除'}しました."
+          good="${want?'戦闘選択へ追加':'戦闘選択から解除'}しました。"
+          assert text.count(bad)==1, text.count(bad)
+          runtime.write_text(text.replace(bad,good),encoding='utf-8')
+          PY
+
+      - name: Apply reviewed R31-009 B910 delta
+        shell: bash
+        run: |
+          base64 -d projects/guild-adventure/fixtures/b910-r31-009.patch.gz.b64 | gunzip > /tmp/b910-r31-009.patch
+          git -C candidate apply --check /tmp/b910-r31-009.patch
+          git -C candidate apply /tmp/b910-r31-009.patch
+          python - <<'PY'
+          import json
+          p='candidate/package-build.json'
+          d=json.load(open(p,encoding='utf-8'))
+          assert d['studio_build']=='GKS-B908' and d['game_build']=='GA-B486.239', d
+          d['studio_build']='GKS-B910'; d['game_build']='GA-B486.241'
+          open(p,'w',encoding='utf-8').write(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+          PY
+          python3 -S -B candidate/tools/release/sync-current-build-markers.py --write --root candidate
+
+      - name: Verify exact B910 runtime payload hashes
+        shell: bash
+        working-directory: candidate
+        run: |
+          cat > /tmp/b910.sha256 <<'EOF'
+          08da90f2b5e50b032bbe4fb0e730219b3959b9cf83104f12cd318a00ea495c3f  assets/shared/config/runtime-config.js
+          f3fb6b6d87da65cc0a4903dee2e45418a950f6e444fa9074a5f33b2263370035  game/assets/js/ai-save-bridge.js
+          ca22e68f9da6698f2ba033066d1259c62ece79469e20ab219eeb0eba985925a4  game/assets/js/app-runtime.js
+          dcb3baebd0f0e02eb84a2c6231a6561d649d67b55b131ea195a2ba4450866760  game/assets/js/skill-acquisition-runtime.js
+          6154ea0d4ee0d897ee5ecabc2d614f900c65a01fbdabc6e0ef4d981887b0c12f  game/assets/js/skill-loadout-runtime.js
+          57754e9fcd2d6c077ac736746c31cc803b25e469a57cc00df7f838065dd5e0e0  game/assets/js/ai-editor-ui.js
+          0caa725f81fcf185171f4063a8116417bf3a18eb8cfbeb312de7eeae95f09f93  game/assets/js/battle-control.js
+          f592aa4bcbeda58faf6842aea4a453c0c4efb637f1c14fe571a77a54dd38b762  game/index.html
+          e21267cd1bd9911859b36d13f3ab2f3d7a05d4b8f335052035c6edd4c953a42e  game/sw.js
+          EOF
+          sha256sum -c /tmp/b910.sha256
+          grep -q 'GA-B486.241' game/index.html
+          grep -q 'GKS-B910' assets/shared/config/runtime-config.js
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Browser Agent dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve B910 candidate
+        shell: bash
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory candidate >/tmp/b910-http.log 2>&1 &
+          echo $! > /tmp/b910-http.pid
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/game/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/b910-http.log
+          exit 1
+
+      - name: Run Browser Agent Playwright B910 E2E
+        run: node scripts/run-task.mjs projects/guild-adventure/tasks/reorg-r31-009-b910-ai-selected-skill-candidate-e2e.json
+
+      - name: Verify AI action candidate filtering
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          def visible_select_texts(name):
+              data=json.loads(Path('artifacts',name).read_text(encoding='utf-8'))
+              return [str(row.get('text') or '') for row in data.get('controls',[]) if row.get('tag')=='select' and row.get('visible')]
+          first=visible_select_texts('b910-ai-selected-0001.json')
+          second=visible_select_texts('b910-ai-selected-0002.json')
+          assert any('剛撃' in text and '火炎弾' not in text for text in first), first
+          assert not any('火炎弾' in text for text in first), first
+          assert any('火炎弾' in text and '剛撃' not in text for text in second), second
+          assert not any('剛撃' in text for text in second), second
+          print('B910_AI_SELECTED_SKILL_FILTER_OK')
+          PY
+
+      - name: Require zero page errors
+        shell: bash
+        run: test ! -s artifacts/page-errors.log
+
+      - name: Generate report
+        if: always()
+        run: node scripts/generate-report.mjs projects/guild-adventure/tasks/reorg-r31-009-b910-ai-selected-skill-candidate-e2e.json
+
+      - name: Upload B910 E2E evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b910-candidate-e2e
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 14
