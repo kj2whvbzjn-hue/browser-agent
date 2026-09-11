@@ -1,0 +1,117 @@
+name: TSUGU Continuation Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/tsugu-ai-continuation
+    paths:
+      - '.github/workflows/tsugu-continuation-smoke.yml'
+      - '.github/workflows/tsugu-ai-continuation.yml'
+      - 'projects/tsugu/**'
+      - 'scripts/build-tsugu-codex-prompt.mjs'
+      - 'scripts/check-tsugu-changes.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout browser-agent
+        uses: actions/checkout@v6
+
+      - name: Checkout TSUGU feature branch
+        uses: actions/checkout@v6
+        with:
+          repository: kj2whvbzjn-hue/tsugu
+          ref: feature/tsugu-ai-continuation
+          path: tsugu
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Validate continuation scripts
+        run: |
+          node --check scripts/build-tsugu-codex-prompt.mjs
+          node --check scripts/check-tsugu-changes.mjs
+
+      - name: Run TSUGU unit tests
+        working-directory: tsugu
+        run: node --test tests/*.test.cjs
+
+      - name: Install browser-agent dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build local TSUGU site
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf tsugu/_site
+          mkdir -p tsugu/_site artifacts
+          cp tsugu/static/index.html tsugu/static/styles.css tsugu/static/favicon.svg tsugu/static/core-reference.js tsugu/static/core-architecture.js tsugu/static/core-changeset.js tsugu/static/core-box.js tsugu/static/core-box-changeset.js tsugu/static/core-sync.js tsugu/static/core-sync-storage.js tsugu/static/core-sync-reconcile.js tsugu/static/core-sync-admin.js tsugu/static/core-guard.js tsugu/_site/
+          base64 --decode tsugu/static/app.js.gz.b64 | gzip --decompress > tsugu/_site/app.js
+          node --check tsugu/_site/app.js
+          for file in tsugu/_site/core-*.js; do node --check "$file"; done
+
+      - name: Start local TSUGU server
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory tsugu/_site > artifacts/tsugu-server.log 2>&1 &
+          echo $! > artifacts/tsugu-server.pid
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat artifacts/tsugu-server.log
+          exit 1
+
+      - name: Run Playwright browser smoke
+        run: node scripts/run-task.mjs projects/tsugu/tasks/smoke-local.json
+
+      - name: Generate browser report
+        if: always()
+        run: node scripts/generate-report.mjs projects/tsugu/tasks/smoke-local.json
+
+      - name: Build dry-run continuation prompt
+        if: always()
+        env:
+          TSUGU_WORKSPACE: tsugu
+          BROWSER_REPORT: artifacts/test-report.md
+          PROMPT_OUTPUT: artifacts/tsugu-codex-prompt.md
+          SOURCE_REF: feature/tsugu-ai-continuation
+          SOURCE_SHA: ${{ github.sha }}
+          CYCLE: '0'
+          BROWSER_OUTCOME: smoke
+          CONTINUATION_TEXT: 続行
+        run: node scripts/build-tsugu-codex-prompt.mjs
+
+      - name: Verify generated prompt
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s artifacts/tsugu-codex-prompt.md
+          grep -q '続行' artifacts/tsugu-codex-prompt.md
+          grep -q 'TSUGU autonomous continuation' artifacts/tsugu-codex-prompt.md
+
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsugu-continuation-smoke
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 14
