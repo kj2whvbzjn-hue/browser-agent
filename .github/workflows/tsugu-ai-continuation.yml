@@ -21,6 +21,11 @@ on:
         required: true
         default: 続行
         type: string
+  push:
+    branches:
+      - feature/tsugu-ai-isolated
+    paths:
+      - '.github/controls/tsugu-continue.txt'
 
 permissions:
   contents: read
@@ -32,6 +37,9 @@ concurrency:
 env:
   BROWSER_AGENT_REF: feature/tsugu-ai-isolated
   TSUGU_TARGET_REF: automation/openai-tsugu
+  CONTINUE_CYCLE: ${{ inputs.cycle || '1' }}
+  CONTINUE_WRITE_BACK: ${{ inputs.write_back || 'false' }}
+  CONTINUE_TEXT: ${{ inputs.continuation_text || '続行' }}
 
 jobs:
   continue-tsugu:
@@ -41,15 +49,13 @@ jobs:
     steps:
       - name: Validate isolated execution
         shell: bash
-        env:
-          CYCLE: ${{ inputs.cycle }}
         run: |
           set -euo pipefail
-          if ! [[ "$CYCLE" =~ ^[0-9]+$ ]]; then
-            echo "Invalid cycle: $CYCLE" >&2
+          if ! [[ "$CONTINUE_CYCLE" =~ ^[0-9]+$ ]]; then
+            echo "Invalid cycle: $CONTINUE_CYCLE" >&2
             exit 1
           fi
-          if [ "$CYCLE" -gt 5 ]; then
+          if [ "$CONTINUE_CYCLE" -gt 5 ]; then
             echo "Maximum continuation cycles reached; stopping."
             exit 78
           fi
@@ -65,12 +71,37 @@ jobs:
           path: browser-agent
           persist-credentials: false
 
+      - name: Check OpenAI API key is configured
+        shell: bash
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not configured in browser-agent Actions secrets." >&2
+            exit 1
+          fi
+          echo "OPENAI_API_KEY is configured."
+
+      - name: Check write token when write-back is enabled
+        if: env.CONTINUE_WRITE_BACK == 'true'
+        shell: bash
+        env:
+          TSUGU_AUTOMATION_TOKEN: ${{ secrets.TSUGU_AUTOMATION_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$TSUGU_AUTOMATION_TOKEN" ]; then
+            echo "TSUGU_AUTOMATION_TOKEN is required when write_back=true." >&2
+            exit 1
+          fi
+          echo "TSUGU_AUTOMATION_TOKEN is configured."
+
       - name: Checkout isolated TSUGU branch
         uses: actions/checkout@v6
         with:
           repository: kj2whvbzjn-hue/tsugu
           ref: ${{ env.TSUGU_TARGET_REF }}
-          token: ${{ secrets.TSUGU_AUTOMATION_TOKEN }}
+          token: ${{ secrets.TSUGU_AUTOMATION_TOKEN || github.token }}
           fetch-depth: 0
           path: tsugu
 
@@ -89,8 +120,8 @@ jobs:
             echo "browser_agent_sha=$(git -C browser-agent rev-parse HEAD)"
             echo "tsugu_ref=${TSUGU_TARGET_REF}"
             echo "tsugu_sha=${TSUGU_SHA}"
-            echo "cycle=${{ inputs.cycle }}"
-            echo "write_back=${{ inputs.write_back }}"
+            echo "cycle=${CONTINUE_CYCLE}"
+            echo "write_back=${CONTINUE_WRITE_BACK}"
           } | tee artifacts/isolation.txt
 
       - name: Setup Node
@@ -180,9 +211,9 @@ jobs:
           PROMPT_OUTPUT: artifacts/tsugu-codex-prompt.md
           SOURCE_REF: automation/openai-tsugu
           SOURCE_SHA: ${{ steps.baseline.outputs.sha }}
-          CYCLE: ${{ inputs.cycle }}
+          CYCLE: ${{ env.CONTINUE_CYCLE }}
           BROWSER_OUTCOME: ${{ steps.browser.outcome }}
-          CONTINUATION_TEXT: ${{ inputs.continuation_text }}
+          CONTINUATION_TEXT: ${{ env.CONTINUE_TEXT }}
         run: node browser-agent/scripts/build-tsugu-codex-prompt.mjs
 
       - name: Continue TSUGU with Codex
@@ -248,21 +279,19 @@ jobs:
 
       - name: Commit validated changes to isolated branch
         id: commit
-        if: inputs.write_back == 'true' && steps.guard.outputs.has_changes == 'true'
+        if: env.CONTINUE_WRITE_BACK == 'true' && steps.guard.outputs.has_changes == 'true'
         shell: bash
-        env:
-          CYCLE: ${{ inputs.cycle }}
         run: |
           set -euo pipefail
           test "$TSUGU_TARGET_REF" = "automation/openai-tsugu"
           test "$TSUGU_TARGET_REF" != "main"
           cd tsugu
           git add -A
-          git commit -m "OpenAI continuation cycle ${CYCLE}" -m "TSUGU-OPENAI-ISOLATED:true" -m "Baseline-SHA:${{ steps.baseline.outputs.sha }}"
+          git commit -m "OpenAI continuation cycle ${CONTINUE_CYCLE}" -m "TSUGU-OPENAI-ISOLATED:true" -m "Baseline-SHA:${{ steps.baseline.outputs.sha }}"
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Push only the isolated TSUGU branch
-        if: inputs.write_back == 'true' && steps.guard.outputs.has_changes == 'true'
+        if: env.CONTINUE_WRITE_BACK == 'true' && steps.guard.outputs.has_changes == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -274,7 +303,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tsugu-openai-isolated-${{ inputs.cycle }}
+          name: tsugu-openai-isolated-${{ env.CONTINUE_CYCLE }}
           path: artifacts/
           if-no-files-found: warn
           retention-days: 14
