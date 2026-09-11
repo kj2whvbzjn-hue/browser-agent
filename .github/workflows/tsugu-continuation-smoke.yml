@@ -44,7 +44,12 @@ jobs:
 
       - name: Run TSUGU unit tests
         working-directory: tsugu
-        run: node --test tests/*.test.cjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test_file in tests/*.test.cjs; do
+            node --test "$test_file"
+          done
 
       - name: Install browser-agent dependencies
         run: npm install
