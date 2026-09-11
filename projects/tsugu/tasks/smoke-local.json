@@ -1,0 +1,12 @@
+{
+  "outputDir": "artifacts",
+  "viewport": { "width": 1440, "height": 900 },
+  "dialogPolicy": "dismiss",
+  "steps": [
+    { "action": "goto", "url": "http://127.0.0.1:4173/", "waitUntil": "domcontentloaded", "label": "open-tsugu-local" },
+    { "action": "wait", "ms": 1500, "label": "settle-tsugu" },
+    { "action": "assertUrl", "url": "http://127.0.0.1:4173/", "label": "assert-tsugu-url" },
+    { "action": "dumpPage", "name": "tsugu-local-page" },
+    { "action": "screenshot", "name": "tsugu-local-final" }
+  ]
+}
