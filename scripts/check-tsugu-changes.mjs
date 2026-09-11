@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
@@ -11,17 +12,7 @@ function git(args) {
 
 function writeOutput(name, value) {
   if (!process.env.GITHUB_OUTPUT) return;
-  const fs = requireFs();
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`);
-}
-
-function requireFs() {
-  return globalThis.__fs || (globalThis.__fs = awaitImportFs());
-}
-
-function awaitImportFs() {
-  // eslint-disable-next-line no-eval
-  return eval('require')('node:fs');
 }
 
 const porcelain = git(['status', '--porcelain=v1', '--untracked-files=all']);
@@ -74,7 +65,7 @@ try {
     }
   }
 } catch {
-  // The file-count and path guards remain authoritative if numstat is unavailable.
+  // Path and file-count guards remain authoritative if numstat is unavailable.
 }
 if (changedLines > maxLines) {
   problems.push(`change is too large: ${changedLines} changed lines > ${maxLines}`);
