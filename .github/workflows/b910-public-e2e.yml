@@ -28,19 +28,20 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Verify public B910 source marker
+      - name: Verify public B910 source markers
         shell: bash
         run: |
           set -euo pipefail
           for i in $(seq 1 30); do
-            html=$(curl -fsSL --retry 2 --retry-delay 1 'https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/?e2e=b910' || true)
-            if printf '%s' "$html" | grep -q 'GA-B486.241'; then
-              echo 'PUBLIC_B910_MARKER_OK'
+            game_html=$(curl -fsSL --retry 2 --retry-delay 1 'https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/?e2e=b910' || true)
+            studio_html=$(curl -fsSL --retry 2 --retry-delay 1 'https://kj2whvbzjn-hue.github.io/guild-adventure-studio/studio/?e2e=b910' || true)
+            if [[ "$game_html" == *"GA-B486.241"* && "$studio_html" == *"GKS-B910"* ]]; then
+              echo 'PUBLIC_B910_MARKERS_OK'
               exit 0
             fi
             sleep 2
           done
-          echo 'PUBLIC_B910_MARKER_NOT_FOUND' >&2
+          echo 'PUBLIC_B910_MARKERS_NOT_FOUND' >&2
           exit 1
 
       - name: Run public B910 Playwright E2E
