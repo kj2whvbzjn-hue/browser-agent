@@ -1,0 +1,4 @@
+続行
+cycle=1
+write_back=false
+purpose=isolated-openai-dry-run
