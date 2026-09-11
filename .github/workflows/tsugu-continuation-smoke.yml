@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout browser-agent
         uses: actions/checkout@v6
+        with:
+          path: browser-agent
 
       - name: Checkout TSUGU feature branch
         uses: actions/checkout@v6
@@ -39,8 +41,8 @@ jobs:
 
       - name: Validate continuation scripts
         run: |
-          node --check scripts/build-tsugu-codex-prompt.mjs
-          node --check scripts/check-tsugu-changes.mjs
+          node --check browser-agent/scripts/build-tsugu-codex-prompt.mjs
+          node --check browser-agent/scripts/check-tsugu-changes.mjs
 
       - name: Run TSUGU unit tests
         working-directory: tsugu
@@ -52,9 +54,11 @@ jobs:
           done
 
       - name: Install browser-agent dependencies
+        working-directory: browser-agent
         run: npm install
 
       - name: Install Chromium
+        working-directory: browser-agent
         run: npx playwright install --with-deps chromium
 
       - name: Build local TSUGU site
@@ -84,11 +88,11 @@ jobs:
           exit 1
 
       - name: Run Playwright browser smoke
-        run: node scripts/run-task.mjs projects/tsugu/tasks/smoke-local.json
+        run: node browser-agent/scripts/run-task.mjs browser-agent/projects/tsugu/tasks/smoke-local.json
 
       - name: Generate browser report
         if: always()
-        run: node scripts/generate-report.mjs projects/tsugu/tasks/smoke-local.json
+        run: node browser-agent/scripts/generate-report.mjs browser-agent/projects/tsugu/tasks/smoke-local.json
 
       - name: Build dry-run continuation prompt
         if: always()
@@ -101,7 +105,7 @@ jobs:
           CYCLE: '0'
           BROWSER_OUTCOME: smoke
           CONTINUATION_TEXT: 続行
-        run: node scripts/build-tsugu-codex-prompt.mjs
+        run: node browser-agent/scripts/build-tsugu-codex-prompt.mjs
 
       - name: Verify generated prompt
         if: always()
