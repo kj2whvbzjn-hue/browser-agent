@@ -1,0 +1,98 @@
+name: B912 F03 Candidate Playwright E2E
+
+on:
+  push:
+    branches:
+      - b912-f03-e2e
+    paths:
+      - '.github/workflows/b912-f03-candidate-e2e.yml'
+      - 'projects/guild-adventure/fixtures/b912-f03.patch.gz.b64'
+      - 'scripts/b912-f03-e2e.mjs'
+  workflow_dispatch:
+
+jobs:
+  b912-f03-playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout browser agent
+        uses: actions/checkout@v4
+
+      - name: Checkout exact Current B911 source
+        uses: actions/checkout@v4
+        with:
+          repository: kj2whvbzjn-hue/guild-adventure-studio
+          ref: sub
+          path: candidate
+
+      - name: Verify B911 baseline
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open('candidate/package-build.json',encoding='utf-8'))
+          assert d['studio_build']=='GKS-B911', d
+          assert d['game_build']=='GA-B486.242', d
+          print('B911_BASELINE_OK')
+          PY
+
+      - name: Apply reviewed F03 B912 delta
+        shell: bash
+        run: |
+          base64 -d projects/guild-adventure/fixtures/b912-f03.patch.gz.b64 | gunzip > /tmp/b912-f03.patch
+          git -C candidate apply --check /tmp/b912-f03.patch
+          git -C candidate apply /tmp/b912-f03.patch
+
+      - name: Verify exact B912 target hashes
+        shell: bash
+        working-directory: candidate
+        run: |
+          cat > /tmp/b912-f03.sha256 <<'EOF'
+          3556723c5a511cebd19bae0579bfc88f75eb44049e989d63ce660bdb129a092d  assets/shared/js/runtime-boundary-contracts.js
+          d2d25299553d37cb3af4549b736884e562aae7610c872d993afb4af09978ce26  game/assets/js/app-runtime.js
+          7b11702b16217cdaad68653062073f30a468e0f1698c8e23b7151910f0351e34  package-build.json
+          612eadcacc74049f5ab9ef7ef809317e7d208885772be51a89fb2a7e2eb35a5f  package_manifest.json
+          EOF
+          sha256sum -c /tmp/b912-f03.sha256
+          python - <<'PY'
+          import json
+          d=json.load(open('package-build.json',encoding='utf-8'))
+          assert d['studio_build']=='GKS-B912', d
+          assert d['game_build']=='GA-B486.243', d
+          print('B912_TARGET_HASHES_OK')
+          PY
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Browser Agent dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve B912 candidate
+        shell: bash
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory candidate >/tmp/b912-f03-http.log 2>&1 &
+          echo $! > /tmp/b912-f03-http.pid
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:4173/game/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/b912-f03-http.log
+          exit 1
+
+      - name: Run B912 F03 Playwright E2E
+        run: node scripts/b912-f03-e2e.mjs
+
+      - name: Upload B912 F03 E2E evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b912-f03-candidate-e2e
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 14
