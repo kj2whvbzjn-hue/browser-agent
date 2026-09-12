@@ -30,8 +30,29 @@ try {
     fail(`Unexpected build markers: ${JSON.stringify(builds)}`);
   }
 
-  await page.locator('#titleStart').click();
-  await page.waitForFunction(() => document.body.dataset.phase === 'base', null, { timeout: 15000 });
+  await page.waitForFunction(() => {
+    const game = window.GKGameFormalConfig?.bridge?.status;
+    const equipment = window.GKGameEquipmentRuntime?.bridge?.status;
+    const passive = window.GKGameFormalConfig?.passiveBridge?.status;
+    return [game, equipment, passive].every(status => status === 'loaded' || status === 'failed');
+  }, null, { timeout: 15000 });
+  const formalStatuses = await page.evaluate(() => ({
+    game: { status: window.GKGameFormalConfig?.bridge?.status, errors: [...(window.GKGameFormalConfig?.bridge?.errors || [])] },
+    equipment: { status: window.GKGameEquipmentRuntime?.bridge?.status, errors: [...(window.GKGameEquipmentRuntime?.bridge?.errors || [])] },
+    passive: { status: window.GKGameFormalConfig?.passiveBridge?.status, errors: [...(window.GKGameFormalConfig?.passiveBridge?.errors || [])] },
+  }));
+  for (const [name, state] of Object.entries(formalStatuses)) {
+    if (state.status !== 'loaded') fail(`Formal ${name} load failed: ${JSON.stringify(state)}`);
+  }
+  const initialized = await page.evaluate(() => {
+    const Core = window.GKGameSaveCore;
+    const prepared = Core.prepareNewGameSnapshot();
+    const committed = Core.commitPreparedNewGame(prepared);
+    return { characterCount: committed.characters.length, gold: Number(committed.guild?.gold || 0) };
+  });
+  if (initialized.characterCount !== 6 || initialized.gold !== 500) {
+    fail(`New Game core initialization mismatch: ${JSON.stringify(initialized)}`);
+  }
 
   const result = await page.evaluate(async () => {
     const Core = window.GKGameSaveCore;
@@ -151,6 +172,8 @@ try {
     ok: true,
     target,
     builds,
+    formalStatuses,
+    initialized,
     checks: [
       'candidate Game build GA-B486.243 / Studio marker GKS-B912',
       'concurrent +1/+2 transactions serialize with no lost update',
