@@ -32,9 +32,10 @@ try{
   function end(){result.journeys.push(journey);journey=null;}
   async function reveal(locator){
    for(let i=0;i<160;i++){
-    const v=await locator.evaluate(el=>{const r=el.getBoundingClientRect(),d=el.closest('.dialog');let top=0,bottom=innerHeight;if(d){const b=d.getBoundingClientRect();top=b.top+65;bottom=b.bottom-12;}return {top:r.top,bottom:r.bottom,x:r.x,y:r.y,width:r.width,height:r.height,upper:top+8,lower:bottom-8,modal:!!d};});
+    const v=await locator.evaluate(el=>{const r=el.getBoundingClientRect(),d=el.closest('.dialog');let top=0,bottom=innerHeight;if(d){const b=d.getBoundingClientRect();top=b.top+(el.closest('.dialog-head')?0:65);bottom=b.bottom-12;}return {top:r.top,bottom:r.bottom,x:r.x,y:r.y,width:r.width,height:r.height,upper:top+8,lower:bottom-8,modal:!!d};});
     if(v.bottom>=v.upper&&v.top<=v.lower&&v.top>=v.upper-1&&Math.min(v.height,44)+v.top<=v.lower){break;}
-    const delta=(v.top<v.upper?-1:1)*Math.floor(viewport.height*.7);
+    const needed=(v.top+Math.min(v.height,44)/2)-(v.upper+v.lower)/2;
+    const delta=Math.sign(needed)*Math.min(Math.floor(viewport.height*.7),Math.ceil(Math.abs(needed)));
     const before=await page.evaluate(()=>({y:scrollY,m:document.querySelector('.dialog')?.scrollTop||0}));
     await page.mouse.move(v.modal?viewport.width/2:viewport.width-8,v.modal?viewport.height*.6:viewport.height*.8);await page.mouse.wheel(0,delta);await page.waitForTimeout(70);
     const after=await page.evaluate(()=>({y:scrollY,m:document.querySelector('.dialog')?.scrollTop||0}));const moved=after.y-before.y+after.m-before.m;
@@ -45,12 +46,13 @@ try{
   async function click(locator,name,kind='click'){
    await reveal(locator);const before=await page.evaluate(()=>({y:scrollY,m:document.querySelector('.dialog')?.scrollTop||0,x:document.querySelector('.tabs')?.scrollLeft||0}));
    await locator.click();
+   await page.waitForFunction(()=>!document.querySelector('main[aria-busy="true"]')&&[...document.querySelectorAll('button')].some(b=>!b.disabled));
    if(journey){journey.clicks++;if(kind==='tab')journey.tab_transitions++;if(kind==='dialog')journey.dialog_transitions++;journey.trace.push(name);const after=await page.evaluate(()=>({x:document.querySelector('.tabs')?.scrollLeft||0}));journey.horizontal_px+=Math.abs(after.x-before.x);}
   }
   const button=name=>page.getByRole('button',{name,exact:true});
   const tab=name=>click(page.getByRole('tab',{name,exact:true}),name,'tab');
   const close=()=>click(button('閉じる'),'閉じる','dialog');
-  async function screen(name){const path=`${root}/${label}-${name}.png`;await page.screenshot({path,fullPage:false});result.screens.push(path);}
+  async function screen(name){const path=`${root}/${label}-${name}.png`;await page.screenshot({path,fullPage:false});result.screens.push(path);if(label==='mobile'&&['task-z02','spec-longest'].includes(name)){const jpeg=await page.screenshot({type:'jpeg',quality:40});console.log('TSUGU_SCREENSHOT='+name+':'+jpeg.toString('base64'));}}
   async function form(name){
    const fields=await page.locator('.dialog input,.dialog textarea,.dialog select').evaluateAll(els=>els.map(e=>({name:e.name,tag:e.tagName,type:e.type,chars:e.value.length,width:Math.round(e.getBoundingClientRect().width),height:Math.round(e.getBoundingClientRect().height),scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,fontSize:getComputedStyle(e).fontSize,visibleLines:e.tagName==='TEXTAREA'?Math.round(e.clientHeight/parseFloat(getComputedStyle(e).lineHeight)):null})));
    result.forms.push({name,fields,dialog:await page.locator('.dialog').evaluate(e=>({height:e.clientHeight,contentHeight:e.scrollHeight,scrollTop:e.scrollTop})),focus:await page.evaluate(()=>({tag:document.activeElement.tagName,name:document.activeElement.getAttribute('name')}))});await screen(name);
@@ -65,7 +67,7 @@ try{
    const dl=page.waitForEvent('download');await button('登録結果JSONを保存').click();await (await dl).saveAs(`${root}/${label}-receipt.json`);
    await close();await page.locator('[data-action=open]').filter({hasText:fixture.name}).click();await page.getByRole('heading',{name:live?`[E2E ${process.env.GITHUB_RUN_ID}] ${fixture.name}`:fixture.name,exact:true}).waitFor();
    result.checks.push('UI import, canonical save, open');if(live){report.real_save='PASS_REGISTERED';await page.reload();await connect();await page.locator('[data-action=open]').filter({hasText:`[E2E ${process.env.GITHUB_RUN_ID}]`}).click();await tab('Task');assert.equal(await page.locator('[data-action=edit][data-collection=tasks]').count(),89);result.checks.push('Real GitHub reload retains 89 tasks');await screen('live-reload');continue;}
-   assert.equal(writes,1);const saved=JSON.parse(Buffer.from([...files.values()][0].content,'base64').toString());assert.equal(saved.tasks.length,89);assert.equal(saved.specifications.length,34);assert.equal(saved.work_boxes.length,37);
+   assert.equal(writes,1);const saved=JSON.parse(Buffer.from([...files.values()][0].content,'base64').toString());assert.equal(saved.tasks.length,89);assert.equal(saved.specifications.length,34);assert.equal(saved.work_boxes.length,37);for(const collection of ['tasks','specifications','work_boxes','checks'])for(const original of fixture[collection]){const row=saved[collection].find(r=>r.id===original.id);for(const [k,v]of Object.entries(original))assert.deepEqual(row[k],v,collection+'.'+original.id+'.'+k);}result.checks.push('All input fields, 345 dependencies and 68 specification links survive save unchanged');
    const state=()=>JSON.parse(Buffer.from([...files.values()][0].content,'base64').toString());
    await screen('overview');begin('概要から末尾Task Z02の依存を確認');await tab('Task');await openTask('TASK-NIP-Z02');await form('task-z02');const deps=await page.locator('[name=depends_on]').inputValue();assert.equal(deps.split(',').length,35);end();
    begin('Z02から依存先34-02へ移動');await close();await openTask('TASK-NIP-34-02');await form('task-34-02');end();
