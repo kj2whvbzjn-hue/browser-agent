@@ -1,0 +1,53 @@
+name: TSUGU 34 specs 89 tasks E2E
+on:
+  push:
+    branches: ['test/tsugu-plan-e2e']
+    paths: ['projects/tsugu/**', '.github/workflows/tsugu-plan-e2e.yml']
+  workflow_dispatch:
+    inputs:
+      real_save:
+        description: 'Also register an E2E-labelled project in Private GitHub (requires TSUGU_E2E_TOKEN)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  usability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: kj2whvbzjn-hue/tsugu
+          ref: 0e763949abec7bfb0def2d5840c4857f13cfe0b0
+          path: app-under-test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Run Playwright import, dependency and usability measurements
+        run: |
+          python3 -m http.server 4173 --directory app-under-test/static > server.log 2>&1 &
+          node projects/tsugu/tests/plan-e2e.mjs
+      - name: Record real-save limitation
+        if: always() && !inputs.real_save
+        run: |
+          echo 'Real GitHub save was NOT run. Stateful API fixture is not proof of Private repository persistence.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Actual Private registration and reload (explicit opt-in)
+        if: inputs.real_save
+        env:
+          TSUGU_TEST_MODE: live
+          TSUGU_E2E_TOKEN: ${{ secrets.TSUGU_E2E_TOKEN }}
+          TSUGU_E2E_OWNER: kj2whvbzjn-hue
+          TSUGU_E2E_REPO: tsugu-data
+          TSUGU_E2E_BRANCH: main
+        run: node projects/tsugu/tests/plan-e2e.mjs
+      - name: Upload screenshots, metrics and receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsugu-plan-e2e-${{ github.run_id }}
+          path: artifacts/tsugu*/
+          retention-days: 14
