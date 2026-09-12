@@ -1,0 +1,2492 @@
+{
+  "schema_version": "tsugu-project-import/1",
+  "projects": [
+    {
+      "name": "修正版34仕様に基づく新規実装計画",
+      "project_context": {
+        "purpose": "修正版34仕様の全項目を実装し、Studio/Game/Export/Saveで一貫させる。",
+        "summary": "新規Task・依存・完了条件で計画。旧計画は参考資料のみ。ゲーム実装は未実施。"
+      },
+      "current_focus": {
+        "architecture_id": "ARC-NIP",
+        "work_box_id": "BOX-NIP-FOUNDATION",
+        "theme": "新規実装計画",
+        "goal": "着手ソースを確定しF01から進める"
+      },
+      "architecture_nodes": [
+        {
+          "id": "ARC-NIP",
+          "name": "修正版34仕様実装",
+          "parent_id": ""
+        }
+      ],
+      "work_boxes": [
+        {
+          "id": "BOX-NIP-FOUNDATION",
+          "node_id": "ARC-NIP",
+          "title": "共通基盤",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-DECISIONS",
+          "node_id": "ARC-NIP",
+          "title": "未確定事項具体化",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-RELEASE",
+          "node_id": "ARC-NIP",
+          "title": "統合検証と配布",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-01",
+          "node_id": "ARC-NIP",
+          "title": "ゲーム基本",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-02",
+          "node_id": "ARC-NIP",
+          "title": "能力値と成長",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-03",
+          "node_id": "ARC-NIP",
+          "title": "ジョブと転職",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-04",
+          "node_id": "ARC-NIP",
+          "title": "経験値とSP",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-05",
+          "node_id": "ARC-NIP",
+          "title": "雇用と解雇",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-06",
+          "node_id": "ARC-NIP",
+          "title": "装備スロットと装備条件",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-07",
+          "node_id": "ARC-NIP",
+          "title": "武器生成",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-08",
+          "node_id": "ARC-NIP",
+          "title": "防具生成",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-09",
+          "node_id": "ARC-NIP",
+          "title": "MODとレアリティ",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-10",
+          "node_id": "ARC-NIP",
+          "title": "戦闘能力値と補正",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-11",
+          "node_id": "ARC-NIP",
+          "title": "命中とクリティカル",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-12",
+          "node_id": "ARC-NIP",
+          "title": "ダメージと防御",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-13",
+          "node_id": "ARC-NIP",
+          "title": "隊列と対象範囲",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-14",
+          "node_id": "ARC-NIP",
+          "title": "Tickと行動ゲージ",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-15",
+          "node_id": "ARC-NIP",
+          "title": "スキル発動と詠唱",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-16",
+          "node_id": "ARC-NIP",
+          "title": "アクティブスキル生成",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-17",
+          "node_id": "ARC-NIP",
+          "title": "スキルデータと使用条件",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-18",
+          "node_id": "ARC-NIP",
+          "title": "状態異常と継続効果",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-19",
+          "node_id": "ARC-NIP",
+          "title": "パッシブスキル",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-20",
+          "node_id": "ARC-NIP",
+          "title": "トリガーと連鎖処理",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-21",
+          "node_id": "ARC-NIP",
+          "title": "AI編集と行動選択",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-22",
+          "node_id": "ARC-NIP",
+          "title": "モンスター生成",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-23",
+          "node_id": "ARC-NIP",
+          "title": "クエストとイベント",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-24",
+          "node_id": "ARC-NIP",
+          "title": "ストーリーと会話",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-25",
+          "node_id": "ARC-NIP",
+          "title": "難易度とストーン",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-26",
+          "node_id": "ARC-NIP",
+          "title": "報酬とドロップ",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-27",
+          "node_id": "ARC-NIP",
+          "title": "冒険進行と帰還",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-28",
+          "node_id": "ARC-NIP",
+          "title": "ギルドと施設",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-29",
+          "node_id": "ARC-NIP",
+          "title": "所持品と倉庫",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-30",
+          "node_id": "ARC-NIP",
+          "title": "セーブとニューゲーム",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-31",
+          "node_id": "ARC-NIP",
+          "title": "画面と戦闘演出",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-32",
+          "node_id": "ARC-NIP",
+          "title": "サウンドとプレイヤー設定",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-33",
+          "node_id": "ARC-NIP",
+          "title": "チュートリアルとヘルプ",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        },
+        {
+          "id": "BOX-NIP-34",
+          "node_id": "ARC-NIP",
+          "title": "スキル習得・選択・リスペック",
+          "body": "新規計画の作業単位。詳細は所属Task本文。"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "TASK-NIP-F01",
+          "box_id": "BOX-NIP-FOUNDATION",
+          "title": "着手ソースと設定の基準を確定する",
+          "acceptance_criteria": "実装手順\n1. 実装時点の提供ソースのBuild、ファイルハッシュ、未保存変更、Export設定版を記録する。添付旧計画のBuildを現行とみなさない。\n2. 本計画同梱34仕様のハッシュを照合し、提供コードの入口と利用中Runtimeを特定する。\n3. 合致済み処理は再実装せず、該当タスクの受入試験を満たしてから完了へ移す。\n\n完了条件\n1. 実装に使用するソースの版と場所が明記され、別版に上書きしていない。\n2. GS-14版1.1の戦闘中順序固定を基準として宣言している。",
+          "execution_order": 1,
+          "depends_on": [],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-F02",
+          "box_id": "BOX-NIP-FOUNDATION",
+          "title": "共通境界と試験用データを定義する",
+          "acceptance_criteria": "実装手順\n1. Battle/QuestRun/SaveのID、Schema版、Snapshot構造、RNG用途別入口を定義する。フィールド名の新設は既存契約確認後に決める。\n2. 後述の共通契約C01〜C06をモジュール間の入力/出力に割り当て、表示層からのドメイン書込を禁止する。\n3. 固定Seed・乱数列注入・永続書込失敗注入が可能なテスト治具を用意する。試験専用数値を本番Exportと分離する。\n\n完了条件\n1. 同一初期状態/設定版/Seedの結果を比較できる。\n2. RNG消費と保存回数を計測でき、試験fixtureが本番データに混ざらない。",
+          "execution_order": 2,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D01",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "Level別必要EXP表",
+          "acceptance_criteria": "実装手順\n1. Level1→2から49→50までの必要EXPを確定する。\n2. 全49遷移を明示テーブルにし、未記載Levelを通さない。等差/指数の提案値は本番採用しない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: データ作成\n\n影響Task: TASK-NIP-04-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 3,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D02",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "MOD抽選・Tier・品質対応",
+          "acceptance_criteria": "実装手順\n1. レアリティ別件数/重み/攻防枠/MOD候補/Tier値と報酬品質→装備レアリティの対応を確定する。\n2. 既存設定値は候補として取り出し、仕様に適合する項目だけを採用表に明記する。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: データ作成\n\n影響Task: TASK-NIP-09-02, TASK-NIP-26-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 4,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D03",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "クリティカルのBalance上限",
+          "acceptance_criteria": "実装手順\n1. 参照する率/追加Damageの上限キー、単位、現在値を確定する。\n2. GS-11の確定基礎式を維持し、外部Balance値を明示する。物理命中下限5%を復活させない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: 設定確定\n\n影響Task: TASK-NIP-11-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 5,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D05",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "競合かばうの優先",
+          "acceptance_criteria": "実装手順\n1. 複数有効保護者と同priority時の優先、候補無効化後の扱いを決める。\n2. priorityと同値解決の規則を明文化する。新たな抽選を採用する場合も戦闘処理順の再抽選とは分離する。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: ルール決定\n\n影響Task: TASK-NIP-13-02, TASK-NIP-12-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 7,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D06",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "同Tick境界の優先",
+          "acceptance_criteria": "実装手順\n1. Cast完了・状態満了・前衛全滅が重なる場合の全体順序を決める。\n2. GS-14既定Tick順と戦闘開始時固定順を保持し、未定義のCast/前進境界だけを具体例で決める。Tickごとの順序再抽選案は採用しない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: ルール決定\n\n影響Task: TASK-NIP-14-02, TASK-NIP-15-02, TASK-NIP-13-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 8,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D07",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "強制前進時のCast",
+          "acceptance_criteria": "実装手順\n1. 詠唱中の後衛が強制前進した場合に中断するか継続するか決める。\n2. 同一予約対象集合に対する中断/継続の2例を提示し、MP/CDが発生する境界と併せて選ぶ。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: ルール決定\n\n影響Task: TASK-NIP-15-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 9,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D08",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "Active参照Passiveの具体マスター",
+          "acceptance_criteria": "実装手順\n1. 参照Active ID、Trigger能力要求、段階対応を決める。\n2. 総要求110以下と回復/Barrier禁止を満たす完成定義だけを登録する。未完成テンプレートは本番候補に入れない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: データ作成\n\n影響Task: TASK-NIP-19-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 10,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D09",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "Monster魔法命中・抵抗生成",
+          "acceptance_criteria": "実装手順\n1. Monsterの魔法命中/魔法命中抵抗の元性能、比率、丸めを決める。\n2. 既知の物理性能生成式を根拠なく流用せず、Level/ジョブ/装備の具体例で出力を確定する。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: ルール決定\n\n影響Task: TASK-NIP-22-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 11,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D10",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "Guild進行と解放・容量",
+          "acceptance_criteria": "実装手順\n1. Guild EXP/Level、施設・AI解放、所属人数・倉庫容量の各表を決める。\n2. 初期状態から全施設利用までの進行経路を検査し、施設強化や直接能力補正は追加しない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: データ作成\n\n影響Task: TASK-NIP-28-02, TASK-NIP-05-02, TASK-NIP-29-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 12,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D11",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "所持品Stack・容量・価格",
+          "acceptance_criteria": "実装手順\n1. 所持容量、Stack上限、売却価格と対象を決める。\n2. 装備個体とResource Stackを区別して上限を指定する。満杯時の自動破棄/Overflowは採用しない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: データ作成\n\n影響Task: TASK-NIP-29-02, TASK-NIP-05-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 13,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D12",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "Save対応版とMigration対象",
+          "acceptance_criteria": "実装手順\n1. 着手ソースで読めるSchema版と、正式Migrationの存在する入力版を確定する。\n2. 実在する正式変換だけを列挙してfixture化する。旧計画の移行完了状態は引き継がない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: 実装基準確定\n\n影響Task: TASK-NIP-30-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 14,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D13",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "音響素材と表示設定値",
+          "acceptance_criteria": "実装手順\n1. BGM/SE割当、既定音量、速度候補、演出軽減段階を決める。\n2. 素材と設定の対応表を作り、戦闘計算への影響を持たせない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: データ作成\n\n影響Task: TASK-NIP-32-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 15,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-D14",
+          "box_id": "BOX-NIP-DECISIONS",
+          "title": "Tutorial段階と導入データ",
+          "acceptance_criteria": "実装手順\n1. 7題材のID、順番、完了条件、本文と初期AIからの初戦導線を確定する。\n2. 初期Skillなし/SP0を保持して習得可能になる時点へ誘導する。未定義の初期Skill付与で迂回しない。\n3. 採用内容・設定版・根拠を記録し、影響する仕様の該当境界だけを明示更新してから依存タスクへ渡す。\n\n完了条件\n1. 曖昧な選択肢が残らず、数値表または具体的な入力/期待出力がある。\n2. 影響先に渡す値と版が固定され、未採用案が本番設定へ混在していない。\n\n決定種別: データ作成\n\n影響Task: TASK-NIP-33-02\n\n実装注記: ルールの新規決定はユーザー判断、明示仕様から決められる型・検証実装は実装担当が進める。未決のまま確定済みと記録しない。",
+          "execution_order": 16,
+          "depends_on": [
+            "TASK-NIP-F01"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-F03",
+          "box_id": "BOX-NIP-FOUNDATION",
+          "title": "全機能共用の保存トランザクションを作る",
+          "acceptance_criteria": "実装手順\n1. 状態複製→操作案適用→全体検証→直列書込→成功通知の入口を作る。外部副作用は保存成功後に行う。\n2. 前正常Save/Backupの保持と本Save切替の失敗点を列挙する。localStorageの3個目の巨大一時コピーを前提にせず、ステージ状態はメモリで構築する。\n3. 実ストレージの原子性に合わせた復旧手順を定義し、途中失敗と再起動に対する一意な正常状態の選択規則を実装する。\n\n完了条件\n1. 容量不足/Backup書込失敗/本Save書込失敗の各点で前正常状態を復旧できる。\n2. 並行操作が更新を失わず、未確定中間状態を正常Saveとして読まない。",
+          "execution_order": 17,
+          "depends_on": [
+            "TASK-NIP-F02"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-F04",
+          "box_id": "BOX-NIP-FOUNDATION",
+          "title": "設定検証と正式実行入口を準備する",
+          "acceptance_criteria": "実装手順\n1. 全34仕様が参照する設定キー、単位、参照ID、必要/任意を一覧化する。\n2. 未知ID/Schema不一致/必須値欠落を登録・Export・実行開始前に検出する共通結果型を定義する。\n3. 現在実行される入口を登録し、正式Compiler/Resolverへ接続する切替箇所と回帰対象を特定する。未定義仕様の自動補完を入れない。\n\n完了条件\n1. 必須設定の欠落が開始前に理由付きで検出される。\n2. 新旧の効果実行経路が同じ効果を二重実行しない。",
+          "execution_order": 18,
+          "depends_on": [
+            "TASK-NIP-F02"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-01-01",
+          "box_id": "BOX-NIP-01",
+          "title": "ゲーム基本：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. ギルド準備、開始要求、Run生成、再生、帰還可能、受取済みの状態遷移と許可操作を定義する。\n2. 最大6人の編成と開始条件をドメイン入口で検証し、表示から状態を直接書き換えない。\n3. 冒険開始時の全区間シミュレーションと時間経過による表示解放を別関数にし、帰還コマンドを1つに集約する。\n\n完了条件\n1. 7人編成の開始は拒否し、6人は他条件を満たせば開始できる。\n2. 同じ保存済みRunを再生してもGold・経験値・ストーン所持数は変わらない。\n3. 成功後の帰還を2回要求しても受取は1回だけになる。",
+          "execution_order": 19,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-01"
+          ]
+        },
+        {
+          "id": "TASK-NIP-03-01",
+          "box_id": "BOX-NIP-03",
+          "title": "ジョブと転職：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. GS-03の7ジョブと成長表を設定化し、列順STR/VIT/AGI/DEX/INT/MND/LUKを固定する。\n2. 転職コマンドはギルド操作として無料・回数無制限にし、能力値・習得・装備を保持する。\n3. 未知ジョブ・ギルド編集不可状態を拒否し、転職前後ジョブ・Level・費用0・時刻の履歴を変更と一体保存する。職業別の装備・習得済みSkill使用制限を追加しない。\n\n完了条件\n1. 剣士の成長係数15/13/4/10/7/8/3を含め各ジョブの合計が60になる。\n2. 同一冒険者を往復転職させてもGold・SP・能力値・装備IDが変わらない。\n3. 転職確定後のLevel上昇は新ジョブ係数を使い、既存の成長履歴を変更しない。",
+          "execution_order": 20,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-03"
+          ]
+        },
+        {
+          "id": "TASK-NIP-07-01",
+          "box_id": "BOX-NIP-07",
+          "title": "武器生成：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. GS-07の全13種のSTR/DEX/INT係数表を定義し、iLv1〜11の要求値を生成する。\n2. 攻撃=reqSTR×2、命中=reqDEX×2、魔法補正=reqINT×STR係数、魔法命中=(reqINT+reqDEX)×2を生成する。\n3. 基礎クリティカル5%と盾・矢筒の非攻撃例外を出力へ含め、Runtimeで要求値から性能を再生成しない。\n\n完了条件\n1. 片手剣iLv1は要求6/3/1、攻撃12、命中6、魔法補正6、魔法命中8となる。\n2. 生成後の性能を明示変更したテスト個体はRuntimeも変更済み性能を使い、要求値で上書きしない。\n3. iLv0/12、未知種別は生成拒否し、全13種×11Levelの期待表を比較する。",
+          "execution_order": 21,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-07"
+          ]
+        },
+        {
+          "id": "TASK-NIP-08-01",
+          "box_id": "BOX-NIP-08",
+          "title": "防具生成：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 重装6/3/1、軽装3/1/6、ローブ1/6/3のVIT/MND/AGI係数を使用する。\n2. HP/MPは要求VIT/MNDに鎧20・他10を掛け、回避=reqAGI、魔法命中抵抗=reqAGI+reqMNDを部位ごとに生成する。\n3. 各部位の保存性能を出力し、合計側は実装備だけを加算する。\n\n完了条件\n1. iLv1重装鎧はHP120・MP60・回避1・魔法命中抵抗4となる。\n2. 同じiLv1重装4部位でHP300・MP150・回避4・魔法命中抵抗16となる。\n3. 1部位だけ装備した魔法命中抵抗4を4倍して16にしない。",
+          "execution_order": 22,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-08"
+          ]
+        },
+        {
+          "id": "TASK-NIP-13-01",
+          "box_id": "BOX-NIP-13",
+          "title": "隊列と対象範囲：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. SINGLE/FRONT/BACK/RANDOM/ALLの敵範囲をGS-13どおりに実装し、RANDOMは復元抽選の既定2回とする。\n2. 攻撃者後衛のSINGLE/FRONT/RANDOMだけ50%、BACK/ALLは100%とし、被攻撃者後衛の一律半減を作らない。\n3. 生存前衛0なら生存後衛を全員前進させ、味方Heal/Barrierは隊列不問とする。かばうはSINGLE/BACK/RANDOM各抽選のみ対象にする。\n\n完了条件\n1. 後衛攻撃者のSINGLE100Damageは50、ALL100Damageは100となる。\n2. RANDOM2回は同じ敵が2回選ばれ得る。FRONT/ALLにかばう置換を適用しない。\n3. 最後の生存前衛が失われた境界で全生存後衛が前進し、死亡後衛は対象外となる。",
+          "execution_order": 23,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-13"
+          ]
+        },
+        {
+          "id": "TASK-NIP-17-01",
+          "box_id": "BOX-NIP-17",
+          "title": "スキルデータと使用条件：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 正式Effect/Trigger ID・パラメータ・参照先を検証し、表示名や旧タグから効果を推測する経路を実行入口にしない。\n2. EQUIPMENT_TAGS/SELFのallTags全件・anyTagsいずれか・複数条件ANDを共通評価器として実装する。\n3. 習得条件と使用装備条件と状況条件を分離し、Compiler出力だけを効果実行の入力へ渡す。\n\n完了条件\n1. 未知Effect IDはExport/実行前に拒否され、似た名前の登録効果へ変換されない。\n2. 弓だけ・矢筒だけでは両方必須の条件に不成立、両方で成立する。\n3. 能力条件を満たして習得しても装備条件不成立なら使用不可となる。",
+          "execution_order": 24,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-17"
+          ]
+        },
+        {
+          "id": "TASK-NIP-23-01",
+          "box_id": "BOX-NIP-23",
+          "title": "クエストとイベント：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. Quest所有のBox、時間、Context/Map参照を定義し、A→preScene→B→middle→C→post→Dを安定Box IDで実行する。\n2. 固定/ランダム配置とEvent用途/種別を分離し、ランダムSlotは開始時全体シミュレーションの到達状態で抽選する。\n3. 任意候補なしは継続、必須候補なしは失敗とする。固定配置のoverrideを通常抽選へ漏らさず、required_monsters/fixed_formationをResolverへ渡す。\n\n完了条件\n1. 前Boxのフラグ変更を次Boxの候補絞り込みに反映する。\n2. 任意Slot候補0はダミーイベントを作らず継続、必須Slot候補0ではRun開始を不成立にする。\n3. Boxの並びを編集しても既存ID参照が意図せず別Boxへ付け替わらない。",
+          "execution_order": 25,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-23"
+          ]
+        },
+        {
+          "id": "TASK-NIP-28-01",
+          "box_id": "BOX-NIP-28",
+          "title": "ギルドと施設：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 酒場・訓練所・倉庫・掲示板を機能入口にし、施設利用条件を共通Resolverへまとめる。\n2. Guild EXP/Levelと施設解放・所属/倉庫容量・AI解放を設定参照にする。未定義値を画面に固定しない。\n3. 施設強化や施設からの直接戦闘能力上昇を加えず、未解放操作をドメイン入口でも拒否する。\n\n完了条件\n1. 施設未解放は画面非活性だけでなく直接コマンドも拒否する。\n2. Guild表示を開くだけで冒険者の戦闘能力値が増えない。\n3. D10の境界値直前/到達/直後で同じ解放結果を画面とRuntimeが返す。",
+          "execution_order": 26,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-28"
+          ]
+        },
+        {
+          "id": "TASK-NIP-29-01",
+          "box_id": "BOX-NIP-29",
+          "title": "所持品と倉庫：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 装備は個体ID、その他はresource_kind+resource_idで管理し、所持品と倉庫の容量を別設定とする。\n2. 移動・装備付替え・返却の前に所有者/数量/空き容量を検証し、移動元減算と移動先加算を同時に確定する。\n3. 受入不可を明示結果として返し、Overflowや自動破棄を作らない。売却価格・Stack上限はD11の設定を読む。\n\n完了条件\n1. 同じresource_idでもkindが違えば別Stackとなり、装備2個を1Stackへまとめない。\n2. 倉庫満杯で移動元の数量を減らさず、保存失敗でも片側だけ変化しない。\n3. 不正な負数量、重複個体、所有者不一致は操作開始前に拒否する。",
+          "execution_order": 27,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-29"
+          ]
+        },
+        {
+          "id": "TASK-NIP-30-01",
+          "box_id": "BOX-NIP-30",
+          "title": "セーブとニューゲーム：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 基盤F03の保存トランザクションへGuild、冒険者、所持品、Skill/SP履歴、AI、Run、設定、Tutorialを収容し、全参照を検証する。\n2. 既知Schemaだけ読み込み、正式Migrationがある版のみBackup→変換→検証→切替する。未知ID/破損を初期値へ置換せず復旧導線を返す。\n3. Gold500、6名、7能力10、Level1、HP100/MP30、SP0、初期Skillなし、全前衛とGS-30全装備IDを設定から生成し、個体IDを別々に発行する。\n\n完了条件\n1. 同時保存要求が直列化され、書込失敗時に前の正常Saveと利用可能なBackupを復旧できる。\n2. ニューゲームは既存Saveへの上書き確認を要求し、初期化途中失敗で既存Saveを置換しない。\n3. 初期6名と装備がGS-30の表に一致し、同型防具でも各人の装備個体IDは異なる。",
+          "execution_order": 28,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-30"
+          ]
+        },
+        {
+          "id": "TASK-NIP-02-01",
+          "box_id": "BOX-NIP-02",
+          "title": "能力値と成長：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 初期7能力値10、Level1、最大50を設定参照で構成し、戦闘補正値と永続能力値を分離する。\n2. 成長値gに対しfloor(g/10)と端数確率の追加1を各能力で処理し、端数を次Levelへ持ち越さない。\n3. 上昇後能力値、使用ジョブ、成長結果を同一Level上昇記録として返し、EXP確定側で一体保存する。\n\n完了条件\n1. g=15の乱数を0.49と0.50に固定した場合、増分はそれぞれ2と1になる。\n2. g=10は常に1増分、g=3は追加1の成立・不成立を制御乱数で確認する。\n3. Level50では追加成長せず、転職しても過去の能力値は再計算されない。",
+          "execution_order": 29,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-03-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-02"
+          ]
+        },
+        {
+          "id": "TASK-NIP-03-02",
+          "box_id": "BOX-NIP-03",
+          "title": "ジョブと転職：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 02の成長参照と05の雇用ジョブ選択へ同じ定義を提供する。\n2. 28のギルド画面から呼び出し、拒否時に選択表示だけが先行しないようにする。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 剣士の成長係数15/13/4/10/7/8/3を含め各ジョブの合計が60になる。\n2. 同一冒険者を往復転職させてもGold・SP・能力値・装備IDが変わらない。\n3. 転職確定後のLevel上昇は新ジョブ係数を使い、既存の成長履歴を変更しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 30,
+          "depends_on": [
+            "TASK-NIP-03-01",
+            "TASK-NIP-28-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-03"
+          ]
+        },
+        {
+          "id": "TASK-NIP-05-01",
+          "box_id": "BOX-NIP-05",
+          "title": "雇用と解雇：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 解放済み種別・ジョブから無料雇用し、新しい個体IDと編集可能な名前を付ける。\n2. 所属上限を設定参照で事前検証し、パーティ所属者の解雇を拒否する。\n3. 解雇時は装備返却先容量と所有権を先に検証し、返却と所属削除をまとめて確定する。\n\n完了条件\n1. 同名・同種の2人を雇用してもIDが異なりGoldを消費しない。\n2. パーティ所属者への解雇要求で所属・装備が一切変わらない。\n3. 返却先満杯で解雇は全体失敗、空きを作った後の再試行で装備が1回だけ返る。",
+          "execution_order": 31,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-03-01",
+            "TASK-NIP-29-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-05"
+          ]
+        },
+        {
+          "id": "TASK-NIP-06-01",
+          "box_id": "BOX-NIP-06",
+          "title": "装備スロットと装備条件：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 武器2、頭、鎧、手、足、アミュレット、指輪2、ベルトの10枠を定義し、個体所有とSlot整合性を検証する。\n2. 両手持ちはSTR要求判定にのみSTR×2を使用する。武器種、攻撃力、本人STRを変えない。\n3. DUAL_WIELD能力と左右別Strike、盾・矢筒の攻撃性能0、弓と矢筒の使用条件を共通Resolverへ渡す。\n\n完了条件\n1. 本人STR10・武器要求STR20の両手持ちは成立し、保存STRは10のままとなる。\n2. 盾・矢筒は装備しても攻撃Strikeを作らず、DUAL_WIELDなしの二刀攻撃は成立しない。\n3. 同じ装備個体の二重所有を拒否する。両手持ちの2枠占有は1個体として保持し、性能や数量を2回加算しない。",
+          "execution_order": 32,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-29-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-06"
+          ]
+        },
+        {
+          "id": "TASK-NIP-09-01",
+          "box_id": "BOX-NIP-09",
+          "title": "MODとレアリティ：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. BaseItem・完成装備・Lootを分離し、通常作成ではUNIQUE/LEGENDARY/MYTHICを候補から除外する。\n2. レアリティ→件数→攻防枠→カテゴリ→MOD→Tierの順に設定駆動抽選し、同個体のMOD重複を再抽選対象とする。\n3. 適合タグ、Schema版、Balance参照を検証する。候補不足は有限に終了する生成エラーとし、報酬品質と装備レアリティは明示対応表で結ぶ。\n\n完了条件\n1. 同一Seed・同設定で同じMOD/Tier履歴となり、同個体内に重複MODが残らない。\n2. 異なる2装備の同MODは許可し、候補1種に2種類要求した場合は無限再抽選せず失敗する。\n3. 通常作成で上位3レアリティを生成せず、Loot経路だけが設定に従って生成する。",
+          "execution_order": 33,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-07-01",
+            "TASK-NIP-08-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-09"
+          ]
+        },
+        {
+          "id": "TASK-NIP-16-01",
+          "box_id": "BOX-NIP-16",
+          "title": "アクティブスキル生成：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. Level1〜11、総量10×Level、1〜3能力・各100以下と用途許可表を検証し、各効果に予算の支払先を記録する。\n2. 多段はSTR加算前の最低60条件、属性10/個、各支援効果の価格、期間予算、LUK率/追加Damage配分をGS-16の式で生成する。\n3. MP8×LevelにRange倍率1/2/3を適用し、CD/Cast0/0・7/4・14/7を出力する。不明効果や未対応汎用Buffを近似生成しない。\n\n完了条件\n1. STR20/AGI20・2Hitは各70。AGI19・2HitとAGI100・4Hitは拒否する。\n2. MND40のBarrierで期間予算10は最大HP30%・2Tick。LUK30の率10/Damage20は+1pp/相対40%。\n3. Level4・ALLは基本MP96/CD14/Cast7。Level11の1能力110配分は拒否する。",
+          "execution_order": 34,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-17-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-16"
+          ]
+        },
+        {
+          "id": "TASK-NIP-20-01",
+          "box_id": "BOX-NIP-20",
+          "title": "トリガーと連鎖処理：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. can→chance→commit→executeを分離し、不成立は発動回数を消費しない。確率0/1はRNG不要とする。\n2. 共有Contextに実行中Passiveキーと発動回数を持ち、同キー再入を拒否、既定最大16を適用する。キー解放で累計回数を戻さない。\n3. Hit後の反撃・追撃を処理し、新規イベントをpriority降順/連番順に積む。致死耐えだけはHP確定前の割込み経路にする。\n\n完了条件\n1. 条件不成立・確率不成立ではcommit回数0、確率0/1で抽選関数呼出0となる。\n2. 反撃同士の循環で同Passive再入と共有上限を守り、17回目の発動を拒否する。\n3. priority同値では連番順、致死割込みはHP確定前、一般誘発はHit後に実行される。",
+          "execution_order": 35,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-17-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-20"
+          ]
+        },
+        {
+          "id": "TASK-NIP-21-01",
+          "box_id": "BOX-NIP-21",
+          "title": "AI編集と行動選択：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. Player/Monsterを共通実行器へ統一し、logicLayoutの座標・接続とAction終端、条件の2分岐を検証する。\n2. 対象→カテゴリ→タグ条件の探索、FOUND/NOT_FOUND、SELF StateCheck、HP/MPの値/比率・ALIVE/DEADを明示型で実装する。空効果タグと未知非空タグを区別する。\n3. 数値MIN/MAXの同値候補はAI_DECISION乱数で解決し、候補0は失敗・1は固定・複数だけ抽選する。保存はID/paramsで行い、未来情報を参照させない。\n\n完了条件\n1. 同じ初期状態・Program/SeedでPlayerとMonsterの同型判断が一致する。\n2. 候補1件の選択でRNG消費0、候補複数ではAI_DECISIONだけを使用する。\n3. 不明な非空タグは拒否し、カテゴリが異なる同名タグを混同しない。",
+          "execution_order": 36,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-17-01",
+            "TASK-NIP-13-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-21"
+          ]
+        },
+        {
+          "id": "TASK-NIP-24-01",
+          "box_id": "BOX-NIP-24",
+          "title": "ストーリーと会話：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. pre/middle/postの会話をイベント結果からSnapshot化し、本文・話者・順番を固定する。\n2. 既読状態と表示/スキップを分け、会話閲覧でRun時間進行を停止しない。\n3. 現在範囲は閲覧と既読スキップまでとし、未定義の選択肢や分岐決定UIを作らない。\n\n完了条件\n1. Run作成後にマスター本文を編集しても既存Runの表示本文は変わらない。\n2. 会話詳細を開いている間も経過時間が進み、閉じると到達時点へ追いつく。\n3. 同じSceneを再表示してもイベント報酬・進行フラグを重複適用しない。",
+          "execution_order": 37,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-23-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-24"
+          ]
+        },
+        {
+          "id": "TASK-NIP-31-01",
+          "box_id": "BOX-NIP-31",
+          "title": "画面と戦闘演出：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. PC縦画面のギルド/冒険/戦闘/結果導線を整理し、戦闘位置は固定でフォーカス・拡大・揺れを表示効果に限定する。\n2. HP/MP/状態/Barrierを確定状態から描画し、HUDや結果画面からDamageやEXPを更新しない。\n3. 再生・速度・スキップを実装し、必須停止・行動ごとの手送りを入れない。リリース表示では開発用操作を隠す。\n\n完了条件\n1. 同じTimelineを速度変更・スキップしてもBattle結果と帰還対象が変わらない。\n2. Barrier吸収だけのHitでHP減少を誤表示せず、表示のスキップ後も最新状態へ追いつく。\n3. リリース画面に開発コマンドが露出せず、結果画面表示だけでEXPを付与しない。",
+          "execution_order": 38,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-01-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-31"
+          ]
+        },
+        {
+          "id": "TASK-NIP-34-01",
+          "box_id": "BOX-NIP-34",
+          "title": "スキル習得・選択・リスペック：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 全能力要求・SP残量・未習得を検証し、費用減算/習得ID/実消費SP履歴を同時に記録する。標準費用1、個別費用優先とする。\n2. 習得と選択を分離し、Active5/Passive5、未習得選択禁止、Passive系列重複拒否を編集時と戦闘開始時に適用する。passiveIdsを正本に保つ。\n3. Active50G/Passive50G/全200GのRespecで該当習得/選択/AI参照を整合更新し、実際の消費SPのみ返還する。無記録・無料取得は0、Gold返還はなし。\n\n完了条件\n1. SP3で費用2のSkillを習得後、マスター費用が1に変わってもRespec返還は2となる。\n2. 無償取得または支払履歴なしは返還0、選択6件目と同Passive系列2件を拒否する。\n3. Respec資金不足/保存失敗でGold・SP・習得・選択が部分更新されず、能力/ジョブ/装備は維持される。",
+          "execution_order": 39,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-17-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-34"
+          ]
+        },
+        {
+          "id": "TASK-NIP-04-01",
+          "box_id": "BOX-NIP-04",
+          "title": "経験値とSP：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 成功終了時に所属かつ生存の受給者集合を固定し、floor(総EXP/人数)を均等配分する。人数0は配分なしとする。\n2. 必要EXPテーブルを入力として複数Level上昇、余剰繰越、Level50での余剰破棄とSP+1を実装する。未定義Levelは進行不可とする。\n3. 仮EXPの計算と永続付与を分け、02の成長結果を含む更新案を帰還の単一取引へ含める。\n\n完了条件\n1. 総EXP10・受給3人は各3、端数1は誰にも加算されない。\n2. 終了時死亡者は除外し、終了時蘇生済み者は含める。受給0人でゼロ除算しない。\n3. テスト専用必要EXP10/20を使い、EXP35で2Level上昇・余剰5・SP+2となる。これは本番EXP表ではない。",
+          "execution_order": 40,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-02-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-04"
+          ]
+        },
+        {
+          "id": "TASK-NIP-05-02",
+          "box_id": "BOX-NIP-05",
+          "title": "雇用と解雇：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 28の解放条件と29の移動サービスを共用する。\n2. 保存失敗を注入して雇用・解雇の半端な反映が残らないことを確認する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 同名・同種の2人を雇用してもIDが異なりGoldを消費しない。\n2. パーティ所属者への解雇要求で所属・装備が一切変わらない。\n3. 返却先満杯で解雇は全体失敗、空きを作った後の再試行で装備が1回だけ返る。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 41,
+          "depends_on": [
+            "TASK-NIP-05-01",
+            "TASK-NIP-28-01",
+            "TASK-NIP-30-01",
+            "TASK-NIP-D10",
+            "TASK-NIP-D11"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-05"
+          ]
+        },
+        {
+          "id": "TASK-NIP-10-01",
+          "box_id": "BOX-NIP-10",
+          "title": "戦闘能力値と補正：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 装備基礎値を先に固定し、MOD・Passive・Buff等を同じ基礎値に対するContributionへ正規化する。\n2. 相対%、加算pp、固定加算を別演算として扱い、補正源の列挙順に依存しない集約を行う。\n3. 攻撃・命中・回避・魔法補正・抵抗等を正式キーで提供し、画面と戦闘で共通の計算を使用する。\n\n完了条件\n1. 基礎100に相対20%と10%を与えると130となり132にならない。\n2. 補正源の入力順を入れ替えて全有効値が一致する。\n3. 能力値MODを外した後に再集計しても永続基礎能力値へ増分が残らない。",
+          "execution_order": 42,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-06-01",
+            "TASK-NIP-07-01",
+            "TASK-NIP-08-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-10"
+          ]
+        },
+        {
+          "id": "TASK-NIP-26-01",
+          "box_id": "BOX-NIP-26",
+          "title": "報酬とドロップ：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. gold/equipment/item/stone/materialを正規化し、装備以外をkind+idで集約する。groups/weighted/独立chanceの3経路を分離する。\n2. none/amount/quality/bothを解釈し、数量は基礎×(1+Stone差分×0.02)×固有倍率を指定丸めする。品質重みは5品質係数を適用する。\n3. 通常報酬の差分はStone増分、探索はmax(0,effective-reference)を使い、装備個体ID・設定版・抽選結果をRunへ保存する。\n\n完了条件\n1. base数量100・Stone差分10・固有補正なしのamountは120となる。\n2. 差分10でrare重み1.05倍、legendary1.2倍。重み10を10%と解釈しない。\n3. base予算100/Stone0では通常報酬差分0、探索差分100となり、同じ差分を共用しない。",
+          "execution_order": 43,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-09-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-26"
+          ]
+        },
+        {
+          "id": "TASK-NIP-32-01",
+          "box_id": "BOX-NIP-32",
+          "title": "サウンドとプレイヤー設定：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. BGM/SEの音量とミュート、再生速度、演出軽減を型付き設定として検証・保存する。\n2. 音源切替と再生操作を表示イベントへ接続し、TickシミュレーションのSeedや時間計算へ設定を渡さない。\n3. D13で選定する音源・既定音量・速度候補・軽減段階を設定化する。欠けた本番素材を仮音源で確定扱いにしない。\n\n完了条件\n1. 音量0/ミュートでSE/BGMを抑止しても戦闘結果ハッシュは変わらない。\n2. Load後に選んだ設定が復元し、演出軽減がONでもHit数や対象が変わらない。\n3. 設定保存失敗時は保存成功と表示せず、再試行でゲーム進行を巻き戻さない。",
+          "execution_order": 44,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-31-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-32"
+          ]
+        },
+        {
+          "id": "TASK-NIP-33-01",
+          "box_id": "BOX-NIP-33",
+          "title": "チュートリアルとヘルプ：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. GS-33の7題材を段階ID・開始条件・完了イベント・Help本文へ分け、達成を実際のドメイン成功結果で判定する。\n2. 全体スキップを作らず、途中Loadから未完了段階へ再開し、Helpを継続参照可能にする。\n3. D14で具体順序・文面・IDを確定し、未解放施設/Skill/SP0の初期状態でも行き詰まらない開始条件を設定する。\n\n完了条件\n1. 説明を開いただけで操作達成扱いにせず、失敗したドメイン操作では段階を進めない。\n2. 途中終了→Loadで同じ未完了段階を再開し、既達成の報酬や操作を重複実行しない。\n3. 初期SP0で習得操作が必要な段階へ進行不能なまま誘導しない。",
+          "execution_order": 45,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-28-01",
+            "TASK-NIP-31-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-33"
+          ]
+        },
+        {
+          "id": "TASK-NIP-02-02",
+          "box_id": "BOX-NIP-02",
+          "title": "能力値と成長：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 04の複数Level上昇ループへ接続し、各回の乱数と成長結果を保存する。\n2. 装備・Buffの増減が次回の永続成長値へ混入しないことを確認する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. g=15の乱数を0.49と0.50に固定した場合、増分はそれぞれ2と1になる。\n2. g=10は常に1増分、g=3は追加1の成立・不成立を制御乱数で確認する。\n3. Level50では追加成長せず、転職しても過去の能力値は再計算されない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 46,
+          "depends_on": [
+            "TASK-NIP-02-01",
+            "TASK-NIP-04-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-02"
+          ]
+        },
+        {
+          "id": "TASK-NIP-06-02",
+          "box_id": "BOX-NIP-06",
+          "title": "装備スロットと装備条件：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 10へ保存済み性能を渡し、17のEQUIPMENT_TAGSと同じ装備状態から判定する。\n2. 装備交換→戦闘開始→再読込でSlot・要求条件・Strike数が一致することを確認する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 本人STR10・武器要求STR20の両手持ちは成立し、保存STRは10のままとなる。\n2. 盾・矢筒は装備しても攻撃Strikeを作らず、DUAL_WIELDなしの二刀攻撃は成立しない。\n3. 同じ装備個体の二重所有を拒否する。両手持ちの2枠占有は1個体として保持し、性能や数量を2回加算しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 47,
+          "depends_on": [
+            "TASK-NIP-06-01",
+            "TASK-NIP-10-01",
+            "TASK-NIP-17-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-06"
+          ]
+        },
+        {
+          "id": "TASK-NIP-07-02",
+          "box_id": "BOX-NIP-07",
+          "title": "武器生成：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 06の装備と10の戦闘集約へ生成結果を接続する。\n2. 09の完成装備生成へBaseItemを渡し、MOD適用で基礎性能を上書きしない。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 片手剣iLv1は要求6/3/1、攻撃12、命中6、魔法補正6、魔法命中8となる。\n2. 生成後の性能を明示変更したテスト個体はRuntimeも変更済み性能を使い、要求値で上書きしない。\n3. iLv0/12、未知種別は生成拒否し、全13種×11Levelの期待表を比較する。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 48,
+          "depends_on": [
+            "TASK-NIP-07-01",
+            "TASK-NIP-06-01",
+            "TASK-NIP-09-01",
+            "TASK-NIP-10-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-07"
+          ]
+        },
+        {
+          "id": "TASK-NIP-09-02",
+          "box_id": "BOX-NIP-09",
+          "title": "MODとレアリティ：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 10へ独立Contributionを渡し、26のドロップからだけドロップ限定品を生成可能にする。\n2. D02で確定した本番抽選表・品質対応を投入し、全参照と重みの妥当性を検査する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 同一Seed・同設定で同じMOD/Tier履歴となり、同個体内に重複MODが残らない。\n2. 異なる2装備の同MODは許可し、候補1種に2種類要求した場合は無限再抽選せず失敗する。\n3. 通常作成で上位3レアリティを生成せず、Loot経路だけが設定に従って生成する。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 49,
+          "depends_on": [
+            "TASK-NIP-09-01",
+            "TASK-NIP-10-01",
+            "TASK-NIP-26-01",
+            "TASK-NIP-D02"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-09"
+          ]
+        },
+        {
+          "id": "TASK-NIP-11-01",
+          "box_id": "BOX-NIP-11",
+          "title": "命中とクリティカル：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 武器基礎率×(1+LUK/100)と独立Contributionからクリティカル率を算出する。初期追加Damage50%を使用する。\n2. クリティカル成立時は命中抽選を省略し、不成立時のみGS-11の物理・魔法命中式を使う。\n3. 物理の下限5%を設けず、魔法の上限100%と分母0以下100%を区別して実装する。Hit単位の判定結果と乱数消費を記録する。\n\n完了条件\n1. 基礎率5%・LUK10・他補正なしは5.5%、初期クリティカルDamage倍率は1.5となる。\n2. クリティカル成立時の命中乱数呼出回数は0となる。\n3. 物理命中0・回避正値では命中率0%、魔法命中30・魔法抵抗60は50%、120・60は上限100%となる。",
+          "execution_order": 50,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-10-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-11"
+          ]
+        },
+        {
+          "id": "TASK-NIP-14-01",
+          "box_id": "BOX-NIP-14",
+          "title": "Tickと行動ゲージ：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 戦闘開始時に処理順を1回抽選してBattle Snapshotへ格納する。Tick・行動・Hit・再読込・再生ではその配列を再利用し、順序用RNGを呼ばない。\n2. 持続時間→周期効果→CD→効果満了→ゲージ/AI→Tick終了の順に状態を進め、開始Triggerは通常AIより前、終了Trigger後に戦闘専用状態を破棄する。\n3. AG増分(100+AGI)/10、最大100、再評価10、成立100消費、実行失敗50消費を設定参照で実装する。単なるAI評価で50を消費しない。\n\n完了条件\n1. AGI10/50/100の基礎増分は11/15/20。描画速度変更で増分は変わらない。\n2. 同一戦闘の全Tick・全Hitで初期順序が保持され、順序決定処理は1回のみ。次の別戦闘開始で初めて再決定する。\n3. 戦闘途中Snapshotの復元後も順序用RNG消費0で元と同一の結果列となる。",
+          "execution_order": 51,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-10-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-14"
+          ]
+        },
+        {
+          "id": "TASK-NIP-22-01",
+          "box_id": "BOX-NIP-22",
+          "title": "モンスター生成：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. M=L×growth/10、P=10+(L-1)×growth/10を分け、仮想iLv=min(P/Ceff)を1〜11に制限する。小数iLvを保持し、両手STR係数補正を適用する。\n2. 性能Fに対応Ms/Psを掛け、HP/MP係数50・回避4を使用する。クリティカルとBlockはGS-22の専用式で計算する。\n3. 最終四捨五入と非零の最小1を適用し、百分率はpp単位で丸める。AIはprogram_id/layout_id参照とし、魔法命中/抵抗の未定義生成はD09の入力境界へ分ける。\n\n完了条件\n1. L1・growth15ではM1.5、P10。両者を同じ値として扱わない。\n2. 仮想iLv2.5を整数2に早期丸めせず、Block式は23%になる。\n3. 小さな正性能が四捨五入0になる場合は1、元から0の性能は0を保つ。",
+          "execution_order": 52,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-07-01",
+            "TASK-NIP-08-01",
+            "TASK-NIP-10-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-22"
+          ]
+        },
+        {
+          "id": "TASK-NIP-28-02",
+          "box_id": "BOX-NIP-28",
+          "title": "ギルドと施設：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 05/29/33と解放情報を共用し、30へ進行状態を保存する。\n2. D10の進行表を投入し、任意の初期Levelへ勝手に全施設を解放しないことを検証する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 施設未解放は画面非活性だけでなく直接コマンドも拒否する。\n2. Guild表示を開くだけで冒険者の戦闘能力値が増えない。\n3. D10の境界値直前/到達/直後で同じ解放結果を画面とRuntimeが返す。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 53,
+          "depends_on": [
+            "TASK-NIP-28-01",
+            "TASK-NIP-05-01",
+            "TASK-NIP-29-01",
+            "TASK-NIP-33-01",
+            "TASK-NIP-D10"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-28"
+          ]
+        },
+        {
+          "id": "TASK-NIP-32-02",
+          "box_id": "BOX-NIP-32",
+          "title": "サウンドとプレイヤー設定：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 31の再生と30の保存へ接続し、D13の本番素材で再生/切替/復帰を確認する。\n2. 高速再生で音が多重残留しないことを実ブラウザで確認する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 音量0/ミュートでSE/BGMを抑止しても戦闘結果ハッシュは変わらない。\n2. Load後に選んだ設定が復元し、演出軽減がONでもHit数や対象が変わらない。\n3. 設定保存失敗時は保存成功と表示せず、再試行でゲーム進行を巻き戻さない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 54,
+          "depends_on": [
+            "TASK-NIP-32-01",
+            "TASK-NIP-30-01",
+            "TASK-NIP-D13"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-32"
+          ]
+        },
+        {
+          "id": "TASK-NIP-12-01",
+          "box_id": "BOX-NIP-12",
+          "title": "ダメージと防御：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 物理/魔法の基礎式から防御、クリティカル、属性share、隊列、floorまでを純粋計算として分割する。\n2. Block→FIFO BARRIER→致死割込み→HP確定を順序固定で実装し、実HP減少量を唯一の吸収・反射参照値にする。\n3. 抵抗0〜75%、元素share合計100%、吸収ceil・反射floor、反射の再軽減/再反射禁止を検証する。\n\n完了条件\n1. 100DamageのFIRE50/ICE50、耐性20/0は90。属性数を理由に200へ増えない。\n2. finalDamage101・Block30%は70。HP20・Barrier10・Block後100では実HP減少20となる。\n3. HP1の致死耐え後の実HP減少だけを吸収/反射へ渡し、後続HitではCD中の耐えを再発動しない。",
+          "execution_order": 55,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-11-01",
+            "TASK-NIP-13-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-12"
+          ]
+        },
+        {
+          "id": "TASK-NIP-15-01",
+          "box_id": "BOX-NIP-15",
+          "title": "スキル発動と詠唱：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 開始条件・MP・装備条件を検証し、対象の基準と予約集合を保存する。Castを完全な状態ロックにしない。\n2. 完了時は予約集合の無効対象だけを除外し、補充・再抽選しない。全対象無効ならMP/CDを確定しない。\n3. 成立時にMP消費→CD開始→効果実行を行い、Cast0を同一境界で処理する。死亡/行動不能で中断し、通常Damage/DOT/反射だけでは中断しない。\n\n完了条件\n1. 予約2体のうち1体死亡なら残り1体だけに実行し、3体目を補充しない。\n2. 全予約対象が無効ならMP残量とCDは開始前のままになる。\n3. Cast中の通常被弾で詠唱は継続し、使用者死亡では中断する。",
+          "execution_order": 56,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-13-01",
+            "TASK-NIP-14-01",
+            "TASK-NIP-17-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-15"
+          ]
+        },
+        {
+          "id": "TASK-NIP-18-01",
+          "box_id": "BOX-NIP-18",
+          "title": "状態異常と継続効果：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 状態期間ceil(基礎期間×(1-耐性/100))を計算し、追加付着抽選を行わない。DOTは独立周期・最大5Stack・各Tick floorとする。\n2. 同系Buffの有効値は最強を選び、Barrierは対象最大HPによる付与時量をFIFO保持する。Healは対象最大HP基準floor後に魔法上昇率を適用しceilする。\n3. CleanseはSTATUSのみを付与Tick/連番/ID順に走査し、保護・解除不可を飛ばす。死亡/満了/戦闘終了の寿命処理を実装する。\n\n完了条件\n1. 基礎期間10・耐性25%は8Tick。付着用の追加RNGを消費しない。\n2. DOT power2.5・3Tickは各2、計6で端数を後Tickへ繰り越さない。\n3. Barrier10と20の順に15を受けたら第1消滅・第2残15。同系Buff10%/20%は30%にならない。",
+          "execution_order": 57,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-17-01",
+            "TASK-NIP-14-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-18"
+          ]
+        },
+        {
+          "id": "TASK-NIP-19-01",
+          "box_id": "BOX-NIP-19",
+          "title": "パッシブスキル：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. passiveSeriesId必須、同系列重複拒否、passiveIds正本・枠5を適用し、GS-19の段階表を要求値と効果量へデータ化する。\n2. 周期回復は初回20Tick、現在最大値基準max(1,floor)、死亡中不発・蘇生で周期不変とする。致死耐えと瀕死強化CDは死亡/蘇生でリセットしない。\n3. Active参照は全要求量を加算し10〜110を検証する。参照ActiveのMP/CD/Castを再課金せず、周期以外の回復・Passive Barrierは禁止する。\n\n完了条件\n1. Block20%への相対25%は25%、軽減30%への相対25%は37.5%。\n2. 19Tickで周期回復0回、20Tickで1回。死亡中の20Tickを蘇生後にまとめて回復しない。\n3. VIT60+参照VIT60は120で拒否。瀕死強化は基礎10+既存1+追加10=21で22にならない。",
+          "execution_order": 58,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-17-01",
+            "TASK-NIP-10-01",
+            "TASK-NIP-14-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-19"
+          ]
+        },
+        {
+          "id": "TASK-NIP-25-01",
+          "box_id": "BOX-NIP-25",
+          "title": "難易度とストーン：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. base+Stone増分合計を有効予算とし、複数Stoneの消費予定を検証してRun開始と同時に確定する。\n2. spawn_tagsのany/all/noneと残予算以下の正cost候補から重み付きで追加し、追加不可または設定個体上限100で終了する。\n3. 固定編成はeffective/base比からHP/攻撃係数1・AGI0で倍率を作り、required_monsters方式の必須costと追加予算を別に処理する。\n\n完了条件\n1. base100・delta50の固定編成はHP/攻撃1.5倍、AGI1倍となる。\n2. cost0以下候補を拒否し、残予算不足で無限ループせず余剰予算を記録する。\n3. 開始不成立ならStone不変、開始成立後はLoad/失敗/放棄で返却・再消費しない。",
+          "execution_order": 59,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-22-01",
+            "TASK-NIP-23-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-25"
+          ]
+        },
+        {
+          "id": "TASK-NIP-08-02",
+          "box_id": "BOX-NIP-08",
+          "title": "防具生成：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 10へ部位性能を渡し、未装備部位を存在するものとして集計しない。\n2. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. iLv1重装鎧はHP120・MP60・回避1・魔法命中抵抗4となる。\n2. 同じiLv1重装4部位でHP300・MP150・回避4・魔法命中抵抗16となる。\n3. 1部位だけ装備した魔法命中抵抗4を4倍して16にしない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 60,
+          "depends_on": [
+            "TASK-NIP-08-01",
+            "TASK-NIP-10-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-08"
+          ]
+        },
+        {
+          "id": "TASK-NIP-10-02",
+          "box_id": "BOX-NIP-10",
+          "title": "戦闘能力値と補正：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 11/12/14/19の利用側へ有効値を接続する。\n2. 戦闘開始Snapshotとステータス画面の数値を同じ入力で比較する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 基礎100に相対20%と10%を与えると130となり132にならない。\n2. 補正源の入力順を入れ替えて全有効値が一致する。\n3. 能力値MODを外した後に再集計しても永続基礎能力値へ増分が残らない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 61,
+          "depends_on": [
+            "TASK-NIP-10-01",
+            "TASK-NIP-11-01",
+            "TASK-NIP-12-01",
+            "TASK-NIP-14-01",
+            "TASK-NIP-19-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-10"
+          ]
+        },
+        {
+          "id": "TASK-NIP-11-02",
+          "box_id": "BOX-NIP-11",
+          "title": "命中とクリティカル：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 12の直接Damageに判定を渡し、二刀の各Strike・多段の各Hitで個別に検証する。\n2. D03の外部Balance上限設定を読み、設定値とRuntime/画面の表示単位を一致させる。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 基礎率5%・LUK10・他補正なしは5.5%、初期クリティカルDamage倍率は1.5となる。\n2. クリティカル成立時の命中乱数呼出回数は0となる。\n3. 物理命中0・回避正値では命中率0%、魔法命中30・魔法抵抗60は50%、120・60は上限100%となる。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 62,
+          "depends_on": [
+            "TASK-NIP-11-01",
+            "TASK-NIP-12-01",
+            "TASK-NIP-D03"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-11"
+          ]
+        },
+        {
+          "id": "TASK-NIP-12-02",
+          "box_id": "BOX-NIP-12",
+          "title": "ダメージと防御：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 18のBarrierと20の致死割込みを実処理に接続し、各段階の追跡ログを照合する。\n2. D05の競合かばうを組み込んで複数保護者の戦闘を検証する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 100DamageのFIRE50/ICE50、耐性20/0は90。属性数を理由に200へ増えない。\n2. finalDamage101・Block30%は70。HP20・Barrier10・Block後100では実HP減少20となる。\n3. HP1の致死耐え後の実HP減少だけを吸収/反射へ渡し、後続HitではCD中の耐えを再発動しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 63,
+          "depends_on": [
+            "TASK-NIP-12-01",
+            "TASK-NIP-18-01",
+            "TASK-NIP-19-01",
+            "TASK-NIP-20-01",
+            "TASK-NIP-D05"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-12"
+          ]
+        },
+        {
+          "id": "TASK-NIP-13-02",
+          "box_id": "BOX-NIP-13",
+          "title": "隊列と対象範囲：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 15の対象予約へ集合を渡し、途中の生死変化は再抽選と区別する。\n2. D05の同priorityかばう競合規則とD06の同Tick境界を反映した統合試験を行う。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 後衛攻撃者のSINGLE100Damageは50、ALL100Damageは100となる。\n2. RANDOM2回は同じ敵が2回選ばれ得る。FRONT/ALLにかばう置換を適用しない。\n3. 最後の生存前衛が失われた境界で全生存後衛が前進し、死亡後衛は対象外となる。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 64,
+          "depends_on": [
+            "TASK-NIP-13-01",
+            "TASK-NIP-15-01",
+            "TASK-NIP-D05",
+            "TASK-NIP-D06"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-13"
+          ]
+        },
+        {
+          "id": "TASK-NIP-14-02",
+          "box_id": "BOX-NIP-14",
+          "title": "Tickと行動ゲージ：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 15のCast、18/19の周期処理、20のTrigger、21のAIを同じTick駆動に結合する。\n2. D06で確定するCast完了・状態満了・前衛全滅の競合を追加し、速度1倍/高速/スキップで結果ハッシュを一致させる。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. AGI10/50/100の基礎増分は11/15/20。描画速度変更で増分は変わらない。\n2. 同一戦闘の全Tick・全Hitで初期順序が保持され、順序決定処理は1回のみ。次の別戦闘開始で初めて再決定する。\n3. 戦闘途中Snapshotの復元後も順序用RNG消費0で元と同一の結果列となる。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 65,
+          "depends_on": [
+            "TASK-NIP-14-01",
+            "TASK-NIP-15-01",
+            "TASK-NIP-18-01",
+            "TASK-NIP-19-01",
+            "TASK-NIP-20-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-D06"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-14"
+          ]
+        },
+        {
+          "id": "TASK-NIP-15-02",
+          "box_id": "BOX-NIP-15",
+          "title": "スキル発動と詠唱：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 21の決定結果を予約へ変換し、17の使用条件を開始直前に再検証する。\n2. D06の同Tick順序とD07の強制前進中断規則を組み込み、Cast0/1/長Castの境界を検証する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 予約2体のうち1体死亡なら残り1体だけに実行し、3体目を補充しない。\n2. 全予約対象が無効ならMP残量とCDは開始前のままになる。\n3. Cast中の通常被弾で詠唱は継続し、使用者死亡では中断する。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 66,
+          "depends_on": [
+            "TASK-NIP-15-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-D06",
+            "TASK-NIP-D07"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-15"
+          ]
+        },
+        {
+          "id": "TASK-NIP-16-02",
+          "box_id": "BOX-NIP-16",
+          "title": "アクティブスキル生成：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 17のCompilerへ出力を渡し、登録→Export→Runtimeでpower/期間/Rangeが保持されることを検証する。\n2. 18/19と共通の効果価格・参照検査を使い、同予算二重使用の生成要求を拒否する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. STR20/AGI20・2Hitは各70。AGI19・2HitとAGI100・4Hitは拒否する。\n2. MND40のBarrierで期間予算10は最大HP30%・2Tick。LUK30の率10/Damage20は+1pp/相対40%。\n3. Level4・ALLは基本MP96/CD14/Cast7。Level11の1能力110配分は拒否する。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 67,
+          "depends_on": [
+            "TASK-NIP-16-01",
+            "TASK-NIP-18-01",
+            "TASK-NIP-19-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-16"
+          ]
+        },
+        {
+          "id": "TASK-NIP-17-02",
+          "box_id": "BOX-NIP-17",
+          "title": "スキルデータと使用条件：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 16の生成、19のPassive、21のAI、15の開始検証を共通の契約で接続する。\n2. 正式契約の往復Serializeと不正ID検査をStudioとGame双方で行う。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 未知Effect IDはExport/実行前に拒否され、似た名前の登録効果へ変換されない。\n2. 弓だけ・矢筒だけでは両方必須の条件に不成立、両方で成立する。\n3. 能力条件を満たして習得しても装備条件不成立なら使用不可となる。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 68,
+          "depends_on": [
+            "TASK-NIP-17-01",
+            "TASK-NIP-16-01",
+            "TASK-NIP-19-01",
+            "TASK-NIP-21-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-17"
+          ]
+        },
+        {
+          "id": "TASK-NIP-18-02",
+          "box_id": "BOX-NIP-18",
+          "title": "状態異常と継続効果：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 12へBarrier/HP効果を、14へ周期/満了処理を渡す。\n2. 解除不可STATUSと解除可能STATUS、Buff、Barrierを混在させて解除範囲を検証する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 基礎期間10・耐性25%は8Tick。付着用の追加RNGを消費しない。\n2. DOT power2.5・3Tickは各2、計6で端数を後Tickへ繰り越さない。\n3. Barrier10と20の順に15を受けたら第1消滅・第2残15。同系Buff10%/20%は30%にならない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 69,
+          "depends_on": [
+            "TASK-NIP-18-01",
+            "TASK-NIP-12-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-18"
+          ]
+        },
+        {
+          "id": "TASK-NIP-19-02",
+          "box_id": "BOX-NIP-19",
+          "title": "パッシブスキル：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 20の連鎖と12の致死割込みへ結合し、多段・反撃・蘇生時にCDが保持されることを検証する。\n2. D08で具体化した参照Activeだけを本番マスターに登録し、不明テンプレートを完成品としてExportしない。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. Block20%への相対25%は25%、軽減30%への相対25%は37.5%。\n2. 19Tickで周期回復0回、20Tickで1回。死亡中の20Tickを蘇生後にまとめて回復しない。\n3. VIT60+参照VIT60は120で拒否。瀕死強化は基礎10+既存1+追加10=21で22にならない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 70,
+          "depends_on": [
+            "TASK-NIP-19-01",
+            "TASK-NIP-12-01",
+            "TASK-NIP-20-01",
+            "TASK-NIP-34-01",
+            "TASK-NIP-D08"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-19"
+          ]
+        },
+        {
+          "id": "TASK-NIP-20-02",
+          "box_id": "BOX-NIP-20",
+          "title": "トリガーと連鎖処理：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 12/18/19/15のイベント供給と接続し、単独実行時と連鎖時で効果本体の計算を共用する。\n2. 発動可否・確率・commit・実行の履歴を残して失敗時の消費と再入を確認する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 条件不成立・確率不成立ではcommit回数0、確率0/1で抽選関数呼出0となる。\n2. 反撃同士の循環で同Passive再入と共有上限を守り、17回目の発動を拒否する。\n3. priority同値では連番順、致死割込みはHP確定前、一般誘発はHit後に実行される。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 71,
+          "depends_on": [
+            "TASK-NIP-20-01",
+            "TASK-NIP-12-01",
+            "TASK-NIP-18-01",
+            "TASK-NIP-19-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-20"
+          ]
+        },
+        {
+          "id": "TASK-NIP-21-02",
+          "box_id": "BOX-NIP-21",
+          "title": "AI編集と行動選択：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 14の再評価間隔から呼び出し15の開始検証へ渡す。選択Active以外をAI候補に入れない。\n2. 編集→保存→Load→Studio/Game実行で接続と判断が一致し、旧予約を次回評価へ持ち越さないことを検証する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 同じ初期状態・Program/SeedでPlayerとMonsterの同型判断が一致する。\n2. 候補1件の選択でRNG消費0、候補複数ではAI_DECISIONだけを使用する。\n3. 不明な非空タグは拒否し、カテゴリが異なる同名タグを混同しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 72,
+          "depends_on": [
+            "TASK-NIP-21-01",
+            "TASK-NIP-14-01",
+            "TASK-NIP-15-01",
+            "TASK-NIP-34-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-21"
+          ]
+        },
+        {
+          "id": "TASK-NIP-22-02",
+          "box_id": "BOX-NIP-22",
+          "title": "モンスター生成：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 25のEncounter倍率を生成後に適用し、元のM/P比率と混ぜない。\n2. D09の魔法命中/抵抗を追加し、21のAI参照と共に開始Snapshotへ固定する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. L1・growth15ではM1.5、P10。両者を同じ値として扱わない。\n2. 仮想iLv2.5を整数2に早期丸めせず、Block式は23%になる。\n3. 小さな正性能が四捨五入0になる場合は1、元から0の性能は0を保つ。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 73,
+          "depends_on": [
+            "TASK-NIP-22-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-25-01",
+            "TASK-NIP-D09"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-22"
+          ]
+        },
+        {
+          "id": "TASK-NIP-23-02",
+          "box_id": "BOX-NIP-23",
+          "title": "クエストとイベント：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 24の会話Snapshot、25のEncounter、26の報酬をイベント結果に統合する。\n2. 地理/気候システムや未定義選択分岐を追加せず、与えられた環境タグの参照を検証する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 前Boxのフラグ変更を次Boxの候補絞り込みに反映する。\n2. 任意Slot候補0はダミーイベントを作らず継続、必須Slot候補0ではRun開始を不成立にする。\n3. Boxの並びを編集しても既存ID参照が意図せず別Boxへ付け替わらない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 74,
+          "depends_on": [
+            "TASK-NIP-23-01",
+            "TASK-NIP-24-01",
+            "TASK-NIP-25-01",
+            "TASK-NIP-26-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-23"
+          ]
+        },
+        {
+          "id": "TASK-NIP-27-01",
+          "box_id": "BOX-NIP-27",
+          "title": "冒険進行と帰還：ドメイン処理を実装する",
+          "acceptance_criteria": "実装手順\n1. 開始時に全イベント/戦闘を計算してTimelineとSnapshotsを作り、途中失敗後の区間を生成しない。開始成立とStone消費を同一Saveへ含める。\n2. wall clock-startから表示到達点を求め、画面非表示や詳細表示後も追いつく。再生は戦闘・編成・報酬を再抽選しない。\n3. 成功帰還は報酬・EXP/成長・フラグ・受取済み印を同一取引で確定し、容量不足は保留する。失敗/放棄は正式受取を空にする。\n\n完了条件\n1. 帰還ボタン連打・画面再読込・通信でなくローカル保存再試行でも同じrunIdの受取は1回。\n2. 満杯時はGold/EXPだけを先取りせず全受取を保留し、空きを作ると同じ装備個体を受け取る。\n3. 途中敗北後のイベント/報酬が生成されず、LoadでStoneの再消費や戦闘再実行がない。",
+          "execution_order": 75,
+          "depends_on": [
+            "TASK-NIP-F03",
+            "TASK-NIP-F04",
+            "TASK-NIP-01-01",
+            "TASK-NIP-04-01",
+            "TASK-NIP-15-01",
+            "TASK-NIP-18-01",
+            "TASK-NIP-19-01",
+            "TASK-NIP-20-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-24-01",
+            "TASK-NIP-25-01",
+            "TASK-NIP-26-01",
+            "TASK-NIP-29-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-27"
+          ]
+        },
+        {
+          "id": "TASK-NIP-34-02",
+          "box_id": "BOX-NIP-34",
+          "title": "スキル習得・選択・リスペック：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 21の使用候補と19のpassiveIdsへ接続し、外れたSkillを参照するAIが不正実行されないよう保存時検証する。\n2. 30の往復保存と04のSP付与を結合し、Level上昇→習得→選択→Respecを通す。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. SP3で費用2のSkillを習得後、マスター費用が1に変わってもRespec返還は2となる。\n2. 無償取得または支払履歴なしは返還0、選択6件目と同Passive系列2件を拒否する。\n3. Respec資金不足/保存失敗でGold・SP・習得・選択が部分更新されず、能力/ジョブ/装備は維持される。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 76,
+          "depends_on": [
+            "TASK-NIP-34-01",
+            "TASK-NIP-04-01",
+            "TASK-NIP-19-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-30-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-34"
+          ]
+        },
+        {
+          "id": "TASK-NIP-01-02",
+          "box_id": "BOX-NIP-01",
+          "title": "ゲーム基本：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 27のRunサービスと30の保存入口へ接続し、戦闘勝利UIに報酬書込を残さない。\n2. 新規開始→1戦→成功帰還の最小導線を通し、各状態の許可操作を記録する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 7人編成の開始は拒否し、6人は他条件を満たせば開始できる。\n2. 同じ保存済みRunを再生してもGold・経験値・ストーン所持数は変わらない。\n3. 成功後の帰還を2回要求しても受取は1回だけになる。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 77,
+          "depends_on": [
+            "TASK-NIP-01-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-30-01",
+            "TASK-NIP-31-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-01"
+          ]
+        },
+        {
+          "id": "TASK-NIP-04-02",
+          "box_id": "BOX-NIP-04",
+          "title": "経験値とSP：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 27の成功帰還へ組み込み、戦闘勝利時・失敗時・放棄時に永続EXPが増えないことを検証する。\n2. 決定D01の本番EXP表を組み込み、全Levelの境界をデータ駆動で検査する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 総EXP10・受給3人は各3、端数1は誰にも加算されない。\n2. 終了時死亡者は除外し、終了時蘇生済み者は含める。受給0人でゼロ除算しない。\n3. テスト専用必要EXP10/20を使い、EXP35で2Level上昇・余剰5・SP+2となる。これは本番EXP表ではない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 78,
+          "depends_on": [
+            "TASK-NIP-04-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-D01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-04"
+          ]
+        },
+        {
+          "id": "TASK-NIP-24-02",
+          "box_id": "BOX-NIP-24",
+          "title": "ストーリーと会話：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 27のTimeline再生へ接続し、31の表示だけに本文を渡す。\n2. 既読保存失敗ではSave成功扱いにせず、Run結果の固定性を維持する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. Run作成後にマスター本文を編集しても既存Runの表示本文は変わらない。\n2. 会話詳細を開いている間も経過時間が進み、閉じると到達時点へ追いつく。\n3. 同じSceneを再表示してもイベント報酬・進行フラグを重複適用しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 79,
+          "depends_on": [
+            "TASK-NIP-24-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-31-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-24"
+          ]
+        },
+        {
+          "id": "TASK-NIP-25-02",
+          "box_id": "BOX-NIP-25",
+          "title": "難易度とストーン：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 27の開始取引へ消費予定を含め、26へ通常報酬用Stone差分と探索用品質差分を別々に渡す。\n2. 固定編成・必須個体編成・通常編成を同一Seedで再現し、保存した編成を再生時に使う。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. base100・delta50の固定編成はHP/攻撃1.5倍、AGI1倍となる。\n2. cost0以下候補を拒否し、残予算不足で無限ループせず余剰予算を記録する。\n3. 開始不成立ならStone不変、開始成立後はLoad/失敗/放棄で返却・再消費しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 80,
+          "depends_on": [
+            "TASK-NIP-25-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-26-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-25"
+          ]
+        },
+        {
+          "id": "TASK-NIP-26-02",
+          "box_id": "BOX-NIP-26",
+          "title": "報酬とドロップ：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 23/25の結果と接続し、27の帰還へ保存済み報酬を渡す。\n2. 装備品質対応D02を検証し、満杯受取保留・二重受取防止を29/30と結合試験する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. base数量100・Stone差分10・固有補正なしのamountは120となる。\n2. 差分10でrare重み1.05倍、legendary1.2倍。重み10を10%と解釈しない。\n3. base予算100/Stone0では通常報酬差分0、探索差分100となり、同じ差分を共用しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 81,
+          "depends_on": [
+            "TASK-NIP-26-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-29-01",
+            "TASK-NIP-D02"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-26"
+          ]
+        },
+        {
+          "id": "TASK-NIP-27-02",
+          "box_id": "BOX-NIP-27",
+          "title": "冒険進行と帰還：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 30の保存失敗を帰還直前/本Save切替前後へ注入し、再起動後も重複・欠落を防ぐ。\n2. 31の速度/スキップ、32の設定変更、24の会話閲覧を重ねても最終Saveのゲーム状態が一致することを確認する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 帰還ボタン連打・画面再読込・通信でなくローカル保存再試行でも同じrunIdの受取は1回。\n2. 満杯時はGold/EXPだけを先取りせず全受取を保留し、空きを作ると同じ装備個体を受け取る。\n3. 途中敗北後のイベント/報酬が生成されず、LoadでStoneの再消費や戦闘再実行がない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 82,
+          "depends_on": [
+            "TASK-NIP-27-01",
+            "TASK-NIP-30-01",
+            "TASK-NIP-31-01",
+            "TASK-NIP-32-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-27"
+          ]
+        },
+        {
+          "id": "TASK-NIP-29-02",
+          "box_id": "BOX-NIP-29",
+          "title": "所持品と倉庫：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 05の解雇と06の装備、27の帰還に共通受入判定を接続する。\n2. D10/D11の容量・Stack・価格を投入し、容量ぴったり/1超過と再試行を検証する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 同じresource_idでもkindが違えば別Stackとなり、装備2個を1Stackへまとめない。\n2. 倉庫満杯で移動元の数量を減らさず、保存失敗でも片側だけ変化しない。\n3. 不正な負数量、重複個体、所有者不一致は操作開始前に拒否する。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 83,
+          "depends_on": [
+            "TASK-NIP-29-01",
+            "TASK-NIP-05-01",
+            "TASK-NIP-06-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-D10",
+            "TASK-NIP-D11"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-29"
+          ]
+        },
+        {
+          "id": "TASK-NIP-30-02",
+          "box_id": "BOX-NIP-30",
+          "title": "セーブとニューゲーム：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 全34項目の永続状態を往復検査し、破損/未知版/容量不足/復旧/初回Saveを試す。\n2. D12の対応版境界を確定し、27の受取済み印と34の実消費SP履歴を含むMigrationの実行可否を検査する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 同時保存要求が直列化され、書込失敗時に前の正常Saveと利用可能なBackupを復旧できる。\n2. ニューゲームは既存Saveへの上書き確認を要求し、初期化途中失敗で既存Saveを置換しない。\n3. 初期6名と装備がGS-30の表に一致し、同型防具でも各人の装備個体IDは異なる。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 84,
+          "depends_on": [
+            "TASK-NIP-30-01",
+            "TASK-NIP-01-01",
+            "TASK-NIP-02-01",
+            "TASK-NIP-03-01",
+            "TASK-NIP-04-01",
+            "TASK-NIP-05-01",
+            "TASK-NIP-06-01",
+            "TASK-NIP-07-01",
+            "TASK-NIP-08-01",
+            "TASK-NIP-09-01",
+            "TASK-NIP-10-01",
+            "TASK-NIP-11-01",
+            "TASK-NIP-12-01",
+            "TASK-NIP-13-01",
+            "TASK-NIP-14-01",
+            "TASK-NIP-15-01",
+            "TASK-NIP-16-01",
+            "TASK-NIP-17-01",
+            "TASK-NIP-18-01",
+            "TASK-NIP-19-01",
+            "TASK-NIP-20-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-22-01",
+            "TASK-NIP-23-01",
+            "TASK-NIP-24-01",
+            "TASK-NIP-25-01",
+            "TASK-NIP-26-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-28-01",
+            "TASK-NIP-29-01",
+            "TASK-NIP-31-01",
+            "TASK-NIP-32-01",
+            "TASK-NIP-33-01",
+            "TASK-NIP-34-01",
+            "TASK-NIP-D12"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-30"
+          ]
+        },
+        {
+          "id": "TASK-NIP-31-02",
+          "box_id": "BOX-NIP-31",
+          "title": "画面と戦闘演出：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 27/24の確定Snapshotを描画し、32の軽減設定を演出層だけへ適用する。\n2. 実ブラウザで縦画面、詳細開閉、タブ復帰、連続スキップの視認性と操作可能性を確認する。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 同じTimelineを速度変更・スキップしてもBattle結果と帰還対象が変わらない。\n2. Barrier吸収だけのHitでHP減少を誤表示せず、表示のスキップ後も最新状態へ追いつく。\n3. リリース画面に開発コマンドが露出せず、結果画面表示だけでEXPを付与しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 85,
+          "depends_on": [
+            "TASK-NIP-31-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-24-01",
+            "TASK-NIP-32-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-31"
+          ]
+        },
+        {
+          "id": "TASK-NIP-33-02",
+          "box_id": "BOX-NIP-33",
+          "title": "チュートリアルとヘルプ：実サービス接続・本番データ・受入試験",
+          "acceptance_criteria": "実装手順\n1. 05/21/27/34など対象操作の完了イベントへ接続し、D14の全7題材を最初から通す。\n2. Helpの用語・数値を修正版34仕様に照合し、Tickごと再抽選という説明を残さない。\n3. 上記の受入例と基準仕様全節を照合し、保存/Export/表示の該当経路を確認する。差分と試験証跡を添えて完了を記録する。\n\n完了条件\n1. 説明を開いただけで操作達成扱いにせず、失敗したドメイン操作では段階を進めない。\n2. 途中終了→Loadで同じ未完了段階を再開し、既達成の報酬や操作を重複実行しない。\n3. 初期SP0で習得操作が必要な段階へ進行不能なまま誘導しない。\n4. 関連する本番データが確定し、未決境界を仮値で通す経路がない。",
+          "execution_order": 86,
+          "depends_on": [
+            "TASK-NIP-33-01",
+            "TASK-NIP-05-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-34-01",
+            "TASK-NIP-D14"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": [
+            "GS-33"
+          ]
+        },
+        {
+          "id": "TASK-NIP-Z01",
+          "box_id": "BOX-NIP-RELEASE",
+          "title": "最小の冒険往復を結合する",
+          "acceptance_criteria": "実装手順\n1. 試験専用データでニューゲーム→編成→単一戦闘→成功帰還を通す。Skillなしの初期状態から通常行動できることを確認する。\n2. 同一Seedの戦闘順序、仮報酬、EXP配分、Save変更点を連続記録する。\n3. 別Runとして失敗/放棄を通し、報酬なし/Stone返却なしを確認する。\n\n完了条件\n1. 入口から受取済みまで手動状態修正なしで到達する。\n2. 戦闘開始時1回だけ順序決定、再生0回、帰還1回の確定を記録できる。",
+          "execution_order": 87,
+          "depends_on": [
+            "TASK-NIP-01-01",
+            "TASK-NIP-04-01",
+            "TASK-NIP-14-01",
+            "TASK-NIP-15-01",
+            "TASK-NIP-20-01",
+            "TASK-NIP-21-01",
+            "TASK-NIP-25-01",
+            "TASK-NIP-26-01",
+            "TASK-NIP-27-01",
+            "TASK-NIP-30-01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-Z02",
+          "box_id": "BOX-NIP-RELEASE",
+          "title": "全境界の統合回帰を実施する",
+          "acceptance_criteria": "実装手順\n1. 全項目の02タスク完了後、受入シナリオ一覧のRun/戦闘/保存失敗を実機で実行する。\n2. GS-14固定順序、Critical先行、Cast対象固定、Trigger上限、SP履歴返還を優先回帰する。\n3. 異常終了・満杯・容量不足・Backup復旧を含め、最終SaveとTimelineを比較する。\n\n完了条件\n1. 全34項目と統合シナリオに実行結果・ソース版があり、必須失敗0となる。\n2. 旧テストの期待値が仕様と矛盾する場合は根拠を明記して修正し、誤仕様の成功を目標にしない。",
+          "execution_order": 88,
+          "depends_on": [
+            "TASK-NIP-01-02",
+            "TASK-NIP-02-02",
+            "TASK-NIP-03-02",
+            "TASK-NIP-04-02",
+            "TASK-NIP-05-02",
+            "TASK-NIP-06-02",
+            "TASK-NIP-07-02",
+            "TASK-NIP-08-02",
+            "TASK-NIP-09-02",
+            "TASK-NIP-10-02",
+            "TASK-NIP-11-02",
+            "TASK-NIP-12-02",
+            "TASK-NIP-13-02",
+            "TASK-NIP-14-02",
+            "TASK-NIP-15-02",
+            "TASK-NIP-16-02",
+            "TASK-NIP-17-02",
+            "TASK-NIP-18-02",
+            "TASK-NIP-19-02",
+            "TASK-NIP-20-02",
+            "TASK-NIP-21-02",
+            "TASK-NIP-22-02",
+            "TASK-NIP-23-02",
+            "TASK-NIP-24-02",
+            "TASK-NIP-25-02",
+            "TASK-NIP-26-02",
+            "TASK-NIP-27-02",
+            "TASK-NIP-28-02",
+            "TASK-NIP-29-02",
+            "TASK-NIP-30-02",
+            "TASK-NIP-31-02",
+            "TASK-NIP-32-02",
+            "TASK-NIP-33-02",
+            "TASK-NIP-34-02",
+            "TASK-NIP-Z01"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-Z03",
+          "box_id": "BOX-NIP-RELEASE",
+          "title": "実行経路と配布物を確定する",
+          "acceptance_criteria": "実装手順\n1. 使用中のHTML/script/Export参照を追跡し、共通正式Runtimeだけが対象効果を実行することを確認する。\n2. 切替完了で参照されなくなった旧入口だけを除去し、名称一致だけで互換コードや資料を一括削除しない。\n3. 配布Manifest・Build・キャッシュ更新をリポジトリの提出規約に従って生成し、配布物から起動確認する。\n\n完了条件\n1. 配布物で検証したソース版/設定版が開発時と一致する。\n2. UI/Studio/Gameの二重処理と旧式の戦闘順再抽選入口が実行されない。",
+          "execution_order": 89,
+          "depends_on": [
+            "TASK-NIP-Z02"
+          ],
+          "work_type": "SOURCE_UPDATE",
+          "requires_human_approval": false,
+          "specification_ids": []
+        },
+        {
+          "id": "TASK-NIP-Z04",
+          "box_id": "BOX-NIP-RELEASE",
+          "title": "実装完了判定と引き渡しを行う",
+          "acceptance_criteria": "実装手順\n1. 実装差分、34項目証跡、設定決定表、保存復旧手順、残課題をまとめる。\n2. 未確定の本番データや未実施の必須試験がないことを確認し、対象版の完了を記録する。\n3. 配布/公開は実装完了物に対する依頼範囲に従って別途実行し、計画作成時点で配布済みとしない。\n\n完了条件\n1. 各タスクの完了根拠を追跡でき、旧計画のDoneや承認を流用していない。\n2. 復旧手順が実際に確認済みの版と対応している。",
+          "execution_order": 90,
+          "depends_on": [
+            "TASK-NIP-Z03"
+          ],
+          "work_type": "DEVELOPMENT_ONLY",
+          "requires_human_approval": false,
+          "specification_ids": []
+        }
+      ],
+      "checks": [
+        {
+          "id": "CHECK-NIP-01",
+          "title": "ゲーム基本受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-01-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-02",
+          "title": "能力値と成長受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-02-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-03",
+          "title": "ジョブと転職受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-03-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-04",
+          "title": "経験値とSP受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-04-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-05",
+          "title": "雇用と解雇受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-05-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-06",
+          "title": "装備スロットと装備条件受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-06-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-07",
+          "title": "武器生成受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-07-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-08",
+          "title": "防具生成受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-08-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-09",
+          "title": "MODとレアリティ受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-09-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-10",
+          "title": "戦闘能力値と補正受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-10-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-11",
+          "title": "命中とクリティカル受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-11-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-12",
+          "title": "ダメージと防御受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-12-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-13",
+          "title": "隊列と対象範囲受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-13-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-14",
+          "title": "Tickと行動ゲージ受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-14-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-15",
+          "title": "スキル発動と詠唱受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-15-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-16",
+          "title": "アクティブスキル生成受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-16-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-17",
+          "title": "スキルデータと使用条件受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-17-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-18",
+          "title": "状態異常と継続効果受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-18-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-19",
+          "title": "パッシブスキル受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-19-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-20",
+          "title": "トリガーと連鎖処理受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-20-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-21",
+          "title": "AI編集と行動選択受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-21-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-22",
+          "title": "モンスター生成受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-22-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-23",
+          "title": "クエストとイベント受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-23-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-24",
+          "title": "ストーリーと会話受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-24-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-25",
+          "title": "難易度とストーン受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-25-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-26",
+          "title": "報酬とドロップ受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-26-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-27",
+          "title": "冒険進行と帰還受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-27-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-28",
+          "title": "ギルドと施設受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-28-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-29",
+          "title": "所持品と倉庫受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-29-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-30",
+          "title": "セーブとニューゲーム受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-30-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-31",
+          "title": "画面と戦闘演出受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-31-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-32",
+          "title": "サウンドとプレイヤー設定受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-32-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-33",
+          "title": "チュートリアルとヘルプ受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-33-02",
+          "required": true
+        },
+        {
+          "id": "CHECK-NIP-34",
+          "title": "スキル習得・選択・リスペック受入",
+          "gate": "General",
+          "target_type": "Task",
+          "target_id": "TASK-NIP-34-02",
+          "required": true
+        }
+      ],
+      "specifications": [
+        {
+          "id": "GS-01",
+          "title": "ゲーム基本",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# ゲーム基本\n\n仕様ID：GS-01　版：1.0　作成日：2026-09-11\n\n## ゲームの目的と基本操作\n\nギルドに所属する冒険者を育成し、装備・スキル・行動AIを組み合わせてクエストに出撃する、ギルド運営型のハックアンドスラッシュRPGとする。戦闘中の行動は設定済みAIで自動決定する。\n\nプレイヤーが行う基本操作は、冒険者の雇用、パーティ編成、転職、装備変更、スキル習得・選択、AI編集、クエスト選択、ストーン投入、冒険結果の確認、帰還、所持品整理とする。\n\n## 1回のプレイサイクル\n\n1. ギルドで冒険者・装備・スキル・AI・隊列を準備する。\n2. クエスト、出撃パーティ、投入ストーンを確定する。\n3. 出撃時の状態を保存し、その冒険全体をシミュレーションして結果を確定する。\n4. 保存済みの進行を時間に従って再生する。戦闘・イベント・会話を閲覧できる。\n5. 成功時は帰還操作で報酬・経験値・進行フラグを一度だけ反映する。\n6. 入手品と成長を使って次の出撃準備を行う。\n\n## パーティ\n\n- 出撃人数の上限は6人。前衛と後衛に任意配分する。\n- 冒険者の個体IDで編成を保持する。同じ個体を重複登録しない。\n- 出撃時に、能力値、装備、選択スキル、パッシブ、AI、隊列を冒険用の固定状態として保存する。\n- 進行中の冒険は、この固定状態と開始時のマスターデータを使う。ギルド側の編集を途中から混ぜない。\n\n## 状態の確定単位\n\n| 状態 | 確定する時点 |\n|---|---|\n| 雇用・解雇・転職・装備・習得・AI編集 | ギルドで操作が成功した時点 |\n| ストーン消費 | 冒険開始が成功した時点 |\n| 冒険のイベント・戦闘・抽選結果 | 開始時のシミュレーション |\n| 入手品・経験値・永続進行フラグ | 成功した冒険からの帰還確定時 |\n\n失敗と放棄では途中獲得品・経験値を付与しない。冒険開始時に消費したストーンは返さない。\n\n## 単位\n\n| 表記 | 意味 |\n|---|---|\n| Level / Lv | 冒険者またはモンスターのレベル |\n| iLv | 装備のアイテムレベル。1〜11 |\n| skillLevel | スキル生成レベル。1〜11 |\n| Tick | 戦闘ロジックの時間単位 |\n| % | 百分率。20% = 0.20 |\n| パーセントポイント（pp） | 百分率への直接加算。20%に5pp加算すると25% |\n| 相対+20% | 補正対象の基礎値の20%を加算 |\n\n実時間と戦闘Tickを同じものとして扱わない。表示速度の変更は確定済みの結果を変更しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json`\n- `Export/system/adventure_settings.json`\n\n---\n元仕様ファイル: 基準仕様/01_ゲーム基本.md\n元仕様SHA-256: 89d669297cd298db218b3b3c5a355e4eec3d7600181b8655c84ad008ff15f372\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-02",
+          "title": "能力値と成長",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 能力値と成長\n\n仕様ID：GS-02　版：1.0　作成日：2026-09-11\n\n## 基礎能力値\n\nSTR・VIT・AGI・DEX・INT・MND・LUKの7種類を使用する。冒険者の初期値はすべて10、初期Levelは1、現在の最大Levelは50とする。初期値と上限はゲーム設定値として保持する。\n\n| 能力値 | 主な接続先 |\n|---|---|\n| STR | 武器装備条件、物理系スキル習得条件 |\n| VIT | 防具装備条件、耐久系スキル習得条件 |\n| AGI | 防具装備条件、行動ゲージ、多段・速度系スキル習得条件 |\n| DEX | 武器装備条件、命中・状態付与系スキル習得条件 |\n| INT | 武器装備条件、魔法系スキル習得条件 |\n| MND | 防具装備条件、回復・支援系スキル習得条件 |\n| LUK | 基礎クリティカル率、クリティカル系スキル習得条件 |\n\n装備条件の能力値と装備が保持する戦闘性能を区別する。例えばSTRの値を、そのまま武器の`attack`に足す処理は定義しない。\n\n## Level上昇時の計算\n\n上昇処理時のジョブから、その能力値の成長値`g`を取得する。`g`は0以上の整数とする。\n\n```text\n確定上昇量 = floor(g / 10)\n追加上昇確率 = (g mod 10) × 10%\n実際の上昇量 = 確定上昇量 + 追加抽選成功時の1\n上昇後能力値 = 上昇前能力値 + 実際の上昇量\n```\n\n7能力値をそれぞれ判定する。複数Level上昇では、1Levelずつ同じ処理を繰り返す。端数の持ち越し・成長ポイントの蓄積は行わない。\n\n| 成長値g | 確定上昇 | 追加抽選 | 1回の結果 |\n|---|---:|---:|---|\n| 0 | 0 | 0% | 0 |\n| 3 | 0 | 30% | 0または1 |\n| 10 | 1 | 0% | 1 |\n| 13 | 1 | 30% | 1または2 |\n| 15 | 1 | 50% | 1または2 |\n| 20 | 2 | 0% | 2 |\n\n## 期待値\n\n初期Levelから同一ジョブで育てた場合の比較用期待値は次式とする。\n\n```text\n期待能力値(Level, Job, Stat) = 10 + (Level - 1) × JobGrowth(Job, Stat) / 10\n```\n\n期待値は小数を保持する。実在する冒険者の能力値を期待値で上書きしない。転職した冒険者は、それまでに確定した能力値を基礎として以後の成長を加算する。\n\n例：剣士のSTR成長値は15。Level10まで剣士で育てたSTR期待値は23.5だが、実際のSTRは各Levelの抽選結果による整数となる。\n\n## 保持する情報\n\n冒険者は、現在Level、現在ジョブID、7能力値、転職履歴、成長履歴を保持する。成長履歴には上昇前後のLevel、適用ジョブ、能力値別の成長値・確定上昇量・抽選結果・最終上昇量を記録する。結果再現に使う乱数情報を保存し、再表示時に成長抽選をやり直さない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json`\n- `development-project-data/DEV-V9-BALANCE-EVIDENCE-EVD-0001.json`\n- `Export/system/adventure_settings.json`\n\n---\n元仕様ファイル: 基準仕様/02_能力値と成長.md\n元仕様SHA-256: 3cd5fe2d5875a9031c25ac10b9fc01c31eb106fc3a8860d6c7c19955a75d7c94\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-03",
+          "title": "ジョブと転職",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# ジョブと転職\n\n仕様ID：GS-03　版：1.0　作成日：2026-09-11\n\n## ジョブ一覧と成長値\n\n| ジョブ | STR | VIT | AGI | DEX | INT | MND | LUK |\n|---|---:|---:|---:|---:|---:|---:|---:|\n| 剣士 | 15 | 13 | 4 | 10 | 7 | 8 | 3 |\n| 騎士 | 10 | 15 | 3 | 7 | 8 | 13 | 4 |\n| 盗賊 | 7 | 8 | 15 | 13 | 3 | 4 | 10 |\n| 狩人 | 8 | 7 | 10 | 15 | 4 | 3 | 13 |\n| 魔術師 | 4 | 3 | 8 | 10 | 15 | 13 | 7 |\n| 神官 | 3 | 4 | 10 | 7 | 13 | 15 | 8 |\n| 冒険家 | 13 | 10 | 8 | 3 | 4 | 7 | 15 |\n\n各行の合計は60。成長の確率処理はGS-02「能力値と成長」に従う。\n\n## 転職\n\n- ギルドで実行する。戦闘の途中では実行しない。\n- 転職費用は0。転職回数の上限を設けない。\n- 転職は現在ジョブIDを変更し、その後のLevel上昇に使う成長値を変更する。\n- Level、経験値、確定済み能力値、習得済みスキル、習得済みパッシブ、装備、AI、進行履歴を保持する。\n- 転職時に能力値の振り直し、初期化、転職先期待値への置換を行わない。\n- ジョブ名による武器種制限・防具種制限・習得済みスキルの使用禁止を設けない。装備条件と個別スキルの使用条件を判定する。\n\n## 操作の成立条件と保存\n\n対象冒険者と転職先ジョブが存在し、ギルドで編集できる状態であることを確認してから変更する。転職履歴には変更前ジョブ、変更後ジョブ、変更時Level、費用0、変更時刻を記録する。変更と履歴を一緒に保存する。\n\n## 具体例\n\nLevel10、STR24の剣士が魔術師へ転職しても、Level10・STR24を維持する。次のLevel上昇では魔術師のSTR成長値4を使い、40%でSTRが1上昇する。\n\n## 定義範囲\n\n本仕様のジョブは上表の7種類とする。上位ジョブ、ジョブ熟練度、転職回数ボーナス、職業専用装備の追加条件は定義しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json`\n- `development-project-data/DEV-V9-BALANCE-EVIDENCE-EVD-0001.json`\n\n---\n元仕様ファイル: 基準仕様/03_ジョブと転職.md\n元仕様SHA-256: ea4b831c8c739c8af5b97cbca2efdc55d3403265caf75af4634eeb6bad7a87b6\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-04",
+          "title": "経験値とSP",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 経験値とSP\n\n仕様ID：GS-04　版：1.0　作成日：2026-09-11\n\n## 冒険経験値\n\n経験値は冒険中に仮集計し、クエスト成功後の帰還確定時に付与する。戦闘勝利の再生時には永続経験値を変更しない。クエスト失敗・冒険放棄では仮集計経験値を破棄する。\n\n受給対象は、クエスト終了時点でパーティに所属し、生存している冒険者とする。終了時に蘇生済みなら対象、戦闘不能なら対象外。途中離脱者は含めない。この判定は途中加入・離脱機能そのものの追加を意味しない。\n\n```text\n1人あたり付与経験値 = floor(冒険の付与対象経験値合計 / 受給対象人数)\n```\n\n均等配分し、端数を特定の冒険者へ追加配分しない。対象人数0では付与しない。\n\n## Level上昇\n\n1. 現在の経験値に配分経験値を加える。\n2. 次Levelに必要な経験値に到達したら、その必要量を消費する。\n3. Levelを1上げ、現在ジョブの成長処理とSP付与を行う。\n4. 余剰経験値が次の必要量に達していれば繰り返す。\n5. 最大Level到達後の余剰経験値を破棄する。\n\n成長に使うジョブは経験値確定時のジョブとする。帰還確定処理の途中に転職操作を挟まない。\n\n必要経験値はLevel別の設定データを参照する。資料から全Levelの確定テーブルを特定できないため、独自の等差・指数式で補完しない。設定が存在しないLevelを進行可能として扱わない。\n\n## SPと習得\n\n| 設定項目 | 現在値 |\n|---|---:|\n| 初期SP | 0 |\n| 1Level上昇時のSP | 1 |\n| Active習得費用の標準値 | 1 |\n| Passive習得費用の標準値 | 1 |\n\nSPはActiveとPassiveで共用する。個別マスターに習得費用がある場合はその値を使う。習得条件の7能力値をすべて満たし、必要SPを持ち、未習得である場合に習得できる。\n\n習得条件に必要な能力値は消費しない。費用SPの減算と習得IDの追加を一体で確定する。習得済みの同じIDを再購入させない。\n\n習得済み一覧と、実際に戦闘へ持ち込む選択済み一覧を区別する。AIが使えるActiveは選択済みActiveから解決する。Passiveは有効装備一覧に入れたものだけを適用する。同一Passive系列の重複装備は拒否する。\n\n現在の戦闘用選択枠はActive5件、Passive5件。習得の取り消しとSP返還、選択枠の操作はGS-34「スキル習得・選択・リスペック」に従う。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json`\n- `development-project-data/SKL-0001.json`\n- `Export/system/adventure_settings.json`\n\n---\n元仕様ファイル: 基準仕様/04_経験値とSP.md\n元仕様SHA-256: e6e638e9c7511d787e4fb668c2f65c72bc5cc58cf2273b7008b23c979aff606f\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-05",
+          "title": "雇用と解雇",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 雇用と解雇\n\n仕様ID：GS-05　版：1.0　作成日：2026-09-11\n\n## 雇用\n\n酒場で、解放済みの冒険者種別から冒険者を作成する。雇用費用は0。希望する解放済み種別を選んで雇用する。\n\n生成時に新しい個体IDを発行し、名前、初期ジョブ、Level1、7能力値各10、初期SP、初期所持・習得状態を設定する。名前は自動生成し、プレイヤーが編集できる。\n\n候補更新料、時間経過による候補更新、雇用回数による値上げは定義しない。雇用可能な種別と所属上限はギルドの解放・容量設定に従う。満員時は雇用を成立させない。\n\n## 解雇条件\n\n- パーティに所属していない冒険者だけを解雇できる。\n- 解雇確認に、対象の名前と、その個体の育成情報が失われることを表示する。\n- 装備品を自動で所持品へ戻すために必要な空きを事前計算する。\n- 空き不足の場合は解雇全体を中止する。装備の一部だけを戻したり、仮置き枠を作ったりしない。\n\n## 解雇の確定処理\n\n1. 対象個体と解雇条件を検証する。\n2. 装備返却後の所持品容量を検証する。\n3. 装備品を個体から外し、同じ装備個体IDを保って所持品へ返す。\n4. 冒険者と、その冒険者の習得・選択スキル、パッシブ、AI設定、転職・成長履歴を削除する。\n5. 返却と個体削除を一体で保存する。\n\n途中で失敗した場合は、解雇前の状態を維持する。\n\n## 個体の同一性\n\n解雇後に同じ種別・同じ名前の冒険者を雇っても、新しい個体として扱う。削除済み個体の能力値、装備、習得状態、AI、履歴を復元しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json`\n\n---\n元仕様ファイル: 基準仕様/05_雇用と解雇.md\n元仕様SHA-256: d0feb68a7363d9cf716f7ba70ffdcf3eb302256ec492ec42c5c25da832da4562\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-06",
+          "title": "装備スロットと装備条件",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 装備スロットと装備条件\n\n仕様ID：GS-06　版：1.0　作成日：2026-09-11\n\n## 装備スロット\n\n1人あたり10枠を固定で持つ。\n\n| 保存キー | 装備部位 |\n|---|---|\n| weapon1 / weapon2 | 武器枠1 / 武器枠2 |\n| head | 頭 |\n| armor | 鎧 |\n| gloves | 手 |\n| feet | 足 |\n| amulet | アミュレット |\n| ring1 / ring2 | 指輪1 / 指輪2 |\n| belt | ベルト |\n\n同じ装備個体を複数の冒険者・保管場所に重複配置しない。装備交換は、取り外した品を返却した後の容量まで検証してから一体で確定する。\n\n## 装備条件\n\n武器は`required_str / required_dex / required_int`、防具は`required_vit / required_mnd / required_agi`を使う。要求値は、その装備に保存された値を参照する。要求される全能力値を満たす必要がある。ジョブによる装備種制限は設けない。\n\nアクセサリはiLvを生成条件として持つが、通常のBaseItemに能力値装備条件・基礎攻撃性能を付けない。個別効果は正式MODで定義する。iLvをキャラクターLevelと読み替えて装備条件に追加しない。\n\n## 持ち方\n\n| 持ち方 | 成立条件 | 攻撃の扱い |\n|---|---|---|\n| 片手 | 武器1件の通常要求値を満たす | 攻撃武器のStrike1回 |\n| 両手持ち | 通常STR要求は不足するが、STR×2で満たす。DEX/INTは通常条件を満たす | 同じ武器のStrike1回。武器2枠を占有 |\n| 二刀流 | 正式Passiveから`DUAL_WIELD`能力を得て、2本の武器がそれぞれ条件を満たす | 武器ごとのStrikeを独立処理 |\n| 武器＋盾 | 攻撃武器と盾がそれぞれ条件を満たす | 武器1 Strike、盾0 Strike |\n| 弓＋矢筒 | 弓系と矢筒がそれぞれ条件を満たす | 弓1 Strike、矢筒0 Strike |\n\n両手持ちは持ち方であり、独立した武器カテゴリではない。STRだけを判定上2倍にし、装備に保存した要求STR・攻撃力・命中・魔法性能は変更しない。両手持ちの武器個体を2個分の所持品・2回分の性能として数えない。\n\n例：要求STR12、DEX3、INT1の武器は、STR6以上かつDEX3以上かつINT1以上なら両手持ちできる。要求STR12から生成された攻撃力24は、持ち方で12にも48にも変わらない。\n\n## 盾と弓の個別ルール\n\n- 盾はBlock率・Block軽減率を提供する。盾の攻撃、命中、武器クリティカルを主武器へ合算しない。\n- 弓だけ・矢筒だけの装備自体は許可する。弓攻撃と弓を必要とするスキルの使用には、弓系と矢筒の両方を要求する。\n- 矢筒の攻撃性能を弓へ加算しない。\n- 弓の射撃属性と対象Rangeは別項目。射撃属性によってBACKやALLへ変更しない。\n- 弓条件は`(WEAPON_BOW OR WEAPON_GREATBOW) AND EQUIP_QUIVER`としてスキルの正式使用条件へ登録する。\n\n## 戦闘へ渡す情報\n\n装備個体ID、部位、持ち方、保存済み性能、MODの独立補正、装備タグ、攻撃に使う武器ごとの情報を渡す。二刀流の命中・クリティカルは、それぞれのStrikeの武器を使う。二本分の性能を加算した架空の一本を作らない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / EQUIP・弓矢筒・Block決定`\n- `development-project-data/SKL-0001.json`\n- `Export/system/adventure_settings.json`\n\n---\n元仕様ファイル: 基準仕様/06_装備スロットと装備条件.md\n元仕様SHA-256: 3f766d9885712d86db3d1e261b336904addde6fc88f0a68fcf1987a672af50e3\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-07",
+          "title": "武器生成",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 武器生成\n\n仕様ID：GS-07　版：1.0　作成日：2026-09-11\n\n## 入力と生成段階\n\n武器種、iLv、ID、表示名、タグからBaseItemを生成する。iLvは1〜11の整数。BaseItemのレアリティはNORMALとする。レアリティ・MOD・Tierを付ける完成品生成と、入手抽選は別処理とする。\n\n## 要求能力値係数\n\n| 武器種 | STR係数 | DEX係数 | INT係数 |\n|---|---:|---:|---:|\n| 片手剣 | 6 | 3 | 1 |\n| 大剣 | 12 | 3 | 1 |\n| 短剣 | 3 | 6 | 1 |\n| 片手斧 | 6 | 3 | 1 |\n| 大斧 | 12 | 3 | 1 |\n| 槍 | 6 | 3 | 1 |\n| 弓 | 3 | 6 | 1 |\n| 大弓 | 6 | 3 | 1 |\n| 杖 | 3 | 1 | 6 |\n| ワンド | 1 | 3 | 6 |\n| 魔導書 | 1 | 3 | 6 |\n| 盾 | 6 | 3 | 1 |\n| 矢筒 | 3 | 6 | 1 |\n\n```text\nrequired_str = iLv × STR係数\nrequired_dex = iLv × DEX係数\nrequired_int = iLv × INT係数\nattack = required_str × 2 × 攻撃成長係数\naccuracy = required_dex × 2 × 命中成長係数\nmagic_weapon_bonus = required_int × 武器種のSTR係数 × 魔法成長係数\nmagic_accuracy = (required_int + required_dex) × 2\nweapon_critical_rate = 0.05\n```\n\n現在、武器成長補正は無効で各成長係数1。要求値と性能の丸め指定は`none`、追加のクランプ指定はなし。生成時に式・係数・設定版・入力を記録する。\n\n`magic_weapon_bonus`の数値は魔法ダメージへの百分率補正量として使う。6なら魔法基礎量に対して倍率1.06となる。回復には使用しない。\n\n`weapon_critical_rate`は割合値で、0.05は5%。LUKを含めた戦闘クリティカル率は戦闘側で求める。装備生成時にはLUKを適用しない。\n\n## 盾のBlock性能\n\n```text\nblock_rate = 0.20 + 0.02 × (iLv - 1)\nblock_damage_cut_rate = 0.30\n```\n\niLv1のBlock率20%、iLv6で30%、iLv11で40%。Block軽減率はどのiLvでも30%。盾の生成値を持っていても、盾から攻撃Strikeを発生させない。\n\n## iLv別の標準命名\n\n| iLv | 接頭辞 | iLv | 接頭辞 |\n|---:|---|---:|---|\n| 1 | 木の | 7 | アダマンタイトの |\n| 2 | 鉄の | 8 | オリハルコンの |\n| 3 | 鋼鉄の | 9 | 巨人の |\n| 4 | 銀の | 10 | 竜の |\n| 5 | ダイヤの | 11 | 星鋼の |\n| 6 | ミスリルの | | |\n\n## 計算例\n\niLv3の片手剣は、要求STR18・DEX9・INT3、攻撃36、命中18、魔法武器補正18、魔法命中24、武器クリティカル率5%となる。STR9で両手持ちしても保存性能は同じ。\n\n## 出力と検証\n\n上記正式フィールドをBaseItemへ保存する。ID重複、範囲外iLv、不明な武器種、非数値、生成式との不一致をエラーにする。ゲーム実行時や装備画面で要求値から性能を再生成しない。\n\n## 参照元\n\n- `studio/equipment/equipment-balance-config.json / EQUIPMENT-BASE-V2 2.3.0`\n- `development-project-data/DEV-V9-EQUIPMENT-MAGIC-HIT-CORRECTION-001.json`\n- `development-project-data/DEV-V9-CRITICAL-MODIFIER-POLICY-001.json`\n\n---\n元仕様ファイル: 基準仕様/07_武器生成.md\n元仕様SHA-256: 6b13645827972bb8f83b828115d065c95e6b25859df6700c5291f76a3a56105f\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-08",
+          "title": "防具生成",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 防具生成\n\n仕様ID：GS-08　版：1.0　作成日：2026-09-11\n\n## 入力\n\n防具種、部位、iLv、ID、表示名、タグを指定する。iLvは1〜11の整数、部位は鎧・頭・手・足。BaseItemのレアリティはNORMAL。\n\n| 防具種 | VIT係数 | MND係数 | AGI係数 |\n|---|---:|---:|---:|\n| 重装 | 6 | 3 | 1 |\n| 軽装 | 3 | 1 | 6 |\n| ローブ | 1 | 6 | 3 |\n\n| 部位 | HP・MP部位係数 |\n|---|---:|\n| 鎧 | 20 |\n| 頭 | 10 |\n| 手 | 10 |\n| 足 | 10 |\n\n## 1個の防具の生成式\n\n```text\nrequired_vit = iLv × VIT係数\nrequired_mnd = iLv × MND係数\nrequired_agi = iLv × AGI係数\nhp_bonus = required_vit × 部位係数 × HP成長係数\nmp_bonus = required_mnd × 部位係数 × MP成長係数\nevasion = required_agi × 回避成長係数\nmagic_resistance = required_agi + required_mnd\n```\n\n現在、防具成長設定は有効だが、iLv1〜11のHP・MP・回避成長係数はすべて1。要求値と性能の丸め指定は`none`、追加クランプ指定はなし。\n\nHP・MPの部位係数を回避や魔法抵抗へ掛けない。防具の要求値にINTを追加しない。\n\n## 戦闘への集計\n\n実際に装備している防具個体それぞれの`hp_bonus / mp_bonus / evasion / magic_resistance`を集計する。外した部位は0件として扱う。異なるiLv・防具種の混成装備も個体ごとに計算する。\n\n`magic_resistance`は命中判定の分母に使う性能。魔法ダメージ軽減率や元素耐性とは別の値である。4部位分を生成時に一括計算した値として各防具へ保存しない。\n\n## 計算例\n\niLv2・重装の鎧は、要求VIT12・MND6・AGI2、HP補正240、MP補正120、回避2、魔法抵抗8。\n\n同じiLv2・重装の頭は、要求値は同じでHP補正120、MP補正60、回避2、魔法抵抗8。\n\n両方だけを装備した場合、装備由来の合計はHP360・MP180・回避4・魔法抵抗16。未装備の手・足の分を足さない。\n\n## 保存と検証\n\n正式性能、部位、要求値、生成入力、係数、設定版、計算履歴を保存する。ゲーム側は保存性能を使用し、MODを反映するためにBaseItemの保存性能を書き換えない。\n\n## 参照元\n\n- `studio/equipment/equipment-balance-config.json / EQUIPMENT-BASE-V2 2.3.0`\n- `development-project-data/DEV-V9-EQUIPMENT-MAGIC-HIT-CORRECTION-001.json`\n\n---\n元仕様ファイル: 基準仕様/08_防具生成.md\n元仕様SHA-256: a18455c3c16d28ca3b32db4f10553a6cc291e969b89a7b7a33d1c75073b82f34\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-09",
+          "title": "MODとレアリティ",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# MODとレアリティ\n\n仕様ID：GS-09　版：1.0　作成日：2026-09-11\n\n## 装備の3段階\n\n| 段階 | 決定する内容 |\n|---|---|\n| BaseItem | 武器・防具・アクセサリの種類、iLv、要求値、保存済み基礎性能 |\n| 完成装備 | BaseItem参照、装備個体ID、レアリティ、付与MOD、Tier、抽選値 |\n| Loot | どの場面で、どの候補・重み・回数から完成装備を入手するか |\n\n## レアリティ\n\n装備レアリティはNORMAL、MAGIC、RARE、UNIQUE、LEGENDARY、MYTHICを使用する。UNIQUE・LEGENDARY・MYTHICはドロップ限定とし、通常の作成・合成から生成しない。\n\n報酬設定の`common / uncommon / rare / epic / legendary`は報酬品質キーである。装備レアリティとの対応は明示的なデータで定義し、名前の類似だけで変換しない。\n\n## MOD定義\n\nMODは、ID、分類、タグ、効果種別、補正先、演算、パラメータ、Balance参照キー、有効状態、Schema版を持つ。対象装備の適合判定は共通のタグ定義を使う。タグ文字列や表示名から効果値を推測しない。\n\n装備条件・Tag判定、数値補正、スキル効果を別の責務として処理する。要求タグが空のMODは、空であることを理由に破損扱いしない。定義された他の適合条件で判定する。\n\n## 通常MOD抽選順序\n\n1. レアリティを決める。\n2. 付与MOD数を決める。\n3. 攻撃枠・防御枠の割り当てを決める。\n4. 各枠のMODカテゴリを決める。\n5. MOD種別を決める。\n6. Tierを決める。\n\n同じ装備個体へ同じMODを重複付与しない。重複候補は再抽選対象とする。異なる装備個体に同じMODが付くことは許可する。\n\n各段階の候補・重み・件数・Tier範囲は設定データに置く。全装備共通の確定抽選率・確定MOD件数は資料から特定できないため、仕様書の例を抽選率として実装しない。候補不足や不正設定は生成エラーとし、重複を許して埋めない。\n\n## 能力値MODとアクセサリ\n\nSTR等の7基礎能力値MODは限定的なレア枠で扱う。通常MODの基本枠をすべて能力値上昇に置き換えない。アミュレットは通常MODを主体とし、能力値MODはレア枠として扱う。能力値MODをアミュレット専用に限定しない。\n\n## 補正の計算\n\nMODは元のBaseStatに対する独立Contributionとして出力する。基礎値100に相対+20%のMODと相対+10%のPassiveがある場合は、100+20+10=130。MOD反映済み120をPassiveの基礎値として132にしない。\n\n数値、上限、Tier別効果量は設定から取得する。ユニーク効果も登録済みの正式効果・正式処理へ接続する。名称だけのアイデアを実行効果として扱わない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / MOD・RARITY・UNIQUE仕様と決定`\n- `development-project-data/DEV-V9-CRITICAL-MODIFIER-POLICY-001.json`\n\n---\n元仕様ファイル: 基準仕様/09_MODとレアリティ.md\n元仕様SHA-256: 3d82c04a560e14c16cc741d54a7d77b9ed4fffff5b884ad776db4bbf11d32832\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-10",
+          "title": "戦闘能力値と補正",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 戦闘能力値と補正\n\n仕様ID：GS-10　版：1.0　作成日：2026-09-11\n\n## 冒険者の戦闘基礎値\n\n| 戦闘値 | 補正前の入力 |\n|---|---|\n| 最大HP | 個体の基礎HP＋実装備の`hp_bonus`合計。初期基礎HPは100 |\n| 最大MP | 個体の基礎MP＋実装備の`mp_bonus`合計。初期基礎MPは30 |\n| 攻撃力 | 攻撃に使う武器の保存済み`attack` |\n| 命中 | 攻撃に使う武器の保存済み`accuracy` |\n| 回避 | 実装備の保存済み`evasion`合計 |\n| 魔法命中 | 攻撃に使う武器の保存済み`magic_accuracy` |\n| 魔法抵抗 | 実装備防具の保存済み`magic_resistance`合計 |\n| 魔法武器補正 | 攻撃に使う武器の保存済み`magic_weapon_bonus` |\n| 武器クリティカル率 | 攻撃に使う武器の`weapon_critical_rate` |\n| LUK | 冒険者の現在LUK |\n| AGI | 冒険者の現在AGI |\n| Block率・軽減率 | 装備中の盾の保存性能 |\n\n盾・矢筒は攻撃武器性能の合計対象にしない。二刀流の攻撃は武器別の基礎値で処理する。基礎HP・MPと防具補正に、VIT・MND由来の独自加算式を追加しない。\n\n## 補正方式\n\n対象の戦闘値ごとに、補正前の`BaseStat`を一度だけ決める。\n\n```text\n相対補正の寄与量 = BaseStat × rate\n固定補正の寄与量 = flatValue\nFinalStat = BaseStat + 有効な寄与量の合計\n```\n\nMOD、Passive、Skill、Buff、Debuffは同じBaseStatを参照する。Buff/Debuffは先にその効果のスタック規則から実効量を求め、実効量だけを共通集計へ渡す。\n\n例：基礎攻撃100、MOD相対+20%、Passive相対+10%、固定+5なら135。適用順を変えても135になる。\n\n## 百分率の意味\n\n- 相対+20%：基礎値の20%を寄与量として加える。\n- +5pp：百分率の数値に5ポイントを直接加える。\n- クリティカル率を割合値で保存する場合、+5ppの固定寄与は`0.05`。\n- ダメージ増加率などを百分率数値で保存する場合、+5ppの固定寄与は`5`。\n\nフィールドの単位を先に定めてから変換する。5と0.05を同じ数値として通さない。\n\n## 基礎値の保護\n\n装備に保存した性能は補正処理で書き換えない。武器クリティカル率にLUKを反映した値は戦闘基礎クリティカル率として別に持つ。再計算時は元の基礎値から寄与量を再構成し、計算済み結果へ重ね掛けしない。\n\n最大HP・MPの補正と現在HP・MPの回復は別の操作である。最大値の変化だけを理由に自動全回復させない。現在値は有効な最大値を超えない。\n\n## モンスター\n\nモンスターの基礎値生成はGS-22に従う。冒険者初期HP100・MP30をモンスターに加算しない。生成済みの戦闘入力を受けた後は、同じContribution・命中・ダメージ処理を使う。\n\n## 参照元\n\n- `development-project-data/DEV-V9-CRITICAL-MODIFIER-POLICY-001.json`\n- `development-project-data/DEV-V9-EQUIPMENT-MAGIC-HIT-CORRECTION-001.json`\n- `Export/system/adventure_settings.json`\n- `game/assets/js/app-runtime.js / characterBattleValues`\n\n---\n元仕様ファイル: 基準仕様/10_戦闘能力値と補正.md\n元仕様SHA-256: e591a7b0de727d0a7fc4fc5c2bb4e0db6ae5f094085c55e68c0a4dd0bab4acfe\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-11",
+          "title": "命中とクリティカル",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 命中とクリティカル\n\n仕様ID：GS-11　版：1.0　作成日：2026-09-11\n\n## 1 Hitの判定順\n\n1. 使用する武器と攻撃種別を確定する。\n2. クリティカル率を計算してクリティカル判定を行う。\n3. クリティカル成功なら必中として命中判定を省略する。命中乱数も消費しない。\n4. クリティカル不成立時だけ、物理または魔法の命中判定を行う。\n5. 命中ならダメージ処理へ進む。Missなら、そのHitのダメージ・命中付随状態異常・Blockを発生させない。\n\n多段スキルと二刀流は、Hit・Strikeごとにこの判定を繰り返す。最初の結果を後続Hitへコピーしない。\n\n## クリティカル率\n\n```text\nbaseCriticalRate = weapon_critical_rate × (1 + LUK / 100)\nfinalCriticalRate = baseCriticalRate + 有効なクリティカル率Contribution合計\n```\n\n`weapon_critical_rate`と計算結果の単位は割合値。例：武器5%、LUK20なら基礎率は`0.05 × 1.20 = 0.06`、すなわち6%。ここに相対+20%なら7.2%、固定+2ppなら8%となる。\n\n武器率0では、LUKだけから基礎クリティカル率を作らない。各補正はこの共通基礎率から独立計算する。下限・上限はBalance設定の責務とし、資料にない独自のクリティカル上限を追加しない。\n\n## 物理命中\n\n```text\nEvasion > 0：命中率[%] = Accuracy / Evasion × 100\nEvasion <= 0：命中率[%] = 100\n```\n\n最低命中率は設けない。式へ明示的な100%クランプを追加しない。命中抽選は0以上100未満の値と比較するため、計算率が100%以上なら命中する。\n\n例：命中30・回避60なら50%、命中0・回避60なら0%、命中120・回避60なら計算率200%。\n\n## 魔法命中\n\n```text\nMagicResistance > 0：命中率[%] = min(100, MagicAccuracy / MagicResistance × 100)\nMagicResistance <= 0：命中率[%] = 100\n```\n\n魔法命中は武器の保存値、魔法抵抗は実装備防具の保存値合計を基礎に補正する。キャラクターINT・DEX・AGI・MNDを要求値式へ直接代入して、装備性能を作り直さない。\n\n## クリティカルダメージ\n\n基礎の追加ダメージは50%。通常時倍率1、クリティカル時の初期倍率1.5。\n\n```text\ncriticalMultiplier = 1 + finalCriticalDamagePercent / 100\n```\n\n被クリティカル増加分軽減率を`r`とすると、倍率は`1 + (finalCriticalDamagePercent / 100) × (1-r)`。通常ダメージ部分の1を軽減しない。\n\n例：追加ダメージ50%、増加分軽減20%なら倍率1.4。上限値はBalance設定として扱う。クリティカル成立の判定は命中より前、クリティカルのダメージ倍率適用は抵抗軽減より後に行う。\n\n## 参照元\n\n- `development-project-data/DEV-V9-BALANCE-001.json / クリティカル先行・基礎追加50%決定`\n- `development-project-data/DEV-V9-CRITICAL-MODIFIER-POLICY-001.json`\n- `development-project-data/SKL-0001.json`\n- `game/assets/js/tag-skill-runtime.js / currentBattleMagicHitRatePercent`\n\n---\n元仕様ファイル: 基準仕様/11_命中とクリティカル.md\n元仕様SHA-256: ef1b7fb49f6934211feb24d6ba8da7c82ff808827796c36dfb5cb7c8c36c69d4\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-12",
+          "title": "ダメージと防御",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# ダメージと防御\n\n仕様ID：GS-12　版：1.0　作成日：2026-09-11\n\n## 基礎ダメージ\n\n| 攻撃種別 | 基礎式 |\n|---|---|\n| 通常物理攻撃 | 攻撃武器の有効攻撃力×1.00 |\n| 物理スキル | 有効攻撃力×`power / 100` |\n| 魔法スキル | 魔法上昇率×`power`×`(1 + magic_weapon_bonus / 100)` |\n| 正式な固定Damage効果 | 契約に指定された`power` |\n\n魔法の`power`は魔法威力、物理の`power`は攻撃力に対する百分率。魔法上昇率の未補正値は1として扱う。PHYSICAL_DAMAGE・MAGIC_DAMAGEの独立Contributionをそれぞれの基礎量へ加える。魔法武器補正をHealに使わない。\n\n## 直接ダメージの処理順\n\n1. GS-11のクリティカル先行・命中判定を行う。\n2. 攻撃種別の基礎ダメージと有効補正を計算する。\n3. 適用対象のダメージ抵抗による割合軽減を行う。\n4. クリティカルなら追加倍率を適用する。\n5. 元素属性がある場合は属性別shareへ分割し、属性ごとの耐性で軽減して合計する。\n6. 攻撃者の隊列とRangeに応じた倍率を適用する。\n7. 乱数幅が設定されていなければ等倍。最終値を`max(0, floor(値))`として`finalDamage`を確定する。\n8. Block判定と軽減を行う。\n9. BARRIERで吸収し、残余をHPダメージ候補にする。\n10. 致死候補では致死耐えの割込みを解決し、HPを確定する。\n11. 実HP減少量を使ってダメージ参照効果を解決する。\n12. 戦闘不能・後続効果・誘発効果を処理する。\n\n## 抵抗と属性\n\n百分率で表すダメージ抵抗・属性耐性は0〜75%の範囲で扱い、`Damage × (1 - Resistance/100)`とする。\n\n元素属性はFIRE・ICE・LIGHTNING・WIND。複数属性はダメージの内訳を表す。\n\n```text\n属性ごとの量 = 属性分割前Damage × share / 100\n属性軽減後合計 = Σ(属性ごとの量 × (1 - 対応属性耐性 / 100))\n```\n\nshareをすべて指定した場合は合計100%。一部省略なら残りを省略属性へ等分する。負値・超過・無効属性を拒否する。\n\n例：Damage100、FIRE50%・ICE50%、火耐性20%・氷耐性0%なら40+50=90。属性を2つ持つことを理由にDamage200にしない。\n\n## Block\n\n物理・魔法の直接Hitを対象とし、Miss・DOT・反射を自動で対象へ追加しない。各Hit独立で判定する。\n\n```text\n成功：Block後Damage = floor(finalDamage × (1 - block_damage_cut_rate))\n不成立：Block後Damage = finalDamage\n```\n\nBlockはBARRIERより前。初期盾の軽減率30%、`finalDamage=101`ならBlock後70。\n\n## BARRIERとHP\n\nBARRIERは有効な残量をFIFOで消費し、吸収しきれない量だけをHPへ渡す。HPの下限は0。致死耐えを含むHP確定後、`実HP減少量 = 適用前HP - 適用後HP`を求める。\n\n例：HP20、BARRIER10、Block後Damage100なら、吸収10、HP減少20。オーバーキル分70は吸収・反射の計算基準にしない。\n\n## 吸収・反射\n\nHP吸収・MP吸収は実HP減少量に効果率を掛けて切り上げ、最大値を超えない。反射は実HP減少量に効果率を掛けて切り捨てる。反射へ抵抗を再適用せず、反射から再反射を起こさない。これらは正式効果が付与されている場合に限り実行する。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / BATTLE-001〜003`\n- `development-project-data/DEV-V9-CRITICAL-MODIFIER-POLICY-001.json`\n- `game/assets/js/tag-skill-runtime.js / calculateCurrentSkillBaseDamage`\n\n---\n元仕様ファイル: 基準仕様/12_ダメージと防御.md\n元仕様SHA-256: 2327a120b70afc053db75b41ceb9ed3a0c45baa06837cc33c32e337cfe54bcf1\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-13",
+          "title": "隊列と対象範囲",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 隊列と対象範囲\n\n仕様ID：GS-13　版：1.0　作成日：2026-09-11\n\n## 配置\n\n各陣営の配置は前衛`FRONTLINE`と後衛`BACKLINE`の2列。味方6枠の前後配分はギルドで自由に編集する。戦闘中に任意移動する操作は設けない。\n\n前衛の生存者が0人になった場合、生存している後衛全員を前衛へ強制前進させる。対象候補を次に解決するときは、更新済み隊列を使う。\n\nモンスターはEncounterの指定配置を優先し、指定がないときにモンスターの標準配置を使う。\n\n## 敵向けRange\n\n| Range | 対象集合・選び方 | 攻撃者が後衛の場合のDamage倍率 |\n|---|---|---:|\n| SINGLE | 生存前衛から単体 | 0.5 |\n| FRONT | 生存前衛全員 | 0.5 |\n| BACK | 生存前衛・後衛の両方から単体 | 1.0 |\n| RANDOM | 前衛・後衛を含む有効候補から指定回数抽選。重複可 | 0.5 |\n| ALL | 全有効対象 | 1.0 |\n\n攻撃者が前衛なら隊列倍率1.0。BACKは「後衛全員」でも「後衛限定単体」でもない。対象条件を満たす前衛も選べる。\n\nRANDOMの抽選回数はスキルデータで指定する。現在の生成設定は2回。結果は配列として固定し、同じ個体が複数回選ばれた場合も各回を残す。\n\n対象Rangeはこの5種に限定する。攻撃属性としてのPIERCEとRangeを混同しない。\n\n## 味方向け効果\n\n味方へのHeal・BARRIERは前衛・後衛のどちらも対象にできる。敵向けSINGLEの「前衛のみ」を味方支援へ流用しない。防御側が後衛であることだけを理由に被Damageを半減しない。\n\n## 対象固定\n\nAI判断時点では対象予約にすぎない。実行開始時に使用条件・対象条件・Rangeを検証し、基準対象と展開済み最終対象集合を固定する。\n\n詠唱完了時は固定対象から無効になったものだけを除外する。新しい対象を補充しない。RANDOMを引き直さない。以後の各Hitも無効対象を除外し、他の有効対象は継続する。\n\n## かばう\n\n- SINGLE・BACK、およびRANDOMの各抽選を対象とする。\n- FRONT・ALLには適用しない。\n- RANDOMの重複選出も1回ずつ判定する。\n- 有効なかばう効果の条件・寿命・使用回数に従って、被攻撃対象をかばう側へ置換する。\n- かばう対象にできない攻撃を単体Hitへ分解して、かばうを成立させない。\n\nかばうは`PERSISTENT / USES / DURATION`の正式寿命を持つ。複数のかばう候補が同時成立した場合の優先規則は、個別Contractで確定させる。名称や配置順による独自優先を足さない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-FORMATION-RANGE-001.json / SPEC-FRM-001 Rev2`\n- `development-project-data/DEV-V9-REORG-019.json / BATTLE-002`\n- `assets/shared/config/skill-ai-generation-rules.json`\n\n---\n元仕様ファイル: 基準仕様/13_隊列と対象範囲.md\n元仕様SHA-256: 4221a597de991d6f49b30ac7cf364bae5ee0600435f1373b5e6c1eaa5bc0292f\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-14",
+          "title": "Tickと行動ゲージ",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# Tickと行動ゲージ\n\n仕様ID：GS-14　版：1.1　作成日：2026-09-11\n\n## 時間単位\n\n戦闘処理は整数Tickで進行する。描画フレーム、実時間、再生速度から独立させる。同じ初期状態・同じデータ・同じSeedなら同じ戦闘結果を再現する。\n\n## 行動ゲージ\n\n```text\n基礎増加量 / Tick = (100 + AGI) / 10\n```\n\n例：AGI10なら11、AGI50なら15、AGI100なら20。ゲージ増加補正は`ACTION_GAUGE_GAIN`のContributionとして加える。速度Buffで基礎AGIそのものを変更しない。\n\nStudio戦闘の後段倍率`agiGaugeCoefficient`と`actionSpeedMultiplier`は各1.0を初期値とする。存在する設定を使い、UI側で別式を作らない。\n\n| ゲージ設定 | 現在値 |\n|---|---:|\n| 最大値 | 100 |\n| AI再評価間隔 | 最大値の10%（現在10） |\n| 成立行動の消費量 | 最大値の100%（現在100） |\n| 実行失敗時の消費量 | 最大値の50%（現在50） |\n\n失敗消費は、開始・実行を試みて成立しなかった行動に適用する。ゲージ10ごとのAI評価そのものを失敗行動として毎回50消費しない。\n\n## AI評価\n\n再評価間隔を通過するたび、現在状態でプログラムを新規評価する。前回の対象・行動予約を記憶として優先しない。行動開始直前に使用可能性を検証し、実行不能なら次の再評価を待つ。\n\nAIが参照できるものは現在のHP・MP・生死・効果・隊列・詠唱など。将来の抽選値、これから起こる結果、敵の次行動予定は参照できない。ヘイト値は設けない。\n\n## 戦闘中の処理順の固定\n\n処理順の抽選は戦闘開始時に1回だけ行う。抽選で決めた順序はその戦闘の終了まで保持する。Tick更新・行動実行・各Hitを契機に再抽選しない。新しい戦闘を開始したときに、その戦闘用の順序を新たに抽選する。\n\n## Tickの共通順序\n\n1. 戦闘開始時に確定した処理順を使用する。ここでは抽選しない。\n2. 持続時間を更新する。\n3. 到達したDOT・HOT・周期効果を処理する。\n4. Cooldownを更新する。\n5. 満了した効果を終了する。\n6. 行動ゲージとAI再評価を処理し、行動予約を更新する。\n7. Tickを終了する。\n\n次Tickでも、戦闘開始時に決めた同じ順序を使用する。周期PassiveはこのTick処理へ参加し、別の実時間Timerを持たない。\n\n行動・Cast完了時の処理はGS-15、Hit後の誘発はGS-20に従う。同一Tickの「状態満了・Cast完了・前衛全滅」が競合する場合の全体順序は資料に統一定義がないため、上表だけから追加の優先を推測しない。\n\n## 戦闘開始・終了\n\n開始時に初期状態、装備基礎値、各補正源、選択スキル・Passive、AI、Seed、抽選による処理順を確定し、開始時Triggerを解決してから通常AIを進める。補正源の読み込み順で数値結果が変わらないようにする。\n\n終了判定後は終了時Triggerを解決し、戦闘専用Buff・Debuff・状態異常・BARRIER・Cooldown・周期状態を破棄する。AIを停止し、終了結果を保存する。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / AG式決定`\n- `development-project-data/SKL-0001.json / 周期Passive決定`\n- `Export/system/adventure_settings.json`\n- 本会話のユーザー指定：順序抽選は戦闘開始時に1回のみ。同一戦闘中は固定。\n\n---\n元仕様ファイル: 基準仕様/14_Tickと行動ゲージ.md\n元仕様SHA-256: e19bf9ef80a60d8adbedd75945072ca0e2c9e28627cf0423790554f319138cc3\n元仕様版: 1.1\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-15",
+          "title": "スキル発動と詠唱",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# スキル発動と詠唱\n\n仕様ID：GS-15　版：1.0　作成日：2026-09-11\n\n## 発動の状態遷移\n\n| 段階 | 処理 | MP・Cooldown |\n|---|---|---|\n| AI判断・予約 | 行動候補を選ぶ | 消費・開始なし |\n| 実行開始検証 | 使用者、スキル、MP、CD、使用条件、対象、Rangeを検証 | 消費・開始なし |\n| 詠唱開始 | 基準対象と展開済み対象集合を固定 | 消費・開始なし |\n| 詠唱中 | 中断条件を監視 | 消費・開始なし |\n| 詠唱完了検証 | 固定対象と使用条件を再検証 | 失敗なら消費・開始なし |\n| 発動成立 | MP消費→CD開始→効果実行 | この時点で確定 |\n\n`resource.castTime`は0以上の整数Tick。0でも開始検証・対象固定・完了検証を通り、同じ実行内で発動する。\n\n## 検証\n\n使用者が生存し、行動可能で、スキルが登録・選択され、使用を阻害されておらず、MPを支払え、CDが満了し、装備等の使用条件を満たす必要がある。\n\n完了時は固定済み対象だけを検証する。死亡・無効・Range外の対象は除外する。別対象の再取得・補充・追加はしない。有効対象0なら不発としてMP・CD・効果を発生させない。\n\n成立後に攻撃がMissした場合は、成立したスキルのMP・CDを取り消さない。\n\n## 中断\n\n行動不能、使用スキルを阻害する効果、使用者死亡、正式な強制移動で中断する。通常Damage・DOT・反射Damageを受けただけでは中断しない。\n\n強制移動の処理契約は、成立判定→Cast中断→位置変更→Range・対象状態更新→次回AI再評価。この規則によって任意移動・ノックバック・引き寄せの新しい機能を追加しない。隊列の自動前進をCast中断へ結び付けるかは未定義とする。\n\n## MP・時間短縮\n\nRangeを反映した基本値に、正式な消費・時間補正を適用する。相対補正は同じ基礎値から独立計算する。\n\n```text\n最終MP = max(0, ceil(Range適用済みMP + 有効MP補正合計))\n最終CD = max(0, ceil(基礎CD + 有効CD補正合計))\n最終Cast = max(0, ceil(基礎Cast + 有効Cast補正合計))\n```\n\n短縮Contributionは負の寄与量として扱う。現在の標準Passive短縮率は5/10/15%。例：CD7に15%短縮なら`ceil(7×0.85)=6 Tick`、基礎CD0は0のまま。\n\n## 複数Hit・複合効果\n\n各Hitを、判定→Damage→防御・HP→ダメージ参照効果→命中付随効果→Hit後誘発の順に完結させる。単体対象が戦闘不能なら残りHitを終了する。複数対象では、他の有効対象への処理を続ける。\n\n複合効果は、Damage、ダメージ参照、状態異常・Buff・Debuff、HP・MP回復、BARRIER、正式な対象・行動制御、誘発の順。同段階の複数効果はデータ記載順とする。対象が無効になった効果だけを適用せず、他の有効対象・独立効果まで全体取消しにしない。\n\n## 戦闘不能と蘇生\n\nHP0以下で戦闘不能を確定し、撃破・戦闘不能効果、仮報酬・進行記録、対象リスト除外を処理する。ここでの経験値・報酬記録は帰還前の仮集計とする。\n\n蘇生は、条件成立→戦闘不能解除→指定HP・MP回復→状態異常・Buff・Debuff解除→対象へ復帰→蘇生時効果。自動蘇生を通常蘇生より先に処理し、同種は付与順。蘇生成功後の他蘇生は不発。共通無敵時間は設けない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / DEC-R42-CAST-001・BATTLE-002〜003`\n- `development-project-data/SKL-0001.json`\n\n---\n元仕様ファイル: 基準仕様/15_スキル発動と詠唱.md\n元仕様SHA-256: e51453748a07455df5394c93294310e93f199edccf0b6d70d38ff5341cb978c4\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-16",
+          "title": "アクティブスキル生成",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# アクティブスキル生成\n\n仕様ID：GS-16　版：1.0　作成日：2026-09-11\n\n## 習得条件と生成予算\n\n`skillLevel`は1〜11。総予算は`skillLevel × 10`。1〜3種類の能力値へ配分し、能力値別配分の合計を総予算と一致させる。1能力値の配分上限100。Level11は総予算110なので2能力値以上を使う。\n\n能力値別に配分した予算が、そのスキルの習得要求値になる。スキル自身が使用経験でLevel上昇する仕組みは持たない。同じ予算を複数の効果に重複使用しない。\n\n## 能力値別の使途\n\n| 能力値 | 主な使途 | 購入可能な元素 |\n|---|---|---|\n| STR | 物理威力、攻撃強化・弱体 | FIRE |\n| VIT | 防御強化・弱体、耐久、BARRIER、かばう | なし |\n| AGI | 多段の威力負債返済、行動ゲージ強化 | LIGHTNING |\n| DEX | 状態異常、命中強化・低下、DOT | WIND |\n| INT | 魔法威力 | FIRE・ICE・LIGHTNING・WIND |\n| MND | Heal、BARRIER、命中強化、状態解除、蘇生 | ICE |\n| LUK | クリティカル率・追加ダメージ | なし |\n\n元素は1属性10予算。複数属性は属性数分を支払う。同じ効果の価格を購入能力値によって割引・割増ししない。Rangeはこの予算から購入しない。\n\n## 物理威力と多段\n\n`S`を物理威力へ使うSTR予算、`A`を多段へ使うAGI予算、`H`をHit数とする。\n\n```text\n多段負債 = 100 × (H - 1)\n返済量 = min(A, 多段負債)\n成立条件 = (100 + 返済量) / H >= 60\n総power = 100 + 返済量 + S\n1 Hitのpower = 総power / H\n```\n\n成立判定はSTR加算前に行う。単発のpowerは`100+S`。2Hitの必要AGIは20以上、3Hitは80以上、4Hitは140必要なので1能力100上限の範囲では生成不可。\n\n例：STR20・AGI20、2Hitなら総power140、各Hit70。STR30の単発はpower130。威力を先に丸めてからHit数で掛け戻さない。\n\n## 魔法・支援・状態系の価格\n\n以下は現在の可変生成設定。値をRuntimeへ固定せず、生成設定から使う。\n\n| 効果 | 予算と効果量 | 正式出力 |\n|---|---|---|\n| 魔法Damage | INT1予算＝power1 | DAMAGE / MAGICAL |\n| 攻撃・防御・命中・ゲージBuff/Debuff | 1予算＝効果率0.3pp、1効果上限30% | 対応するAPPLY効果 |\n| Heal | MND1予算＝対象最大HPの1% | HEAL.power |\n| BARRIER | VITまたはMNDの強度1予算＝対象最大HPの1% | APPLY / BARRIER |\n| DOT | DEXのDamage用1予算＝1スタック完走時総Damage1 | APPLY / BURNまたはPOISON |\n| 状態異常 | 本体10予算＋持続時間予算 | APPLY / STUNまたはACTION_DISABLED |\n| 全状態解除 | MND50予算 | REMOVE / STATUS / all=true |\n| 蘇生 | MND50予算＋復帰HP用予算が必須 | REVIVE.hpRate |\n| かばう | VIT30予算 | TARGET_CONTROL / COVER |\n\nBuffの`power=12`は「対象基礎値へ相対+12%」など、対応Channelで定めた効果率である。DEFの百分率耐性への加減と、クリティカル率のpp加算は、それぞれのChannelの単位に従う。\n\n## 期間の購入と入力\n\n- BARRIER：強度予算と期間予算を同じ割当から分ける。`duration=floor(durationBudget/5)`、`power=総割当-durationBudget`。両方を正にし、期間は1Tick以上。\n- DOT：`duration=floor(durationBudget/5)`、`総Damage予算=総割当-durationBudget`。現在interval1Tick、`発生回数=floor(duration/interval)`、`power=総Damage予算/発生回数`。出力powerは小数4桁に丸める。各Tickの最終Damage切り捨てによる端数は繰り越さない。\n- 状態異常：`duration=floor((総割当-10)/5)`。1Tick以上が必要。\n- Buff/Debuff・クリティカルBuff：正の整数`duration`を明示指定する。現在の生成契約にない期間単価を追加しない。\n- かばう：寿命`PERSISTENT / USES / DURATION`、整数priority、removableを明示する。USESは使用回数1以上、DURATIONは期間1Tick以上。\n\n例：MND40のBARRIERで期間に10を使うと、最大HP30%のBARRIER・2Tick。DEX30のSTUNは本体10＋期間20で4Tick。\n\n## クリティカル生成\n\nLUK予算1を、クリティカル率+0.1pp、またはクリティカル追加ダメージへの相対+2%に使う。両方を持つ場合は`rateBudget + damageBudget = LUK割当`を満たす。\n\n例：LUK30を率10・追加Damage20へ配分すると、率+1pp、追加Damageへの相対+40%。同じLUK30から率+3ppと相対+60%を同時取得しない。\n\n## MP・Range・時間\n\n`基本MP = skillLevel × 8`。以下のRange係数を適用してから、使用者の消費・時間短縮を適用する。\n\n| Range | MP倍率 | CD | Cast | RANDOM回数 |\n|---|---:|---:|---:|---:|\n| SINGLE | 1 | 0Tick | 0Tick | — |\n| FRONT | 2 | 7Tick | 4Tick | — |\n| BACK | 2 | 7Tick | 4Tick | — |\n| RANDOM | 2 | 7Tick | 4Tick | 2 |\n| ALL | 3 | 14Tick | 7Tick | — |\n\n例：Level4・ALLの基本MPは96、CD14、Cast7。使用装備条件を付けても、その条件を理由に予算を返金しない。\n\n## 生成時に拒否するもの\n\n予算総量不一致、1能力100超、4能力以上、未許可の能力値用途、不明なEffect ID、持続時間欠落、無料の復活HP、同一予算の二重使用、Rangeを威力予算へ加算した要求は拒否する。汎用Buffなど正式な効果との対応が未定義の種類を、名前から近い効果へ置換しない。\n\n## 参照元\n\n- `development-project-data/SKL-0001.json`\n- `development-project-data/DEV-V9-SKILL-GENERATOR-001.json / DEC-SGEN-003B-R2-001〜004`\n- `assets/shared/config/skill-ai-generation-rules.json / current_active`\n- `assets/shared/js/skill-ai-batch-engine.js / buildBoundActiveEffects`\n\n---\n元仕様ファイル: 基準仕様/16_アクティブスキル生成.md\n元仕様SHA-256: a949540f6cc47be86f488c91dc44fb7dbb1eff6d1069cd5004dfb46613edad60\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-17",
+          "title": "スキルデータと使用条件",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# スキルデータと使用条件\n\n仕様ID：GS-17　版：1.0　作成日：2026-09-11\n\n## 正式データの経路\n\n作成用データをSchema・Registryで検証し、Compilerで`runtimeContracts`へ変換する。マスター・Export・ゲーム実行は同じ正式契約を使う。ゲーム実行時にタグ名を命令として解釈して、新しい数値や効果を生成しない。\n\n## スキルの項目\n\n| 項目 | 内容 |\n|---|---|\n| schemaVersion | 正式スキルSchema版。1 |\n| id / name | 一意IDと表示名 |\n| skillLevel | 生成レベル1〜11 |\n| abilityConditions | 能力値による習得条件 |\n| trigger | 発動契機・scope・許可されたdispatch・任意確率 |\n| conditions | 戦況条件 |\n| target | side・range・必要な追加指定 |\n| effects | 順序付きの正式効果配列 |\n| resource | mpCost・cooldown・castTime・activationPriority |\n| useRequirements | 装備等による発動前提 |\n\nRegistryの必須項目は`id / name / trigger.type / target.side / target.range / effects`。Schema・Compilerで型、ID参照、個別Effectの必須項目も検証する。\n\n## 対象\n\nsideはSELF・ALLY・ENEMY・CORPSE・POINT、rangeはSINGLE・FRONT・BACK・RANDOM・ALL。個別Effectが許可する組み合わせだけを受理する。POINTの定義があることだけで自由移動や地形攻撃を実装しない。\n\nRANDOMには`randomCount`、必要に応じて`excludeSelf`を持つ。対象の生死、味方・敵、射程は実行開始と完了時に検証する。\n\n## 条件\n\n条件はproperty・operator・value・必要なscopeを持つ。数値条件の演算子は`= / != / > / >= / < / <=`。値はRegistry指定の数値・割合0〜1・非負整数・Predicate型に従う。\n\n主な条件はSELF_HP、SELF_HP_RATE、SELF_MP、SELF_MP_RATE、ENEMY_COUNT、ALLY_COUNT、BATTLE_TICK、TARGET_POISONED。未知propertyを無条件成功にしない。\n\n## 装備使用条件\n\n`EQUIPMENT_TAGS`、scope=`SELF`を使用する。\n\n| 項目 | 条件 |\n|---|---|\n| allTags | 指定タグをすべて満たす |\n| anyTags | 非空なら少なくとも1つ満たす |\n| 複数entry | 全entryを満たす（AND） |\n\n1entryはallTags・anyTagsの少なくとも一方を非空とし、タグは正式装備タグとして解決できる必要がある。\n\n弓の例：allTagsにEQUIP_QUIVER、anyTagsにWEAPON_BOWとWEAPON_GREATBOWを指定する。\n\n使用条件は習得条件・戦況条件と別に保持する。不成立なら対象固定・Cast開始・MP消費・CD開始・効果実行に進まない。武器を装備できることと、その武器のスキルを使用できることを同一判定にしない。\n\n## 効果の種類\n\n| type | 処理 |\n|---|---|\n| DAMAGE | PHYSICAL・MAGICAL・FIXEDのDamage |\n| HEAL | 対象最大HP比から解決する回復 |\n| APPLY | 登録済みSTATUS・DOT・BUFF・DEBUFF・SHIELDの付与 |\n| REMOVE | 許可された状態の解除 |\n| RESOURCE_CHANGE | 指定リソースの増減 |\n| REVIVE | 復活条件と復帰HPの処理 |\n| TARGET_CONTROL | 正式な対象制御。かばう等 |\n\nSPECIALは予約領域であり、任意コード・任意効果を実行する入口にしない。SUMMON、ノックバック、引き寄せを未登録効果として追加しない。\n\n## タグ\n\nタグはID・名称を持ち、必要に応じてカテゴリ、親、別名、説明、有効状態、廃止・置換先を持つ。親子関係から戦闘効果を自動継承しない。未知ID、親子循環、無効参照、許可されないdispatch、未対応効果は登録・Compileを拒否する。\n\nTagの分類、Skillの発動条件、Effectの実行契約を別に保持する。AIへ渡すタグも同じFormal Tagを使用する。\n\n## 参照元\n\n- `assets/shared/config/skill-registry.json`\n- `development-project-data/DEV-V9-REORG-019.json / SKILL・TAG・使用条件決定`\n- `development-project-data/SKL-0001.json`\n\n---\n元仕様ファイル: 基準仕様/17_スキルデータと使用条件.md\n元仕様SHA-256: ab5ddd8b099eeb8017e3814a2584de3ebd6e0553c44fa41b5bfb8515178f5b6d\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-18",
+          "title": "状態異常と継続効果",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 状態異常と継続効果\n\n仕様ID：GS-18　版：1.0　作成日：2026-09-11\n\n## 効果一覧\n\n| Effect ID | 分類 | 効果 | 重複 | 再付与 | 実効値 |\n|---|---|---|---|---|---|\n| STUN | STATUS | 行動不能 | UNIQUE | REFRESH | LATEST |\n| ACTION_DISABLED | STATUS | 行動阻害 | UNIQUE | REFRESH | LATEST |\n| BURN | DOT | 火傷の継続Damage | STACK・最大5 | KEEP | SUM |\n| POISON | DOT | 毒の継続Damage | STACK・最大5 | KEEP | SUM |\n| ATK_UP | BUFF | 攻撃強化 | STACK | KEEP | HIGHEST |\n| DEF_UP | BUFF | 防御強化 | STACK | KEEP | HIGHEST |\n| ACCURACY_UP | BUFF | 命中強化 | STACK | KEEP | HIGHEST |\n| ACTION_GAUGE_UP | BUFF | 行動ゲージ増加量強化 | STACK | KEEP | HIGHEST |\n| CRITICAL_RATE_UP | BUFF | クリティカル率増加 | STACK | KEEP | HIGHEST |\n| CRITICAL_DAMAGE_UP | BUFF | クリティカル追加Damage増加 | STACK | KEEP | HIGHEST |\n| ATK_DOWN | DEBUFF | 攻撃低下 | STACK | KEEP | HIGHEST |\n| DEF_DOWN | DEBUFF | 防御低下 | STACK | KEEP | HIGHEST |\n| ACCURACY_DOWN | DEBUFF | 命中低下 | STACK | KEEP | HIGHEST |\n| BARRIER | SHIELD | Damage吸収 | STACK | KEEP | SUM・FIFO消費 |\n\n全効果はSNAPSHOTで付与時の量を保持し、死亡時・戦闘終了時に削除する。通常の状態解除で解除可能なのはSTUNとACTION_DISABLED。ACCURACY_DOWNはDEBUFFとして扱う。\n\n## 状態異常の付与と耐性\n\n命中に付随する状態異常は命中成立後に適用し、独立した付与成功率の抽選を行わない。状態耐性は持続時間を短縮する。\n\n```text\n耐性 = clamp(状態耐性[%], 0, 75)\n有効期間 = ceil(基礎期間 × (1 - 耐性/100))\n```\n\n例：基礎4Tick、耐性25%なら3Tick。行動不能は期間満了または正式な解除で解消する。耐性75%を完全無効と読み替えない。\n\n## スタック\n\n- UNIQUE：同じ効果を単一状態として扱う。\n- STACK：複数の効果インスタンスを保持する。\n- REFRESH：再付与時に期間を更新する。\n- KEEP：既存インスタンスの期間を維持する。\n- HIGHEST：その効果集合の最大量を有効値にする。全スタックの量を足さない。\n- SUM：有効なインスタンスの量を合計する。\n\n上位量のBuffが切れたら、残っている下位量が有効になる。攻撃上昇と攻撃低下はそれぞれの集合の実効値を求めてから共通補正へ渡す。\n\n## DOT\n\nBURNとPOISONは各スタックを独立した発生元・タイマー・期間で管理する。固定Damage方式で、対象最大HP割合Damageへ置換しない。各スタックは自身のintervalに到達したときにpowerからDamageを切り捨てて処理する。現在の生成intervalは1Tick。\n\nBlockを判定しない。DamageのBARRIER吸収・HP変更・致死耐えは共通処理へ渡す。通常Cleanseでは解除しない。\n\n## HealとBARRIERの量\n\n```text\nHeal基準量 = floor(付与対象の現在最大HP × HEAL.power / 100)\nHeal要求量 = ceil(魔法上昇率 × Heal基準量)\n実回復量 = min(Heal要求量, 現在最大HP - 現在HP)\nBARRIER量 = floor(付与対象の現在最大HP × BARRIER.power / 100)\n```\n\nHeal・BARRIERのpowerは最大HPに対する百分率。magic_weapon_bonusを掛けない。BARRIERは付与時の吸収量を保存し、その後に最大HPが変わっても残量を再生成しない。\n\n例：最大HP350、power20なら基準量70。最大HPが後から400になっても、付与済みBARRIER70は80へ増えない。\n\n## 状態解除\n\nREMOVEはcategory=STATUS、`all=true`または`count>=1`、順序oldestとする。oldestはappliedTick→sequence→instanceIdの順で比較する。\n\n`removable=false`または`protected=true`の状態は除外する。解除対象がなければ`removed_count=0`で成功結果を返せる。DOT・Buff・Debuff・BARRIERを全状態解除へ自動追加しない。\n\n## Lifecycle必須項目\n\n各効果はstackRule、refreshRule、snapshotPolicy、dispelCategory、removeOnDeath、removeOnBattleEnd、removableを持つ。必要に応じてmaxStacks、effectiveRule、consumeRule、identityPolicy、resistancePolicyを付ける。付与、更新、満了、死亡、解除、消費を同じ契約で処理する。\n\n## 参照元\n\n- `assets/shared/config/skill-registry.json / effects`\n- `development-project-data/DEV-V9-SKILL-GENERATOR-001.json / HEAL・BARRIER割合決定`\n- `development-project-data/DEV-V9-REORG-019.json / STATUS-003`\n- `game/assets/js/tag-skill-runtime.js / applyTaggedShield・executeRuntimeHealRuntime`\n\n---\n元仕様ファイル: 基準仕様/18_状態異常と継続効果.md\n元仕様SHA-256: a4c331ecf1b92c2f076e5d4782374515c6e83c2b5ded0db076ed05b56762ce7b\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-19",
+          "title": "パッシブスキル",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# パッシブスキル\n\n仕様ID：GS-19　版：1.0　作成日：2026-09-11\n\n## 基本構造\n\nPassiveは手動発動しない。基本は1件1効果とし、Activeとは別のマスターで作成する。Compilerが`runtimeContracts`へ変換し、効果実行は共通の正式Runtimeを使う。\n\nルートに`passiveSeriesId`を必須で持つ。同じ冒険者に同じ系列を複数有効化できない。低段階・高段階の重複も拒否する。編集確定時と戦闘開始時に検証し、自動で高い段階だけを残さない。\n\n有効Passiveの参照は`character.passiveIds`を使用し、系列はマスターから解決する。別のPassive専用Loadoutフィールドへ正本を複製しない。現在のPassive枠設定は5。\n\n## 標準効果と要求値\n\nスラッシュ区切りは同じ順序で対応する段階を示す。数値は現在の可変設定として扱う。\n\n| 効果 | 要求値 | 効果量 |\n|---|---|---|\n| 最大HP | VIT20/40/60 | 基礎最大HPへ相対+5/10/15% |\n| 最大MP | MND20/40/60 | 基礎最大MPへ相対+5/10/15% |\n| 指定元素耐性 | MND20/30/40/50/60 | 指定耐性+5/10/15/20/25pp |\n| 指定Damage系状態耐性 | VIT20/30/40/50/60 | 指定耐性+5/10/15/20/25pp |\n| 指定行動阻害系状態耐性 | MND20/30/40/50/60 | 指定耐性+5/10/15/20/25pp |\n| Block率 | VIT20/30/40/50/60 | 基礎Block率へ相対+5/10/15/20/25% |\n| Block性能 | VIT20/30/40/50/60 | 基礎軽減率へ相対+5/10/15/20/25% |\n| クリティカル率 | LUK20/30/40/50/60 | 基礎率へ相対+5/10/15/20/25% |\n| クリティカル追加Damage | LUK20/30/40/50/60 | 基礎追加量へ相対+5/10/15/20/25% |\n| 被クリティカル増加分軽減 | LUK20/30/40/50/60 | 追加Damage部分を5/10/15/20/25%軽減 |\n| 反撃 | STR20/40/60 | 被Hit時25/50/75%でpower100の通常攻撃Activeを参照 |\n| HP自動回復 | VIT20/40/60 | 20Tickごとに現在最大HPの1/2/3% |\n| MP自動回復 | MND20/40/60 | 20Tickごとに現在最大MPの0.5/1/1.5% |\n| MP消費軽減 | MND20/40/60 | Range適用済みMPを5/10/15%軽減、切り上げ |\n| CD短縮 | AGI20/40/60 | 基礎CDを5/10/15%短縮、切り上げ |\n| Cast短縮 | INT20/40/60 | 基礎Castを5/10/15%短縮、切り上げ |\n| 致死耐え | VIT40 | 致死Damage時にHP1、CD999999Tick |\n| 瀕死強化 | VIT20/40/60 | HP5/10/15%以下で指定10項目へ相対+100%、20Tick、CD999999Tick |\n\n耐性は対象元素・対象状態を個別に指定する。表の「指定耐性」を全耐性一括上昇へ置き換えない。能力値7種の直接上昇Passiveは作成しない。\n\nBlock率20%に相対+25%を適用した結果は25%。Block軽減率30%に相対+25%を適用した結果は37.5%。25ppを直接足さない。\n\n## Active参照型\n\nBattle開始、攻撃Hit、被Hit、クリティカル、回避、Blockなどの正式Triggerから、登録済みActiveの効果を参照する。Triggerを通常攻撃だけに限定しない。\n\n参照Activeのpower・期間等をPassive側へ複製しない。参照ActiveのMP・CD・Cast・Range CostをPassiveの発動費用として再度課さない。Passive自身が持つ確率・CD・条件は適用する。対象はPassive側のEVENT_CONTEXTまたはFORMAL_TARGETで決める。\n\n```text\nPassive総要求量 = Trigger条件に使う要求量 + 参照Activeの全能力値要求量\n```\n\n総量10〜110。同じ能力値でも加算する。例：Trigger VIT60＋参照Active VIT60は120なので無効。要求値を実際のキャラクター能力値から消費するという意味ではない。\n\n段階型の効果参照は要求20/40/60・参照Active段階1/2/3を基本とするが、具体Trigger能力値と参照Activeが未指定のテンプレートは完成スキルとして登録しない。\n\n## 周期回復\n\n初回は戦闘開始直後ではなく、intervalTicks経過後。現在interval20。以後同じ周期で判定する。\n\n```text\n回復要求量 = max(1, floor(発動時の現在最大HPまたはMP × 回復率))\n```\n\n最大値を超えた分は回復しない。死亡中に来た周期は不発、後からまとめて回復しない。蘇生しても周期をリセットしない。戦闘終了時に周期状態を破棄する。\n\nPassiveの回復はこの周期HP・MP回復のみ。Hit時・被Hit時・撃破時などの回復、PassiveによるBARRIERは使用しない。参照Active経由でもこの制限を迂回しない。\n\n## 致死耐え\n\nBlock・BARRIER後のHPダメージ候補によりHP0以下になる場合、HP確定前に割り込む。成功時はHP1で確定し、Passive CDを開始する。HP支払い・イベントによる直接死亡をDamageと読み替えて発動しない。\n\n多段攻撃の最初の致死Hitを耐えても残りHitは続く。CD中の次の致死Hitには発動しない。死亡・蘇生でCDを初期化せず、戦闘終了時に破棄する。\n\n## 瀕死強化\n\n対象はPHYSICAL_DAMAGE、MAGIC_DAMAGE、ACCURACY、MAGIC_ACCURACY、EVASION、BLOCK_RATE、BLOCK_PERFORMANCE、CRITICAL_RATE、CRITICAL_DAMAGE、ACTION_GAUGE_GAIN。\n\n各基礎値へ相対+100%のContributionを加える。基礎10に既存相対+10%がある場合は、10+1+10=21。既存補正込み最終値11を2倍して22にしない。\n\n最大HP・MP、魔法抵抗、元素・状態耐性、被クリティカル増加分軽減、MP・CD・Cast短縮、7基礎能力値は対象外。\n\n## 参照元\n\n- `development-project-data/SKL-0001.json / Passiveの各Approved Decision`\n- `development-project-data/DEV-V9-BALANCE-EVIDENCE-EVD-0008.json`\n- `development-project-data/DEV-V9-BALANCE-EVIDENCE-EVD-0012.json`\n- `Export/system/adventure_settings.json`\n\n---\n元仕様ファイル: 基準仕様/19_パッシブスキル.md\n元仕様SHA-256: eb9a373aef8edb2c22314857b5098e84ab93048450125b542441a8718ee53a3c\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-20",
+          "title": "トリガーと連鎖処理",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# トリガーと連鎖処理\n\n仕様ID：GS-20　版：1.0　作成日：2026-09-11\n\n## Trigger一覧\n\n| Trigger | 契機 | 正式dispatch |\n|---|---|---|\n| ON_USE | 使用 | RESOLVE_ONLY |\n| ON_HIT_RECEIVED | 被Hit | 標準COUNTER、明示ACTIONも許可 |\n| ON_DAMAGE_DEALT | Damage付与 | RESOLVE_ONLY |\n| ON_TURN_START | ターン開始 | RESOLVE_ONLY |\n| ON_TURN_END | ターン終了 | RESOLVE_ONLY |\n| ON_DEATH | 戦闘不能 | RESOLVE_ONLY |\n| ON_STATUS_APPLIED | 状態付与 | RESOLVE_ONLY |\n| ON_ALLY_ATTACK | 味方攻撃 | FOLLOW_UP |\n| WHILE_SOURCE_ALIVE | 発生元生存中 | AURA |\n| ON_CRITICAL | クリティカル成立 | ACTION / REACTIVE |\n| ON_HIT_DEALT | 攻撃Hit成立 | ACTION / REACTIVE |\n| ON_EVADE | 回避成立 | ACTION / REACTIVE |\n| ON_BLOCK | Block成立 | ACTION / REACTIVE |\n| ON_BATTLE_START | 戦闘開始 | ACTION / REACTIVE |\n| ON_FATAL_DAMAGE | HP確定前の致死Damage候補 | ACTION / INTERRUPT |\n\nRegistryのevent・phase・許可dispatchに従う。RESOLVE_ONLYを自動的な追加行動として実行しない。ON_HIT_RECEIVEDでCOUNTERを使う場合は、対応Damage・敵単体などCOUNTERの制約を満たす必要がある。ACTIONにCOUNTER専用制約を適用しない。\n\n## 発動条件と確率\n\n1. 対象Passiveが有効で、Trigger・条件・CDを満たすか確認する。\n2. `canActivate`で回数制限と実行中再入を、副作用なしで検査する。\n3. 発動確率を判定する。\n4. 成功時だけ`commitActivation`で回数・実行中キー・履歴を更新する。\n5. 正式効果を実行する。\n6. 終了時に実行中キーを解放する。\n\n`activationChance`は0〜1の有限数。未指定は100%として扱う。0%と100%では確率乱数を消費しない。確率失敗時に累積発動回数を増やさない。\n\n## 共有Action Context\n\n派生反撃、追撃、Passive効果は元の`actionContext`を引き継ぐ。ContextはAction ID、累積発動回数、上限、実行中キー、履歴、Reactive待ち行列を保持する。\n\n実行中の同一Passiveへの自己再入は拒否する。異なるTrigger・Passiveの連鎖は許可し、同じ累積上限を使う。実行終了でキーを解放しても、累積発動回数は減らさない。\n\n現在の共通エンジンの既定上限は1 Actionあたり16発動。上限到達後の候補は`TRIGGER_ACTION_LIMIT_REACHED`として実行しない。成立済みDamageや戦闘全体を巻き戻さない。上限はContext設定から扱う。\n\n## Hit後の実行順\n\n通常ReactiveはHitの計算途中に割り込まず、成立時に候補を待ち行列へ追加する。元HitのHP・付随効果確定後に次の順で処理する。\n\n1. そのHitのCOUNTER・FOLLOW_UPを既存の相対順で解決する。\n2. 新しいPassive候補をEvent成立順に処理する。\n3. 同じEventではpriorityの高いものを先にする。\n4. 同priorityでは登録sequence順にする。\n\n待ち行列はHit単位で処理し、多段全体が終わるまで放置しない。派生Actionのために新Contextを作って上限を回避しない。\n\n## 致死割込み\n\nON_FATAL_DAMAGEだけはHP確定前に即時処理する。判定位置はBlock・BARRIER後、HPへのcommit前。通常Reactiveの並び替えではこの割込みを再現しない。\n\n## イベント文脈\n\nsourceId、actionSourceId、targetId、skillId、hitIndex、actionContextを共有する。sourceIdは効果発生元、actionSourceIdは元行動者を表す。派生効果の発生元へ一律置換しない。表示ログの文章を解析してTriggerを発火させない。\n\n## 参照元\n\n- `assets/shared/config/skill-registry.json / triggers`\n- `development-project-data/SKL-0001.json / Trigger・Reactive決定`\n- `assets/shared/js/trigger-engine.js / createActionContext・canActivate`\n- `game/assets/js/tag-skill-runtime.js / Trigger上限処理`\n\n---\n元仕様ファイル: 基準仕様/20_トリガーと連鎖処理.md\n元仕様SHA-256: 0a64a26b2aea98af3d9e4cd1cffb0c42e7d69cbbea76d8cd8d13916c063200bc\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-21",
+          "title": "AI編集と行動選択",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# AI編集と行動選択\n\n仕様ID：GS-21　版：1.0　作成日：2026-09-11\n\n## 共通AIモデル\n\n冒険者とモンスターはFormal AI V2を共通使用する。Programが判断構造を保持し、Layoutが編集画面上の配置を保持する。座標の見た目から実行順を推測せず、正式Edgeを使う。\n\nProgramのSchema版は`2.0.0`。ID、名称、版、状態、entry_node_id、nodes、edges、subroutinesを持つ。NodeはインスタンスID、参照マスターID、node_type、position、parametersを持つ。node_typeはsearch・condition・action。\n\n## プレイヤーの編集項目\n\n| パーツ | 入力順 | 戦闘時の結果 |\n|---|---|---|\n| Search | 対象→絞り込みカテゴリ→条件タグ→必要パラメータ | FOUND / NOT_FOUND |\n| State Check | 条件カテゴリ→条件タグ→必要パラメータ | 自分のYES / NO |\n| Action | 対象→条件カテゴリ→条件タグ→必要パラメータ→行動 | 使用行動と基準対象 |\n\n条件分岐は常に二方向とし、第三の分岐を増やさない。Actionは終端Nodeで、通常の出力Edgeを持たない。\n\n## タグによる候補供給\n\n候補はFormalの`tag_categories`と`tags`から取得する。特定のカテゴリID・タグID・表示名をコードに固定して意味を分岐しない。\n\n対象タグは有効カテゴリに属し、SELF・ALLY・OTHER_ALLY・ENEMY等の対応済み`runtime_semantic`を持つ必要がある。有効対象タグ群のカテゴリは一意に決まらなければならない。0カテゴリまたは複数カテゴリなら編集・Compileを成立させない。\n\n条件カテゴリから対象カテゴリを除外する。条件の意味は次の表で解決する。\n\n| runtime_semantic | 評価 |\n|---|---|\n| ALIVE / DEAD | 現在の生死をBoolean評価 |\n| HP / MP | 現在値または最大値に対する割合を数値評価 |\n| 空文字 | 有効なカテゴリ所属タグを、現在の効果タグとして有無判定 |\n| 未対応の非空値 | エラー。空文字の効果タグへ置き換えない |\n\n## Search\n\n対象scopeの現在ユニット集合を取得し、各ユニットのその時点のHP・MP・生死・効果を評価する。数値条件はCURRENTまたはRATIO、比較演算子、比較値を指定する。\n\n保存項目は`target_tag_id`と`tag_condition {tag_id, params}`。検索結果スロットはSystem内部で管理し、プレイヤーへARS等の内部ID入力を求めない。\n\n## State Check\n\n評価主体はプレイヤーが編集している冒険者自身（SELF）。`tag_condition {tag_id, params}`を保存する。subject_scope、Predicate Master、AIC IDをプレイヤー入力へ露出しない。\n\nHP・MP条件はCURRENT/RATIO＋比較演算子＋値、生死・効果条件はBoolean。過去の検索結果や前回Tickの状態を自己状態判定へ混ぜない。\n\n## Actionの対象決定\n\n`target_tag_id`と`target_condition {tag_id, params}`を使う。数値条件はCURRENT/RATIOとMIN/MAX、生死・効果条件は候補Filterとして扱う。\n\n候補0件は行動不成立、1件ならその対象、複数なら対象決定用`AI_DECISION`乱数で選ぶ。例：「味方→HP割合→MIN」は現在HP割合が最小の候補を選び、同率が複数なら抽選する。\n\nAI対象選択の乱数を命中・クリティカル・Damage・RANDOM Rangeの内部抽選に流用しない。AIが返すものは行動要求であり、最終Range展開・装備条件・MP・CD・Castは戦闘側が検証する。\n\n## 接続と検証\n\n盤面操作と正式Edge生成は単一のConnection Resolverを使う。入出力ポートの接続数、開始点、二方向分岐、Action終端、参照マスター、孤立・行き止まり・循環を検査する。無効Programを黙って標準行動へ置換しない。\n\n## 保存と実行\n\n作成時に保存するのはFormal Tag ID、行動参照、比較方式・値、Program構造、Layout。現在HP・ユニットID集合・検索結果・乱数結果・実際の対象IDをAI設定として保存しない。\n\nモンスターの設定参照は`{program_id, layout_id}`とし、使用マスターのSnapshotをCompile・戦闘開始時に解決する。編集時の実行結果をMonster Masterへ埋め込まない。\n\nStudio開発者向けの汎用Predicate編集は別の作成契約として維持する。プレイヤー用の直接タグ条件へ推測変換しない。プレイヤーが使えるActive候補は戦闘選択枠内のものに限定する。\n\n## 参照元\n\n- `development-project-data/DEV-V9-PLAYER-AI-PARTS-TAG-001.json / SPEC-AITAG-014`\n- `schemas/ai/ai-program.schema.json`\n- `development-project-data/DEV-V9-REORG-019.json / DEC-V9-AI-001〜009`\n\n---\n元仕様ファイル: 基準仕様/21_AI編集と行動選択.md\n元仕様SHA-256: 84fef94f219312d2f9579ff5a54f417618592a58ca0eaf4c709dc57b30fa7da2\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-22",
+          "title": "モンスター生成",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# モンスター生成\n\n仕様ID：GS-22　版：1.0　作成日：2026-09-11\n\n## 生成モデル\n\n通常モンスターは基礎種の骨格に7ジョブの成長特性を組み合わせる。内部ジョブは数値生成と能力傾向に使い、表示名とは分離する。ストーリー固有モンスターは通常の7ジョブ派生と別に個別マスターで定義する。\n\nAIによる名前・見た目・能力構成の提案から、戦闘数値を直接確定しない。生成式と設定値で数値を算出する。\n\n## 基礎能力値\n\n`L`をLevel、`G_s`をジョブの能力値別成長値とする。\n\n```text\nモンスター基礎能力値 M_s = L × G_s / 10\n比較用冒険者期待値 P_s = 10 + (L - 1) × G_s / 10\n```\n\n途中計算では小数を保持する。モンスターに初期能力値10を加算しない。基本計算範囲はLevel1〜50。\n\n## 仮想装備構成\n\n| ジョブ | 主武器 | 副装備 | 持ち方 | 防具種 |\n|---|---|---|---|---|\n| 剣士 | 大剣 | なし | 両手 | 重装 |\n| 騎士 | 片手剣 | 盾 | 武器＋盾 | 重装 |\n| 盗賊 | 短剣 | 盾 | 武器＋盾 | 軽装 |\n| 狩人 | 弓 | 矢筒 | 弓＋矢筒 | 軽装 |\n| 魔術師 | 杖 | なし | 両手 | ローブ |\n| 神官 | 魔導書 | 盾 | 武器＋盾 | ローブ |\n| 冒険家 | 片手剣 | 盾 | 武器＋盾 | 重装 |\n\nこれはモンスター数値生成の比較構成。プレイヤーへの初期装備付与表とは別とする。\n\n## 仮想iLv\n\n装備`e`の要求能力値係数を`C_eff(e,s)`とする。両手持ちの場合だけSTR要求係数を1/2にする。\n\n```text\nI_e = clamp(min_s(P_s / C_eff(e,s)), 1, 11)\n```\n\n最小値はその装備が要求する能力値だけで求める。主武器・副装備・防具でそれぞれ計算し、小数iLvを保持する。装備可能な整数iLvへ切り捨ててから戦闘性能を作らない。\n\n## 連続装備性能と能力値比\n\n武器・防具の生成式を小数iLvへ適用した値を`F_X(e,I_e)`とする。\n\n```text\nモンスター戦闘値 X = F_X(e,I_e) × M_s / P_s\n```\n\n| 戦闘値X | 比率に使う能力値s | 仮想iLvあたり性能 |\n|---|---|---|\n| attack | STR | 武器STR係数×2 |\n| accuracy | DEX | 武器DEX係数×2 |\n| magic_weapon_bonus | INT | 武器INT係数×武器STR係数 |\n| HP | VIT | 防具VIT係数×50 |\n| MP | MND | 防具MND係数×50 |\n| evasion | AGI | 防具AGI係数×4 |\n\n防具の50は4部位のHP・MP係数20+10+10+10、回避の4は4部位数。これはモンスターの仮想一式生成にだけ用い、プレイヤー防具1個の魔法抵抗へ流用しない。モンスターHP・MPにプレイヤー初期値100・30を加算しない。\n\n## クリティカルとBlock\n\n```text\nクリティカル率[%] = 主武器率[%] × (1 + モンスターLUK/100)\n盾Block率[%] = 20 + 2 × (盾の小数仮想iLv - 1)\n盾軽減率[%] = 30\n```\n\nこの3項目に`M_s/P_s`を掛けない。盾なしのBlock率・軽減率は0。盾・矢筒の攻撃寄与は0とし、主武器へ合算しない。\n\n## 最終丸め\n\n最終戦闘数値は四捨五入（ROUND_HALF_UP）で整数化する。元値0は0を保持し、元値が非0なのに丸めて0になる場合は1とする。割合は百分率の単位へ変換して丸める。例えば21.333%は21%であり、割合0.21333を直接整数化しない。\n\n例：Level1剣士は仮想大剣iLv1.666…、STR比1.5/10からattack6。回避0.2666…は最終1。HP65、MP20、魔法武器補正1、クリティカル率5%となる。\n\n## マスター出力\n\nID、名称、内部ジョブ、Level、生成入力・式・未丸め値・最終値、スキル、MOD、標準配置、Formal AI参照を保持する。Encounter側の個体数・配置・難易度予算はこの生成計算と別に扱う。\n\n**未定義の境界：** このモンスター生成式群には`magic_accuracy / magic_resistance`の最終生成・丸め契約が含まれていない。プレイヤー用の魔法命中修正式をそのままモンスターへ拡張しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-BALANCE-EVIDENCE-EVD-0004.json / authority_basis`\n- `development-project-data/DEV-V9-BALANCE-EVIDENCE-EVD-0005.json / authority_basis`\n- `development-project-data/DEV-V9-BALANCE-EVIDENCE-EVD-0006.json / authority_basis`\n- `development-project-data/DEV-V9-REORG-019.json / MONSTER`\n\n---\n元仕様ファイル: 基準仕様/22_モンスター生成.md\n元仕様SHA-256: 1231931e010f15bd82181f6daede57c470c604d782082ac5ba2606e2f73ead8e\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-23",
+          "title": "クエストとイベント",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# クエストとイベント\n\n仕様ID：GS-23　版：1.0　作成日：2026-09-11\n\n## クエスト\n\nQuestはID、名称、基礎敵予算`base_enemy_budget`、冒険時間`adventure_duration_seconds`、環境参照`context`、順序付き`boxes[]`を持つ。Boxと冒険時間の所有者はQuestとする。\n\ncontextにはMap IDと実行に必要な環境条件を持つ。Mapの地形、敵候補一覧、探索結果一覧をQuestへ複製しない。具体的な世界地理・勢力・天候・季節のゲームルールは資料に定義がないため追加しない。\n\n## Box\n\nBoxはID、名称、Quest内順序、前・中・後Sceneの任意参照、4つのイベント配置領域、配置順、失敗時処理を持つ。\n\n| 実行順 | 内容 |\n|---:|---|\n| 1 | イベント領域A |\n| 2 | 前Scene |\n| 3 | イベント領域B |\n| 4 | 中Scene |\n| 5 | イベント領域C |\n| 6 | 後Scene |\n| 7 | イベント領域D |\n\n各領域は0件以上の固定EventとランダムEvent枠を混在でき、順序を保持する。Sceneの前→中→後は入れ替えない。Box追加・削除・上下移動を可能とし、並べ替えでBox IDを変更しない。\n\nBoxは直列進行とする。イベント失敗時の扱いは「続行」または「Quest失敗」。Quest失敗が確定した時点で後続Boxを実行しない。既に発生した履歴は保持するが、途中報酬を永続資産にしない。\n\n## Eventの共通定義\n\nEventは、ID、名称、用途、種別、グループ、タグ、発生条件、強度、任意の生成方針参照、有効状態、基礎抽選重みを持つ。用途と種別を区別する。例：「ランダムな戦闘」は用途ランダム・種別戦闘。\n\nEventは処理要求を表す。通常Map、固定敵一覧、固定敵編成、Map固有探索結果、確定報酬をEvent本体へ埋め込まない。`required_flags`は正式な実行条件として使用できる。\n\n戦闘EventはEncounter要求、探索Eventは探索Resolver要求を出す。Quest Context、難易度、強度、生成方針から具体結果を生成する。Quest全体難易度とEvent強度は別の入力とする。\n\n## ランダムEvent枠\n\nシミュレーションが枠へ到達した時点の進行状態で次を実行する。\n\n1. 有効なランダム用途Eventを集める。\n2. Event側の条件・required_flagsで絞る。\n3. 枠側に指定した種別・グループ・タグで絞る。\n4. 基礎重みによる相対抽選を1回行う。\n5. 選ばれたEventを実行し、結果を保存する。\n\n全枠を、前のイベント結果を反映せずに先行抽選しない。「開始時に全体をシミュレーションする」とは、この順次処理を開始時に完了させることを意味する。\n\n枠側で個別Eventごとの確率を上書きしない。任意枠で候補0なら何もせず進める。必須枠で候補0なら実行異常とする。「何も起きない」は枠設定で扱い、ダミーEventを作らない。\n\n## 固定ストーリー戦闘\n\n固定Eventの配置に限り、resolver・required_monsters・fixed_formationによるEncounter指定を許可する。モンスターはMaster ID参照とし、能力値をEventへコピーしない。ランダムEvent枠へ固定編成Overrideを付けない。\n\n## 保存結果\n\n各EventのSeed、候補・Filter情報、選択Event ID、生成要求、生成Payload、成否、仮報酬、進行変更をQuestRunへ保存する。再読込・詳細閲覧・帰還時に再抽選しない。\n\n選択肢イベントの分岐条件・選択入力の確定時期は未定義。本仕様の直列進行と、会話送りの操作から独自の分岐システムを追加しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / QUEST・BOX・EVENT・ENCOUNTER・WORLD`\n\n---\n元仕様ファイル: 基準仕様/23_クエストとイベント.md\n元仕様SHA-256: 36f6acb49249ecf0ec7d246e5ce6b51bc1bef794a9324a7cceb9814e6300ef5c\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-24",
+          "title": "ストーリーと会話",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# ストーリーと会話\n\n仕様ID：GS-24　版：1.0　作成日：2026-09-11\n\n## データ構造\n\nStoryはChapter、Section、Scene、Dialogue、Story Event Context、進行・フラグ参照を管理する。Chapter・SectionからQuestを参照し、進行用BoxはQuestに保持する。\n\nSceneは会話と物語の表示内容を持つ。QuestRunを生成するとき、会話本文、話者、必要な背景・画像・演出参照など再生に必要な情報をSnapshotする。\n\n## 表示形式\n\n基本は背景、会話ウィンドウ、話者名。立ち絵は重要人物・場面など必要な箇所へ配置する。表情差分や演出指定はデータで保持できるが、全台詞に立ち絵・専用演出を要求しない。\n\n| 操作 | 動作 |\n|---|---|\n| 会話送り | 次の会話へ進める |\n| Auto | 保存済み会話を順次送る |\n| 既読Skip | 既読部分だけを送る |\n| 会話履歴 | 既に表示した会話を確認する |\n\n未読部分を自動Skipしない。Scene内の分岐選択肢は本仕様の対象に含めない。\n\n## 冒険との接続\n\n冒険ログでは「ストーリーイベントが発生した」と閲覧入口を表示し、本文を先に公開しない。Scene詳細を開くと、そのRunのScene Snapshotを再生する。視聴は任意とする。\n\n会話詳細を見ている間も冒険時間は進む。戻ったときは現在経過時間まで表示を追いつかせる。会話を読んだことを条件に冒険のシミュレーションをやり直さない。\n\n## 再閲覧\n\nそのRunの冒険ログから再閲覧できる。専用回想画面は必須機能にしない。Scene Masterの本文を変更しても、過去RunのSnapshotは変更しない。\n\n## 進行データ\n\n解放判定・Quest接続は共通フラグや進行IDを使い、台詞本文の文字列から判定しない。表示操作だけで、未到達イベントのフラグや報酬を確定しない。\n\n本書は物語を扱うシステムの仕様であり、地名・登場人物・章本文・世界設定を新たに定義しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / STORY・STORY-PRESENT・RUN-002`\n\n---\n元仕様ファイル: 基準仕様/24_ストーリーと会話.md\n元仕様SHA-256: 698dff01d049fb7b310b9e6a6113ede78421f4f00c3c33ba7f266a2159cdc940\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-25",
+          "title": "難易度とストーン",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 難易度とストーン\n\n仕様ID：GS-25　版：1.0　作成日：2026-09-11\n\n## クエスト難易度\n\n難易度は有効敵予算`effective_enemy_budget`の数値で表す。\n\n```text\neffective_enemy_budget = base_enemy_budget + Σ stone_budget_delta\n```\n\nbaseはQuest、各deltaはストーン定義から取得する。固定のNormal・Hard等を数値計算の正本にしない。予算をHP・攻撃・防御・スキル等へ固定比率で配分しない。\n\n## ストーンの使用\n\n既存Questへの任意の追加開始コスト・Modifierとして使用する。ストーンからQuestそのものを生成しない。未使用と複数同時使用を許可する。\n\n開始処理では、選択数・所持数・定義・Quest・パーティを検証し、消費予定状態とQuestRunを準備する。開始成立と同時に消費を確定する。開始失敗では所持数を減らさない。\n\n開始成立後は成功・失敗・放棄のどれでも返却しない。同じRunを再読込しても再消費しない。\n\n## 通常敵編成\n\nQuest/Mapの環境タグに対して、モンスターの`spawn_tags.any / all / none`を評価する。全件条件、いずれか条件、除外条件をそれぞれ適用する。\n\n1. 残り予算以下の`enemy_budget_cost`を持つ有効候補を集める。\n2. `weight / spawn_weight`で重み付き抽選する。\n3. 1体を追加し、そのcostを残り予算から引く。\n4. 追加可能候補がなくなるまで繰り返す。\n\n現在の既定出現重みは1、生成処理の個体数上限設定は100。上限は味方パーティ6人とは別の値。0以下costなど進行を止めない不正候補を許可しない。編成結果と余剰予算を保存する。\n\n## 固定編成\n\n固定ストーリー編成でも、ストーンによる難易度上昇を反映する。\n\n```text\nratio = base_enemy_budget > 0 ? effective_enemy_budget / base_enemy_budget : 1\ndeltaRatio = max(0, ratio - 1)\n性能倍率 = clamp(1 + deltaRatio × 対応係数, 最小倍率, 最大倍率)\n```\n\n| 設定 | 現在値 |\n|---|---:|\n| HP係数 | 1 |\n| 攻撃係数 | 1 |\n| AGI係数 | 0 |\n| 最小倍率 | 1 |\n| 最大倍率 | 指定なし |\n\n例：基礎予算100、有効予算150ならHPと攻撃を1.5倍、AGIは1倍。性能値は倍率後に整数へ四捨五入する。モンスター基礎能力値生成の比率計算と、このEncounter倍率を混同しない。\n\nrequired_monsters方式では必須個体を確保し、必須個体cost合計と要求予算の大きい方から残額を求め、追加候補を生成する。fixed_formation方式では指定編成へ上記倍率を適用する。\n\n## 探索・報酬への接続\n\n探索は高品質結果の候補重みを上げる。難易度だけを理由に探索品の数量を増やさない。イベント報酬は報酬Resolverの数量・品質補正へ渡す。\n\nストーン固有の報酬Modifier、環境タグ変更、探索成功率補正は難易度由来補正と別に持つ。Levelだけから一律報酬倍率を作らない。\n\n## 保存\n\n使用ストーン・数量・delta、基礎/有効予算、環境条件、編成候補、選択編成、性能倍率、報酬補正、Seed、Resolver版をRunへ保存する。再生・帰還で設定を引き直さない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / ENEMY・ENCOUNTER・STONE`\n- `Export/system/adventure_settings.json / encounter・fixed_formation_scaling`\n- `assets/shared/js/adventure-encounter-resolver.js / fixedFormationScaling・resolveEncounter`\n\n---\n元仕様ファイル: 基準仕様/25_難易度とストーン.md\n元仕様SHA-256: 775687a1862153dc3179bfe62f89f24efea8139bfff1941ed77622810cf31d97\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-26",
+          "title": "報酬とドロップ",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 報酬とドロップ\n\n仕様ID：GS-26　版：1.0　作成日：2026-09-11\n\n## 報酬の発生元\n\nBattle、Event、Explorationが報酬結果を生成し、QuestRunが合計を保持する。Quest本体へ一括固定報酬を重複設定しない。帰還時は保存済み結果を受け取る。\n\n報酬entryのkindはgold・equipment・item・stone・material。Goldと数量は非負整数。装備個体以外の同じResourceは`resource_kind + resource_id`で集約する。\n\n## ドロップテーブル\n\nテーブルはID、名称、有効状態、params、groups、entriesを持つ。GroupはID、抽選回数rolls、entriesを持つ。Entryは種類、対象ID、基礎重み、独立抽選確率、品質、補正方式、数量または数量範囲を持つ。\n\n| テーブル形式 | 抽選 |\n|---|---|\n| groupsあり | 各Groupについてrolls回、補正後重みで選択 |\n| entriesのみ・mode=weighted | rolls回の重み付き抽選 |\n| entriesのみ・その他 | 各entryをchance/rateで独立判定 |\n\n重みは候補内での相対値。weight10を10%と解釈しない。独立抽選確率は0〜1。個別テーブルの数量・回数・確率はその定義を使う。\n\n## 補正方式\n\n| scaling_mode | 反映対象 |\n|---|---|\n| none | 難易度による数量・品質補正なし |\n| amount | 数量 |\n| quality | 抽選重み |\n| both | 数量と抽選重み |\n\n現在、補正方式未指定のequipment・stoneはquality、それ以外はamountを使用する。\n\n```text\n難易度数量倍率 = clamp(1 + stone_budget_delta × 0.02, 1, 上限指定なし)\n固有報酬倍率 = max(0, 1 + 明示報酬ボーナス合計)\n最終数量 = 指定丸め(基礎数量 × 難易度数量倍率 × 固有報酬倍率)\n```\n\n現在の数量丸めはfloor。テーブル/設定はfloor・round・ceilを指定できる。難易度補正を無効にした結果では、難易度数量倍率を1とする。\n\n## 品質重み\n\n```text\n補正後重み = 基礎重み × (1 + budget_delta × 品質別係数)\n```\n\n| 品質キー | 現在の係数 / 予算1 |\n|---|---:|\n| common | 0 |\n| uncommon | 0.002 |\n| rare | 0.005 |\n| epic | 0.01 |\n| legendary | 0.02 |\n\n通常報酬テーブルのbudget_deltaにはストーンによる予算増分を使う。例えばdelta10ならrareの重み1.05倍、legendaryは1.2倍。基礎数量100のamount報酬は難易度倍率1.2で120となる。\n\n## 探索結果\n\nMap/Questの環境条件で探索候補を絞り、品質補正後の重みで結果を選ぶ。探索の品質差分は`max(0, effective_enemy_budget - rarity_budget_reference)`。現在のreferenceは0で、品質係数は上表と同じ。\n\n現在の基礎重み1、基礎成功率1、成功率範囲0〜1。個別結果・ストーン等の成功率補正を反映して成功/失敗Branchを確定し、本文、報酬、フラグ、効果、次イベント参照を保存する。\n\n探索の「有効予算から参照値を引く」品質計算と、通常報酬の「ストーン増分」の計算を同じdeltaに置き換えない。\n\n## 結果の固定\n\nテーブルID、契約版、Seed、使用設定、補正Snapshot、抽選履歴、正規化報酬を保存する。帰還画面で抽選や倍率計算を再実行しない。失敗・放棄では途中報酬履歴を残しても正式受取対象は空とする。\n\n確定した装備個体IDを受取ごとに作り直さず、同じRunの複数受取を防ぐ。受入容量不足時は消失させず、GS-27・GS-29の保留処理へ渡す。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / REWARD`\n- `Export/system/adventure_settings.json / reward_scaling・exploration`\n- `assets/shared/js/adventure-reward-resolver.js`\n- `assets/shared/js/adventure-encounter-resolver.js / explorationWeight`\n- `assets/shared/js/adventure-story-system.js / reward_scaling_snapshot`\n\n---\n元仕様ファイル: 基準仕様/26_報酬とドロップ.md\n元仕様SHA-256: 68888db37fd06c651736166b957672889cd447cd28d8450169fecf82edfa19fd\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-27",
+          "title": "冒険進行と帰還",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 冒険進行と帰還\n\n仕様ID：GS-27　版：1.0　作成日：2026-09-11\n\n## QuestRun\n\nQuestRunは1回の冒険を完全に再現する確定記録。Run ID、Quest/Section/Chapter参照、パーティSnapshot、Seed、開始時刻、冒険時間、Timeline、戦闘・イベント・会話結果、報酬、進行差分、最終結果、帰還確定状態を持つ。\n\n## 開始処理\n\n1. Quest、解放状態、パーティ、投入ストーン、使用データを検証する。\n2. 開始コストの消費予定と、パーティ・時間・環境・難易度・設定のSnapshotを準備する。\n3. Seedを確定する。\n4. Boxを順にシミュレーションし、Scene、Event、ランダム枠、Encounter、Battle、探索、報酬、フラグをその順序で解決する。\n5. Timelineの`at_seconds`と最終成功/失敗を確定する。\n6. 完全なQuestRun保存と開始コスト消費を一体で確定する。\n7. Playbackを開始する。\n\n開始自体が成立しなければコスト消費を確定しない。シミュレーション中のQuest敗北は、開始処理の不具合とは区別し、成立した失敗Runとして保存する。\n\n## 途中失敗\n\nQuest失敗が確定した時点で後続の通常Box処理を止める。失敗理由、失敗地点、最終状態、そこまでの履歴を保存する。既に起きたイベント履歴を消さない。成功時だけの報酬・進行差分は受取可能にしない。\n\n## 再生時間\n\n```text\n経過時間 = 現在時刻 - playback_started_at\n```\n\n開始時刻を基準に保存Timelineを表示する。Timer呼び出し回数の積み上げを正本にしない。タブ復帰・再読込・詳細画面からの復帰では現在経過時刻まで表示を追いつかせる。\n\nBattle・Scene詳細の閲覧中も冒険時間は進む。Timelineの発生時刻を再配置しない。PlaybackからBattle、Event、抽選、報酬計算、フラグ判定を再実行しない。\n\n## 成功帰還\n\n冒険の再生が終了し、成功結果を受け取れる状態で帰還処理を行う。\n\n1. Runが成功・未確定であることを検証する。\n2. 保存済み報酬に対する受入容量を検証する。\n3. 保存済み報酬、経験値、進行・フラグ差分を反映する。\n4. 成長結果とRunの受取済み状態を、同じ保存単位で確定する。\n\n途中で失敗したら一部だけ反映しない。受取済みRunへ再度帰還操作しても資産・経験値・フラグを増やさない。容量不足なら整理画面へ進め、Runと報酬を保持したまま帰還確定を保留する。\n\n## 失敗帰還・放棄\n\n失敗と放棄は途中入手品・Gold・経験値を正式付与しない。投入ストーンも返還しない。\n\n放棄はプレイヤーの明示操作で成立し、敗北とは別の最終結果として記録する。損失を表示して確認後に確定し、放棄Runを再開しない。結果確認後はギルドへ戻る。再挑戦はパーティ・Quest等を再選択して、新しいRun IDとSeedで開始する。\n\n## 情報公開\n\n開始時に計算済みでも、未到達の報酬や結果を利用可能な資産として公開しない。冒険ログは到達分だけを表示する。戦闘詳細は保存済みPlayback Event列を使い、デバッグ文章ログの解析で再構築しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / RUN-001〜002・ABANDON・INVENTORY・PROGRESSION`\n\n---\n元仕様ファイル: 基準仕様/27_冒険進行と帰還.md\n元仕様SHA-256: 79b60e8b8043e946e60a85dbbc78c30418cdc14556582e76d279a6b1bac4d01a\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-28",
+          "title": "ギルドと施設",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# ギルドと施設\n\n仕様ID：GS-28　版：1.0　作成日：2026-09-11\n\n## ギルド\n\nギルドは所属冒険者、パーティ、Gold、ギルドLevel、解放状態、倉庫を管理する。施設は管理・育成・出撃の入口を提供する。施設を建てる・利用するだけで攻撃力やHPを直接上昇させない。\n\n## 施設\n\n| 施設 | 機能 |\n|---|---|\n| 酒場 | 雇用、冒険者確認、パーティ編成、転職、解雇 |\n| 訓練所 | Level・能力値確認、Active/Passive習得、選択状態、リスペック、AI編集 |\n| 倉庫 | 装備・ストーン・素材の保管、所持品との移動、整理 |\n| 掲示板 | Quest一覧、詳細、難易度、報酬情報、出撃準備 |\n\n施設はこの4種。施設Level、施設強化、施設ごとの戦闘補正は設けない。\n\n## ギルドLevel\n\n用途は施設の段階解放、倉庫容量の段階増加、依頼解放条件。施設は`required_guild_level`を持ち、現在ギルドLevelと比較する。容量は倉庫施設の強化Levelでなく、ギルドLevel定義に従う。\n\n## 解放条件\n\n雇用可能な冒険者種別はゲーム進行・共通フラグで解放する。雇用人数上限とは別管理とする。Storyの本文を検索して解放を判定しない。\n\n施設・キャラクター・AI機能の条件は共通の解放データと判定処理に集約する。各画面で別々の閾値を持たない。未解放の機能は条件を表示し、操作を成立させない。\n\n## 保存\n\nギルドID、Level、経験値、Gold、解放・進行状態、所属冒険者ID、パーティ、倉庫を保存する。Goldは非負整数。習得・雇用・帰還などの処理が成功した時点で関連更新と一緒に保存する。\n\n## 未定義の調整値\n\nギルド最大Level、必要ギルド経験値、ギルド経験値の獲得条件、施設別解放Level、Level別倉庫容量、所属人数上限の増加条件、AI機能の解放段階は、資料から現在値を確定できない。これらは設定項目として保持し、候補値を確定値として補完しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / GUILD・各施設決定`\n\n---\n元仕様ファイル: 基準仕様/28_ギルドと施設.md\n元仕様SHA-256: 61a396f1f17ce522e89d75ccd397f6c32183a10e7874d866b05062b0a786d2f5\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-29",
+          "title": "所持品と倉庫",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 所持品と倉庫\n\n仕様ID：GS-29　版：1.0　作成日：2026-09-11\n\n## 所有状態\n\n| 状態 | 管理単位 |\n|---|---|\n| プレイヤー所持品 | 共通所持品の枠・数量 |\n| ギルド倉庫 | 倉庫の枠・数量 |\n| 装備中 | 冒険者IDと装備スロット |\n| 冒険中の仮入手品 | QuestRunの報酬結果 |\n\n同じ装備個体は同時に1つの所有状態だけを持つ。冒険中に冒険者個別Inventoryへ拾得物を正式格納しない。冒険者間のリアルタイム受け渡しを設けない。\n\n## スタックと容量\n\n同じ種類の素材等は数量をまとめて1枠とする。スタック上限が定義されていれば、それを超える分に必要な枠を計算する。個体差のある装備は1個1枠で、同名でもスタックしない。\n\n所持品上限、倉庫上限、種類別スタック上限は設定から取得する。資料にない容量・上限を固定しない。\n\n## 倉庫との移動\n\n倉庫画面で預ける・引き出すを操作する。数量・所有者・移動先容量を検証し、元の減算と先の加算を一体で確定する。容量不足時は全移動を中止し、一部を消失させない。\n\n## 装備交換\n\n装備条件、持ち方、対象スロット、所持状態、取り外し品の返却先容量を検証する。装備した個体は所持品から外し、外した個体は同じIDのまま戻す。両手持ち品は返却1個として数える。\n\n## 成功帰還の受取\n\nRun全体の確定報酬から必要な追加枠を算出する。既存素材スタックへ入る分を考慮し、装備個体の枠を別に数える。\n\n受入不能なら帰還を保留して整理画面を表示する。報酬を消失させず、整理後に同じRunの受取を再開する。報酬を一部付与してから容量エラーにしない。\n\n## 解雇時\n\n装備返却に必要な容量を先に検証し、不足時は解雇を中止する。解雇専用の無制限一時保管枠は設けない。\n\n## 売却・破棄\n\n売却と破棄の両方を提供する。装備中・ロック中の品は対象にできない。高レアリティ品と一括操作では対象・数量・結果を確認する。\n\n売却は定義済み価格からGoldを計算して、品の削除と同時に反映する。破棄はGoldを付与しない。価格未設定の品を独自価格で売却しない。\n\n## 表示\n\n一覧・詳細・比較・装備・解除・ロック・売却・破棄を操作できる。装備詳細には要求値、保存性能、MOD、装備部位を示し、装備不可理由を能力値ごとに表示する。比較表示は共通の戦闘値計算を利用する。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / INVENTORY・INVENTORY-UI・RECRUIT`\n\n---\n元仕様ファイル: 基準仕様/29_所持品と倉庫.md\n元仕様SHA-256: 7eae184a38cae64e65ebf0228c0c2fc5623665651c2ecb821cb9073c8b82d5b2\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-30",
+          "title": "セーブとニューゲーム",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# セーブとニューゲーム\n\n仕様ID：GS-30　版：1.0　作成日：2026-09-11\n\n## セーブ方式\n\nプレイヤーSaveは1SlotのAuto Saveとする。永続状態を変更する操作が正常確定した直後に保存する。同時保存を直列化し、関連する変更は一体で成功または失敗させる。\n\n保存対象はギルド、冒険者、Level・能力値・経験値・履歴、所持品・倉庫・装備、習得ID・実消費SP記録・Active選択枠・Passive、有効AI設定、QuestRun、進行・フラグ、設定、チュートリアル状態。\n\n## 保存処理\n\n1. 変更後状態を一時領域で構築する。\n2. Schema・ID参照・所有状態・数量・編成・各機能の整合性を検証する。\n3. 検証した全状態をシリアライズする。\n4. 直前の正常SaveをBackupとして保持し、本Saveを切り替える。\n5. 全工程が成功した場合だけ保存成功を表示する。\n\n一時領域は中間状態であり、正常Saveとして読ませない。容量不足や書き込み失敗では、前の正常Saveを壊した状態で進行しない。再試行可能なら保存再試行を提供する。\n\n## 読み込みと版\n\n| 状態 | 動作 |\n|---|---|\n| 対応版・整合性正常 | 読み込みを確定 |\n| 版違い・正式Migrationあり | 変換前Backup→変換→整合性検証→成功時のみ確定 |\n| Migrationなし | 読み込み拒否 |\n| 欠損・破損・変換失敗 | 読み込み拒否し、理由と復旧導線を表示 |\n\n未知IDや欠損値を初期値に置き換えて成功扱いしない。Backup復旧でも検証を行う。単に古い形式であることを理由に、未定義の互換変換を作らない。\n\n## ニューゲーム初期値\n\n| 設定 | 現在値 |\n|---|---|\n| 所持Gold | 500 |\n| 初期冒険者 | 下表の6人、ギルド所属済み |\n| パーティ | 初期6人全員 |\n| Level | 全員1 |\n| STR/VIT/AGI/DEX/INT/MND/LUK | 全員各10 |\n| 個体基礎HP/MP | 100 / 30 |\n| SP | 0 |\n| 初期Active・Passive | 指定なし |\n| 初期隊列 | 全員FRONTLINE |\n| 装備外の初期Inventory ID一覧 | 空 |\n\n| 名前 | ジョブ | 初期主武器 | 初期副装備 | 防具4部位 |\n|---|---|---|---|---|\n| アルト | 剣士 | 木の大剣 EQP-0012 | なし | iLv1重装 |\n| セリア | 騎士 | 木の片手剣 EQP-0001 | 木の盾 EQP-0122 | iLv1重装 |\n| ロウ | 盗賊 | 木の短剣 EQP-0023 | なし | iLv1軽装 |\n| フィン | 狩人 | 木の弓 EQP-0067 | 木の矢筒 EQP-0133 | iLv1軽装 |\n| ミナ | 魔術師 | 木の杖 EQP-0089 | なし | iLv1ローブ |\n| エル | 神官 | 木のワンド EQP-0100 | なし | iLv1ローブ |\n\n| 防具種 | 頭 | 鎧 | 手 | 足 |\n|---|---|---|---|---|\n| 重装 | EQP-0155 | EQP-0144 | EQP-0166 | EQP-0177 |\n| 軽装 | EQP-0199 | EQP-0188 | EQP-0210 | EQP-0221 |\n| ローブ | EQP-0243 | EQP-0232 | EQP-0254 | EQP-0265 |\n\n表のIDは装備マスター参照。初期装備として付与するときは各個体の所有を成立させ、同じ装備個体を複数人で共有しない。アルトの大剣はSTR条件により両手持ちになる。初期HP・MPの最大値は、この基礎値に各人の装備補正を加えて求める。\n\nこれらは現在の初期データ値として設定から読み、初期RosterやGoldを画面コードへ固定しない。\n\n## 初期化順序\n\nギルド作成→進行・フラグ初期化→冒険者生成→パーティ編成→所持品・倉庫初期化→スキル・Passive・AI初期状態→整合性検証→初回Save。\n\n既存Saveがある場合は上書き確認を必須とする。初期化途中で失敗しても、未完成の初期状態を正式Saveにしない。\n\n## 冒険復帰\n\nQuestRunを読み込んだら、その開始時刻・Timeline・Snapshotから表示を再開する。Loadを理由にストーン再消費、Battle再計算、報酬再抽選、受取済み報酬の再付与を行わない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / SAVE・NEWGAME・SKILL-ACQ`\n- `Export/system/adventure_settings.json / game_runtime`\n- `Export/equipment/equipment.json`\n\n---\n元仕様ファイル: 基準仕様/30_セーブとニューゲーム.md\n元仕様SHA-256: 25bfad7b0c2f7d876cd94b6a39eb405289654cf153d36e8177b8e799d1966cb1\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-31",
+          "title": "画面と戦闘演出",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# 画面と戦闘演出\n\n仕様ID：GS-31　版：1.0　作成日：2026-09-11\n\n## 基本画面\n\nTitleにNew Game・Continue・Settingsを配置する。開始後の拠点はギルド。ギルドから酒場・訓練所・倉庫・掲示板へ移動する。\n\n戻る操作は原則として直前画面へ戻る。重要な未保存編集がある場合だけ確認する。遷移できない理由は各機能の判定結果から表示する。\n\n## 対応画面\n\nPCとスマートフォン縦持ちを正式対応とする。PCは複数カラム、スマートフォン縦は1カラム・下部操作・折りたたみを利用できる。ドラッグだけを必須操作にしない。\n\nスマートフォン横持ち専用レイアウトは必須対象に含めない。必要に応じて縦持ち案内を表示する。ブレークポイント・余白・ピクセル値は画面設定に置く。\n\n## 冒険進行画面\n\nQuestRunの経過時間、到達イベント、戦闘・探索の結果要約、会話・戦闘詳細への入口を表示する。未到達内容を先に出さない。詳細から戻ると現在経過時刻まで追いつく。\n\n## 戦闘配置とエフェクト\n\nユニット位置を基本固定にする。前衛・後衛、攻撃者、対象を判別できる。PCと縦画面では表示配置を変えられるが、対象関係と結果は変えない。\n\n通常攻撃に打撃感を持たせ、スキル・魔法は通常攻撃と区別できる演出を使う。クリティカル、Miss、Heal、状態異常、Buff、Debuff、BARRIER、蘇生、戦闘不能を識別できるようにする。\n\n対象Focus、Zoom、画面振動、Flashを演出として使用できる。カメラ演出のために戦闘座標・Range・命中・結果を変更しない。個別スキル・Bossの専用演出はデータ参照で追加できる。\n\n## HUD\n\nHP、MP、主要状態異常、Buff・Debuff、BARRIER、行動・詠唱状態を表示する。主要数値変化を追えるようにする。HUDはRuntimeまたは保存再生イベントの状態を表示し、Damage・命中・効果成立を独自計算しない。\n\n状態の識別を色だけに頼らず、名称・アイコン・記号等を併用する。演出軽減時も誰が誰へ何を行い、何が起きたかを確認できる。\n\n## 戦闘再生操作\n\n再生、速度変更、戦闘Skipを提供する。Skipは保存済み戦闘結果の終了地点へ表示を進める。一時停止と1行動送りは基本機能に含めない。\n\n速度変更・SkipでSeed、行動順、Damage、報酬を変えない。冒険全体の実時間経過と、戦闘詳細の再生速度を混同しない。\n\n## 結果画面\n\n戦闘単体の終了画面では勝敗と戦闘内容を表示する。経験値・Level上昇・Quest報酬の正式付与は帰還処理で行う。\n\n失敗・放棄では結果種別、理由、失った途中報酬などを表示し、確認後にギルドへ戻す。同条件を即座に再実行するボタンは設けない。\n\n## 通知・エラー\n\n入力修正可能な問題はその場へ表示、重大操作の確認はDialog、短い成功通知はToastとする。処理中は二重実行を防ぎ、完了前に成功表示しない。Save/Load異常は原因と再試行・復旧可能な操作を示す。\n\n通常プレイヤー導線からDebug・Test・Standalone戦闘検証・開発者UIへ到達できないようにする。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / NAV・PRESENT・PLAYBACK-UI・HUD・DEVICE・FEEDBACK・RELEASE`\n\n---\n元仕様ファイル: 基準仕様/31_画面と戦闘演出.md\n元仕様SHA-256: 8faee0bda4fca53d2011f10bc7db748c0b23d4e65db88ca44fbb2260610e9ce7\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-32",
+          "title": "サウンドとプレイヤー設定",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# サウンドとプレイヤー設定\n\n仕様ID：GS-32　版：1.0　作成日：2026-09-11\n\n## BGM\n\nギルド、戦闘、Story、主要画面でBGMを切り替えられる。各画面・SceneはAudioへの再生要求と音源参照を持ち、音源データそのものを複製して所有しない。\n\n## SE\n\n通常攻撃、スキル、魔法、回復、クリティカル、状態付与、主要UI操作へSEを指定できる。音源はAsset参照とし、同じゲーム効果の定義を変えずに音源を差し替えられる。\n\n音源ID、初期音量、Fade時間、効果音の演出タイミングはContent/Configから取得する。未指定の音源を特定の楽曲名へ推測で埋めない。\n\n## 公開する設定\n\n| 設定 | 反映先 |\n|---|---|\n| BGM音量 | BGM再生 |\n| SE音量 | SE再生 |\n| BGM/SE Mute | 対応音声の出力 |\n| 戦闘速度 | 戦闘再生 |\n| 戦闘演出軽減 | Shake・Flash等 |\n| 画面振動OFF | Camera演出 |\n\n具体的な初期音量、速度倍率の選択肢、軽減段階は設定データとし、資料にない値を固定しない。\n\n## 保存と適用\n\nプレイヤーが確定した設定値はSave対象にする。画面遷移・Load後も保持する。BGM・SEの音量はそれぞれの出力へ適用し、Mute解除時に別の未指定音量へ変更しない。\n\n設定変更は表示・音声・再生方法に反映する。Battle・Questの確定結果、Seed、抽選、報酬、進行フラグを変更しない。\n\n## 演出軽減\n\n画面振動の停止とFlash軽減を提供する。軽減しても行動者、対象、行動種別、Damage/Heal、状態変化が確認できる。演出を減らすために戦闘イベント自体を省略しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / AUDIO・SETTINGS・ACCESSIBILITY`\n\n---\n元仕様ファイル: 基準仕様/32_サウンドとプレイヤー設定.md\n元仕様SHA-256: 669eed8c5bf8c0566f5709ebac34f2a088a98d2456ed7d385b6c8427629192c5\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-33",
+          "title": "チュートリアルとヘルプ",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# チュートリアルとヘルプ\n\n仕様ID：GS-33　版：1.0　作成日：2026-09-11\n\n## 初回チュートリアル\n\n初回プレイに必須の段階式チュートリアルを実施する。一度に全機能の説明を出さず、実際の画面操作に合わせて短い案内を表示する。\n\n| 対象 | 案内する操作 |\n|---|---|\n| パーティ | 冒険者選択、編成、前衛・後衛 |\n| Quest | 詳細確認、出撃開始 |\n| 装備 | 詳細、要求値、装備・解除 |\n| Active・Passive | 習得条件、SP、戦闘用選択、有効状態 |\n| ストーン | 任意投入、難易度変化、消費 |\n| AI | 条件・対象・行動の編集 |\n| 倉庫・報酬 | 預け入れ・引き出し、帰還受取、容量整理 |\n\n案内のために独自の装備・成長・戦闘・報酬処理を作らない。通常の画面・機能を操作し、その成功結果から段階完了を判定する。\n\n## スキップ\n\nチュートリアル全体を完全Skipする操作は提供しない。会話の既読Skipと、チュートリアル完了を同一状態として扱わない。\n\n## 進行保存\n\n現在段階と完了済み内容をSaveへ保持する。Loadで完了済み操作の報酬や初期アイテムを再付与しない。中断から戻った場合は保存段階から案内を再開する。\n\n## ヘルプ\n\n学習済みの内容はHelpから再閲覧できる。閲覧だけでゲーム状態を変更しない。具体的な説明本文・演出・段階ID・解放条件はデータとして作成する。\n\n段階数と全体の固定順序は資料に定義がないため、上表をそのまま必須の実行順として実装しない。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / TUTORIAL・SAVE`\n\n---\n元仕様ファイル: 基準仕様/33_チュートリアルとヘルプ.md\n元仕様SHA-256: 9854fb4e36c0c5df719545e4356d802afbe6412a37b247d04b50cca319e71bb5\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        },
+        {
+          "id": "GS-34",
+          "title": "スキル習得・選択・リスペック",
+          "summary": "ユーザー提供の修正版仕様を基準入力として保存。承認履歴を捏造しない。",
+          "body": "# スキル習得・選択・リスペック\n\n仕様ID：GS-34　版：1.0　作成日：2026-09-11\n\n## 習得\n\n訓練所でActiveとPassiveを習得する。条件は能力値方式とし、指定能力値をすべて満たす必要がある。前提スキル必須、ジョブ限定、武器限定を習得条件として追加しない。スキル自身の経験値成長は持たない。\n\nスキル使用時の装備条件は習得条件と別に判定する。例えば弓を装備していなくても能力値・SP条件を満たせば習得できるが、弓使用条件が不成立なら発動できない。\n\n## SP\n\nActive・Passiveは同じSPを使用する。現在の初期SP0、Level上昇時+1、習得費用の標準値は各1。個別費用設定があればその値を優先する。\n\n習得成功時に必要SPを引き、習得IDと**そのとき実際に支払ったSP**を保存する。後の費用変更で過去の実消費記録を更新しない。無料配布は支払0として扱い、返還可能SPを発生させない。\n\n```text\n習得成立 = 正式定義あり AND 未習得 AND 全能力値条件成立 AND SP残高 >= 必要SP\n```\n\n成立前にSPを消費しない。ID追加とSP消費・記録保存を一体で行う。\n\n## Active選択枠\n\n習得済みから戦闘に持ち込むActiveを選択する。現在5枠。同じIDを重複選択しない。選択状態をSaveし、戦闘・AIの使用候補は選択枠内に限定する。\n\n習得済み一覧と選択済み一覧は別に表示する。選択から外すだけでは習得を失わず、SPを返還しない。使用条件不成立の理由は、未習得と区別して表示する。\n\n## Passive\n\nPassiveはActive選択枠へ登録しない。`passiveIds`の正式IDから習得・有効状態と系列を解決し、常時効果を表示する。現在のPassive枠設定は5。同じpassiveSeriesIdの同時有効化は拒否する。別のPassive専用Loadout正本を新設しない。\n\n## リスペック\n\n| 操作 | 現在のGold費用 | 返還SP |\n|---|---:|---|\n| Active1件解除 | 50 | そのIDの実消費SP |\n| Passive1件解除 | 50 | そのIDの実消費SP |\n| Active＋Passiveの全解除 | 200 | 対象全件の実消費SP合計 |\n\n費用はギルドGoldから支払う。初期配布・無料付与・消費記録なしのIDは返還SP0。現在の習得価格を使って返還額を作らない。リスペックで支払ったGoldは返さない。\n\n例：過去にSP3を支払って習得し、現在価格がSP1になったActiveを解除すると、Gold50を消費しSP3を返還する。\n\n## 解除手順\n\n1. 対象が習得済みで、Goldが足りることを検証する。\n2. 解除後の装備・Passive能力への依存を検証する。\n3. 対象、消費Gold、返還SPを表示して確認する。\n4. 対象習得IDと選択参照、対象の実消費SP記録を削除する。\n5. Goldを減らし、SPを返還する。\n6. 関連する全変更を一体で保存する。\n\n二刀流能力を失うのに二刀流装備が残る等、解除後に無効状態になる場合は拒否し、先に装備を変更するよう案内する。解除不能なのにGoldだけを取らない。\n\n全解除は両種類の選択参照と実消費記録も空にし、対象ごとの返還額を合計する。対象0件で一括費用を取らない。\n\nLevel、経験値、7能力値、ジョブ、装備個体はリスペックで変更しない。解除したものは通常条件を満たせば再習得可能。その時点のSP費用を支払い、新しい実消費量を記録する。\n\n## AI参照\n\n選択枠から外れた・解除されたActiveを参照するAIは、使用不可を検知する。他のスキルへ名称の類似で自動置換しない。編集画面で該当参照を示し、出撃・実行の正式検証を通す。\n\n## 参照元\n\n- `development-project-data/DEV-V9-REORG-019.json / DEC-R23-SKILL-ACQ-001（2026-09-10）・SKILL-UI`\n- `development-project-data/SKL-0001.json / Passive Master・系列決定`\n- `Export/system/adventure_settings.json / skill_progression・skill_loadout`\n- `game/assets/js/skill-acquisition-runtime.js`\n- `game/assets/js/skill-respec-runtime.js`\n\n---\n元仕様ファイル: 基準仕様/34_スキル習得・選択・リスペック.md\n元仕様SHA-256: c427bba56fc1ab647a17666d53b64a70bf65a156c5f75b3745a534b212d35ad5\n元仕様版: 1.0\n入力権威: user_provided_current_specification\n元計画状態: Review",
+          "decision_refs": [],
+          "depends_on": [],
+          "acceptance_criteria": "",
+          "system_node_id": "",
+          "contract_ids": [],
+          "revision": 1
+        }
+      ],
+      "project_rules": [
+        {
+          "id": "RULE-NIP-001",
+          "title": "仕様基準",
+          "text": "ユーザー明示指示と修正版34仕様を優先。処理順は戦闘開始時に一度だけ抽選し戦闘中固定。旧計画は参考のみ。\n\n新規Taskのみ。旧計画の進捗・承認・完了を継承しない。",
+          "source_type": "",
+          "source_id": ""
+        }
+      ]
+    }
+  ]
+}
