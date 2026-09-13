@@ -1,0 +1,26 @@
+name: b942-gs11-e2e
+on:
+  push:
+    paths:
+      - 'scripts/run-b942-gs11-e2e.mjs'
+      - '.github/workflows/b942-gs11-e2e.yml'
+  workflow_dispatch:
+jobs:
+  b942-gs11-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Run B942 GS11 E2E
+        run: node scripts/run-b942-gs11-e2e.mjs
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b942-gs11-e2e-artifacts
+          path: artifacts-b942-gs11/
+          retention-days: 7
