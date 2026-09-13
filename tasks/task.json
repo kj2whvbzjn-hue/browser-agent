@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "b931-proposed-fix-skill-passive-e2e",
+  "label": "b931-current-gs34-e2e",
   "taskFile": "projects/guild-adventure/tasks/reorg-r31-005-006-007-b904-skill-passive-public-e2e.json",
-  "runRequest": 40,
-  "note": "Validate the B931 new-game Save Schema fix by response patching public B930, then run the Skill/Passive/Respec path end to end."
+  "runRequest": 41,
+  "note": "Validate B931 startup fix and current GS34 acquire/select/respec behavior end to end."
 }
