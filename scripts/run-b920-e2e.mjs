@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 const outputDir = path.resolve('artifacts-b920');
 await fs.mkdir(outputDir, { recursive: true });
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+const page = await browser.newPage({ viewport: { width: 844, height: 390 } });
 page.on('dialog', d => d.accept().catch(()=>{}));
 const consoleMessages=[]; const pageErrors=[];
 page.on('console',m=>consoleMessages.push(`[${m.type()}] ${m.text()}`));
