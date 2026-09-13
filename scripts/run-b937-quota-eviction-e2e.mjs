@@ -22,10 +22,10 @@ try{
     if(!globalThis.GKAdventureStorySystem)throw new Error('story system missing');
     const snapshot=structuredClone(data);
     snapshot.adventure={quest_runs:[],active_quest_run_id:'',history_limit:20,stone_selection_by_quest:{}};
-    const run=(id,applied)=>({quest_run_id:id,quest_id:'Q-E2E',section_id:'S',chapter_id:'C',results_applied:applied,final_result:{success:applied,final_state:{status:applied?'success':'failure',processed_box_count:0,last_processed_box_id:''}},playback_started_at:'2026-09-13T00:00:00.000Z'});
-    GKAdventureStorySystem.saveQuestRun(snapshot,run('old-1',true),{activate:false});
-    GKAdventureStorySystem.saveQuestRun(snapshot,run('old-2',true),{activate:false});
-    GKAdventureStorySystem.saveQuestRun(snapshot,run('active-1',false),{activate:true});
+    const run=(id,applied,seed)=>({quest_run_id:id,quest_id:'Q-E2E',section_id:'S',chapter_id:'C',seed,adventure_duration_seconds:60,results_applied:applied,final_result:{success:applied,final_state:{status:applied?'success':'failure',processed_box_count:0,last_processed_box_id:''}},playback_started_at:'2026-09-13T00:00:00.000Z'});
+    GKAdventureStorySystem.saveQuestRun(snapshot,run('old-1',true,'seed-old-1'),{activate:false});
+    GKAdventureStorySystem.saveQuestRun(snapshot,run('old-2',true,'seed-old-2'),{activate:false});
+    GKAdventureStorySystem.saveQuestRun(snapshot,run('active-1',false,'seed-active-1'),{activate:true});
     const before=snapshot.adventure.quest_runs.map(r=>({id:r.quest_run_id,applied:r.results_applied}));
     const original=Storage.prototype.setItem;
     let quotaThrows=0;
