@@ -1,0 +1,30 @@
+name: B925 E2E
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/run-b925-e2e.mjs'
+      - '.github/workflows/b925-e2e.yml'
+
+jobs:
+  b925-trigger-chain-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Run B925 E2E
+        run: node scripts/run-b925-e2e.mjs
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b925-e2e-artifacts
+          path: artifacts-b925/
+          if-no-files-found: warn
+          retention-days: 7
