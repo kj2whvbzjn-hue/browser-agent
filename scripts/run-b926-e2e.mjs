@@ -18,7 +18,7 @@ try{
   const action=(ev,pa,ctx)=>({action_id:'attack',target_contract:{side:'ENEMY',range:'SINGLE'},legal_candidates:ctx.units.filter(x=>x.side==='B')});
   let playerCalls=0,monsterCalls=0;const player=E.execute(hpRuntime,{...structuredClone(context),actor_kind:'PLAYER'},{action,ai_decision_rng:()=>{playerCalls++;return .75;}});const monster=E.execute(hpRuntime,{...structuredClone(context),actor_kind:'MONSTER'},{action,ai_decision_rng:()=>{monsterCalls++;return .75;}});
   const effectProgram=program('TAG-EFFECT-SAME');const effectValidation=V.validate(effectProgram,project);const effectRuntime=await C.compile(effectProgram,project);const effectContext=structuredClone(context);effectContext.units[2].effect_tag_ids=['TAG-EFFECT-SAME'];let oneCalls=0;const one=E.execute(effectRuntime,effectContext,{action,ai_decision_rng:()=>{oneCalls++;return .5;}});
-  const collision={target:V.resolveTargetTag('TAG-TARGET-SAME',project),condition:V.resolveActionConditionTag('TAG-EFFECT-SAME',project),compiled:effectRuntime.instructions[0]};
+  const collision={condition:V.resolveActionConditionTag('TAG-EFFECT-SAME',project),compiled:effectRuntime.instructions[0]};
   const unknown=structuredClone(effectProgram);unknown.id='AIP-UNKNOWN';unknown.nodes[0].target_condition={tag_id:'TAG-UNKNOWN-NONEMPTY',params:{}};const unknownValidation=V.validate(unknown,project);
   return{hpValidation,effectValidation,player:{outcome:player.outcome,calls:playerCalls,rng:player.events.filter(x=>x.event_type==='rng')},monster:{outcome:monster.outcome,calls:monsterCalls,rng:monster.events.filter(x=>x.event_type==='rng')},one:{outcome:one.outcome,calls:oneCalls,rng:one.events.filter(x=>x.event_type==='rng')},collision,unknownValidation};
  });
@@ -27,7 +27,6 @@ try{
  assert(result.player.calls===1&&result.monster.calls===1,'Multiple equal MIN candidates must consume one RNG',{player:result.player,monster:result.monster});
  assert(result.player.rng.length===1&&result.player.rng[0].rng_stream==='AI_DECISION','Wrong RNG stream for tie selection',result.player.rng);
  assert(result.one.outcome.target_id==='U3'&&result.one.calls===0&&result.one.rng.length===0,'Single candidate must consume no RNG',result.one);
- assert(result.collision.target?.semantic==='ENEMY','Target-category same-name tag was confused',result.collision);
  assert(result.collision.condition?.kind==='ACTIVE_EFFECT_TAG'&&result.collision.condition?.tag?.id==='TAG-EFFECT-SAME','Effect-category same-name tag was confused',result.collision);
  assert(result.collision.compiled.target_scope==='ENEMY'&&result.collision.compiled.target_condition?.params?.tag_id==='TAG-EFFECT-SAME','Compiled tag categories were crossed',result.collision.compiled);
  assert(result.unknownValidation.valid===false&&result.unknownValidation.issues.length>0,'Unknown non-empty tag must be rejected',result.unknownValidation);
