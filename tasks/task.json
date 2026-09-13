@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "reorg-r31-005-006-007-b904-skill-passive-public-e2e-v2",
+  "label": "task-nip-34-01-b929-public-e2e",
   "taskFile": "projects/guild-adventure/tasks/reorg-r31-005-006-007-b904-skill-passive-public-e2e.json",
-  "runRequest": 36,
-  "note": "Public B904 validation v2: persistent state assertions for Level Up Skill Point grant, PAS-0001 acquisition, exact SP refund and Gold consumption on individual Respec, reacquisition, and all Respec."
+  "runRequest": 37,
+  "note": "Public GA-B486.260 validation for TASK-NIP-34-01: Level Up Skill Point grant, PAS-0001 acquisition, exact SP refund and Gold consumption on individual Respec, reacquisition, and all Respec."
 }
