@@ -1,0 +1,30 @@
+name: B928 E2E
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/run-b928-e2e.mjs'
+      - '.github/workflows/b928-e2e.yml'
+
+jobs:
+  b928-battle-playback-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Run B928 E2E
+        run: node scripts/run-b928-e2e.mjs
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b928-e2e-artifacts
+          path: artifacts-b928/
+          if-no-files-found: warn
+          retention-days: 7
