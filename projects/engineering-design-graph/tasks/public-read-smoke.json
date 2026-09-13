@@ -1,0 +1,113 @@
+{
+  "outputDir": "artifacts",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "dialogPolicy": "dismiss",
+  "steps": [
+    {
+      "action": "goto",
+      "url": "https://engineering-design-graph-ja.pzs4d5yv7g.chatgpt.site/design/index.html",
+      "timeout": 60000,
+      "label": "open-public-design-site"
+    },
+    {
+      "action": "waitForSelector",
+      "selector": "#saveStatus[data-state=\"saved\"]",
+      "timeout": 45000,
+      "label": "server-project-loaded"
+    },
+    {
+      "action": "dumpPage",
+      "name": "design-list"
+    },
+    {
+      "action": "screenshot",
+      "name": "design-list"
+    },
+    {
+      "action": "clickSelector",
+      "selector": ".artifact-row",
+      "label": "open-first-item"
+    },
+    {
+      "action": "waitForSelector",
+      "selector": "#inspector:not([hidden])"
+    },
+    {
+      "action": "screenshot",
+      "name": "item-content"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "[data-action=\"detail-tab\"][data-id=\"relations\"]",
+      "label": "inspect-relations"
+    },
+    {
+      "action": "dumpPage",
+      "name": "relations"
+    },
+    {
+      "action": "screenshot",
+      "name": "relations"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "[data-action=\"detail-tab\"][data-id=\"history\"]"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "[data-action=\"detail-tab\"][data-id=\"content\"]"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "#inspector [data-action=\"edit\"]",
+      "label": "open-edit-without-changing"
+    },
+    {
+      "action": "waitForSelector",
+      "selector": "#artifactForm"
+    },
+    {
+      "action": "screenshot",
+      "name": "edit-form"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "[data-action=\"cancel-edit\"]"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "[data-action=\"close-panel\"]"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "#nav [data-action=\"view\"][data-id=\"validation\"]"
+    },
+    {
+      "action": "screenshot",
+      "name": "validation"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "#nav [data-action=\"view\"][data-id=\"changes\"]"
+    },
+    {
+      "action": "screenshot",
+      "name": "changes"
+    },
+    {
+      "action": "clickSelector",
+      "selector": "#nav [data-action=\"view\"][data-id=\"ai\"]"
+    },
+    {
+      "action": "screenshot",
+      "name": "ai-candidates"
+    },
+    {
+      "action": "dumpPage",
+      "name": "final-state"
+    }
+  ]
+}
