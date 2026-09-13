@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "name": "B941 public weapon runtime E2E",
+  "outputDir": "artifacts",
+  "viewport": { "width": 390, "height": 844 },
+  "dialogPolicy": "accept",
+  "steps": [
+    { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "networkidle", "timeout": 60000, "label": "open-public-game" },
+    { "action": "waitForSelector", "selector": "#phase-title.active", "timeout": 20000, "label": "title-ready" },
+    { "action": "assertText", "text": "GA-B486.272", "exact": false, "label": "public-build-b941" },
+    { "action": "clickSelector", "selector": "#titleStart", "timeout": 20000, "label": "new-game" },
+    { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "base-ready" },
+    { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"adventurer\"]", "timeout": 15000, "label": "open-adventurer" },
+    { "action": "waitForSelector", "selector": "#roster .adventurer-row:has-text(\"アルト\")", "timeout": 20000, "label": "alto-ready" },
+    { "action": "clickSelector", "selector": "#roster .adventurer-row:has-text(\"アルト\")", "timeout": 15000, "label": "select-alto" },
+    { "action": "assertText", "text": "木の片手剣", "exact": false, "label": "starter-weapon-visible" },
+    { "action": "assertText", "text": "攻撃 +12", "exact": false, "label": "saved-attack-visible" },
+    { "action": "assertText", "text": "命中値 +6", "exact": false, "label": "saved-accuracy-visible" },
+    { "action": "dumpStorage", "name": "b941-public-weapon" },
+    { "action": "dumpPage", "name": "b941-public-weapon-page" },
+    { "action": "screenshot", "name": "b941-public-weapon" }
+  ]
+}
