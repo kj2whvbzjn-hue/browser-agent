@@ -1,0 +1,32 @@
+name: B930-B931 Regression E2E
+on:
+  push:
+    paths:
+      - 'scripts/run-b930-b931-regression-e2e.mjs'
+      - '.github/workflows/b930-b931-regression-e2e.yml'
+  workflow_dispatch:
+jobs:
+  b930-b931-regression-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run B930-B931 Regression E2E
+        run: node scripts/run-b930-b931-regression-e2e.mjs
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b930-b931-regression-e2e-artifacts
+          path: artifacts-b930-b931/
+          if-no-files-found: warn
+          retention-days: 7
