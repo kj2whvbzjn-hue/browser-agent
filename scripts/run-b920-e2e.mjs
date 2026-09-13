@@ -12,6 +12,7 @@ page.on('console',m=>consoleMessages.push(`[${m.type()}] ${m.text()}`));
 page.on('pageerror',e=>pageErrors.push(String(e)));
 function assert(c,m,d=null){if(!c){const e=new Error(m);e.details=d;throw e;}}
 async function snapCharacter(){return page.evaluate(()=>{const c=data.characters.find(x=>x.name==='アルト');if(!c)throw new Error('Alto not found');const equip=c.equipment&&typeof c.equipment==='object'?JSON.parse(JSON.stringify(c.equipment)):null;return{gold:data.gold,job:c.job,level:c.level,skillPoints:c.skillPoints,stats:JSON.parse(JSON.stringify(c.stats)),equipment:equip,jobHistory:JSON.parse(JSON.stringify(c.jobHistory||[])),growthHistory:JSON.parse(JSON.stringify(c.growthHistory||[]))};});}
+async function waitJobModalClosed(){await page.locator('#jobChangeModal').waitFor({state:'hidden',timeout:15000});}
 let result=null,ok=false,failure=null;
 try{
  await page.goto('https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/',{waitUntil:'networkidle',timeout:60000});
@@ -30,7 +31,7 @@ try{
  assert(before.job==='JOB-0001','Alto should start as swordsman',before);
  await page.locator('#openJobChange').click();
  await page.locator('[data-job-confirm="JOB-0002"]').click();
- await page.locator('#jobChangeModal[aria-hidden="true"]').waitFor({timeout:15000});
+ await waitJobModalClosed();
  const knight=await snapCharacter();
  assert(knight.job==='JOB-0002','Job transfer to knight failed',knight);
  assert(knight.gold===before.gold,'Gold changed on job transfer',{before,knight});
@@ -40,7 +41,7 @@ try{
  assert(JSON.stringify(knight.growthHistory)===JSON.stringify(before.growthHistory),'Existing growth history changed on transfer',{before,knight});
  await page.locator('#openJobChange').click();
  await page.locator('[data-job-confirm="JOB-0001"]').click();
- await page.locator('#jobChangeModal[aria-hidden="true"]').waitFor({timeout:15000});
+ await waitJobModalClosed();
  const roundTrip=await snapCharacter();
  assert(roundTrip.job==='JOB-0001','Round-trip back to swordsman failed',roundTrip);
  assert(roundTrip.gold===before.gold,'Gold changed after round-trip',{before,roundTrip});
@@ -49,7 +50,7 @@ try{
  assert(JSON.stringify(roundTrip.equipment)===JSON.stringify(before.equipment),'Equipment changed after round-trip',{before,roundTrip});
  await page.locator('#openJobChange').click();
  await page.locator('[data-job-confirm="JOB-0002"]').click();
- await page.locator('#jobChangeModal[aria-hidden="true"]').waitFor({timeout:15000});
+ await waitJobModalClosed();
  const preLevel=await snapCharacter();
  await page.locator('#levelBtn').click();
  await page.getByText('Skill Point +1',{exact:false}).waitFor({timeout:15000});
