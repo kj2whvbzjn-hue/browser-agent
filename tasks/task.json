@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "b931-public-no-patch-e2e",
-  "taskFile": "projects/guild-adventure/tasks/b931-public-no-patch-skill-passive-respec.json",
-  "runRequest": 42,
-  "note": "Validate deployed GA-B486.262 / GKS-B931 with no response patch: new game, Skill/Passive, passive battle selection, individual Respec, and all Respec."
+  "label": "b941-public-weapon-runtime-e2e",
+  "taskFile": "projects/guild-adventure/tasks/b941-public-weapon-runtime.json",
+  "runRequest": 43,
+  "note": "Validate deployed GA-B486.272 / GKS-B941: public build, new game, starter weapon and saved exported attack/accuracy values through player UI."
 }
