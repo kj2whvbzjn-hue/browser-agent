@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "b930-new-game-startup-diagnostic",
+  "label": "b931-proposed-fix-skill-passive-e2e",
   "taskFile": "projects/guild-adventure/tasks/reorg-r31-005-006-007-b904-skill-passive-public-e2e.json",
-  "runRequest": 39,
-  "note": "Surface the hidden new-game startup notice on GA-B486.261 after the B930 boot fix."
+  "runRequest": 40,
+  "note": "Validate the B931 new-game Save Schema fix by response patching public B930, then run the Skill/Passive/Respec path end to end."
 }
