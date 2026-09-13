@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "name": "TASK-NIP-34-01 Skill/Passive/Respec public Game E2E B929",
+  "name": "TASK-NIP-34-01 Skill/Passive/Respec public Game E2E B930",
   "outputDir": "artifacts",
   "viewport": { "width": 390, "height": 844 },
   "dialogPolicy": "accept",
   "steps": [
     { "action": "goto", "url": "https://kj2whvbzjn-hue.github.io/guild-adventure-studio/game/", "waitUntil": "networkidle", "timeout": 60000, "label": "open-public-game" },
     { "action": "waitForSelector", "selector": "#phase-title.active", "timeout": 20000, "label": "title-ready" },
-    { "action": "assertText", "text": "GA-B486.260", "exact": false, "label": "public-build-b486-260" },
+    { "action": "assertText", "text": "GA-B486.261", "exact": false, "label": "public-build-b486-261" },
     { "action": "clickSelector", "selector": "#titleStart", "timeout": 20000, "label": "new-game" },
     { "action": "waitForSelector", "selector": "#phase-base.active", "timeout": 30000, "label": "new-game-reaches-base" },
     { "action": "clickSelector", "selector": "#baseMobileNav [data-base-tab=\"adventurer\"]", "timeout": 15000, "label": "open-adventurer-tab" },
@@ -28,8 +28,8 @@
     { "action": "assertText", "text": "有効", "exact": true, "label": "passive-effective" },
     { "action": "assertText", "text": "Respec: 50 G / 1 SP返還", "exact": true, "label": "individual-respec-preview" },
     { "action": "waitForSelector", "selector": "[data-respec-passive=\"PAS-0001\"]", "timeout": 15000, "label": "individual-respec-ready" },
-    { "action": "dumpPage", "name": "r31-005-006-007-b929-passive-acquired" },
-    { "action": "screenshot", "name": "r31-005-006-007-b929-passive-acquired" },
+    { "action": "dumpPage", "name": "b930-passive-acquired" },
+    { "action": "screenshot", "name": "b930-passive-acquired" },
     { "action": "clickSelector", "selector": "[data-respec-passive=\"PAS-0001\"]", "timeout": 15000, "label": "individual-respec" },
     { "action": "waitForSelector", "selector": "#characterSkillPointSummary [data-skill-points]:has-text(\"1\")", "timeout": 15000, "label": "skill-point-refunded-individual" },
     { "action": "waitForSelector", "selector": "#characterSkillPointSummary [data-skill-gold]:has-text(\"450 G\")", "timeout": 15000, "label": "gold-consumed-individual" },
@@ -42,8 +42,8 @@
     { "action": "waitForSelector", "selector": "#characterSkillPointSummary [data-skill-points]:has-text(\"1\")", "timeout": 15000, "label": "skill-point-refunded-all" },
     { "action": "waitForSelector", "selector": "#characterSkillPointSummary [data-skill-gold]:has-text(\"250 G\")", "timeout": 15000, "label": "gold-consumed-all" },
     { "action": "waitForSelector", "selector": "[data-acquire-passive=\"PAS-0001\"]", "timeout": 15000, "label": "passive-unowned-after-all-respec" },
-    { "action": "dumpStorage", "name": "r31-005-006-007-b929-after-respec" },
-    { "action": "dumpPage", "name": "r31-005-006-007-b929-after-respec-page" },
-    { "action": "screenshot", "name": "r31-005-006-007-b929-after-respec" }
+    { "action": "dumpStorage", "name": "b930-after-respec" },
+    { "action": "dumpPage", "name": "b930-after-respec-page" },
+    { "action": "screenshot", "name": "b930-after-respec" }
   ]
 }
