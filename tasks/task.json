@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "b931-current-gs34-e2e",
-  "taskFile": "projects/guild-adventure/tasks/reorg-r31-005-006-007-b904-skill-passive-public-e2e.json",
-  "runRequest": 41,
-  "note": "Validate B931 startup fix and current GS34 acquire/select/respec behavior end to end."
+  "label": "b931-public-no-patch-e2e",
+  "taskFile": "projects/guild-adventure/tasks/b931-public-no-patch-skill-passive-respec.json",
+  "runRequest": 42,
+  "note": "Validate deployed GA-B486.262 / GKS-B931 with no response patch: new game, Skill/Passive, passive battle selection, individual Respec, and all Respec."
 }
