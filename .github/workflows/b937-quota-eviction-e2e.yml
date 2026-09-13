@@ -1,0 +1,30 @@
+name: B937 Quota Eviction E2E
+on:
+  push:
+    paths:
+      - 'scripts/run-b937-quota-eviction-e2e.mjs'
+      - '.github/workflows/b937-quota-eviction-e2e.yml'
+  workflow_dispatch:
+jobs:
+  b937-quota-eviction-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run B937 Quota Eviction E2E
+        run: node scripts/run-b937-quota-eviction-e2e.mjs
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b937-quota-eviction-e2e-artifacts
+          path: artifacts-b937-quota/
+          retention-days: 7
