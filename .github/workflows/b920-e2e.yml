@@ -1,0 +1,34 @@
+name: B920 E2E
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/run-b920-e2e.mjs'
+      - '.github/workflows/b920-e2e.yml'
+
+jobs:
+  b920-job-transfer-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run B920 E2E
+        run: node scripts/run-b920-e2e.mjs
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b920-e2e-artifacts
+          path: artifacts-b920/
+          if-no-files-found: warn
+          retention-days: 7
