@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "b941-public-weapon-runtime-e2e",
-  "taskFile": "projects/guild-adventure/tasks/b941-public-weapon-runtime.json",
-  "runRequest": 44,
-  "note": "Validate deployed GA-B486.272 / GKS-B941: public build, new game, starter two-hand weapon and saved exported attack value through player UI."
+  "label": "b943-public-gauge-order-runtime-e2e",
+  "taskFile": "projects/guild-adventure/tasks/b943-public-gauge-order-runtime.json",
+  "runRequest": 45,
+  "note": "Validate deployed GA-B486.274 / GKS-B943 through the public player UI before starting TASK-NIP-22-01."
 }
