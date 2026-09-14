@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const origin='https://engineering-design-graph-ja.pzs4d5yv7g.chatgpt.site',url=origin+'/design/index.html';
 const run=process.env.GITHUB_RUN_ID||Date.now().toString(),key='E2E-Q-'+run;
 const out='artifacts/design-self01';await fs.mkdir(out,{recursive:true});
-const report={run,url,key,siteCommit:'07bedcad091448ff30ba799d0786246b20d15228',status:'running',checks:[],writes:[],pageErrors:[],metrics:[],runUrl:`https://github.com/kj2whvbzjn-hue/browser-agent/actions/runs/${run}`};
+const report={run,url,key,siteCommit:'c6bf17a399fe83638012c6b0fc567c5e3960cab5',status:'running',checks:[],writes:[],pageErrors:[],metrics:[],runUrl:`https://github.com/kj2whvbzjn-hue/browser-agent/actions/runs/${run}`};
 const browser=await chromium.launch();const ctx=await browser.newContext({viewport:{width:1440,height:900},acceptDownloads:true});const page=await ctx.newPage();
 page.on('pageerror',e=>report.pageErrors.push(e.message));
 let navigations=0;page.on('framenavigated',f=>{if(f===page.mainFrame())navigations++});
@@ -22,11 +22,29 @@ try{
  report.before={name:before.project.name,id:before.project.id,revision:before.revision,artifacts:before.project.artifacts.length,hasPlan:before.project.artifacts.some(a=>a.key==='TASK-IMP-01')};console.log('BEFORE '+JSON.stringify(report.before));
  await fs.writeFile(out+'/before-api.json',JSON.stringify(before,null,2));
  await check('UI export backup matches persisted project',async()=>{await page.locator('.project-menu > summary').click();const download=page.waitForEvent('download');await page.locator('[data-action=export]').click();await(await download).saveAs(out+'/before-project.json');assert.deepEqual(JSON.parse(await fs.readFile(out+'/before-project.json','utf8')),before.project);await page.locator('.project-menu > summary').click()});
+
+ await check('Task scoped blockers: direct reason and return preserve list position',async()=>{
+  const task=before.project.artifacts.find(a=>a.key==='TASK-IMP-02');assert(task);
+  await page.locator('#search').fill(task.key);
+  await page.locator('[data-row-id="'+task.id+'"]').click();
+  const scope=page.locator('.task-scope');await scope.waitFor();
+  assert((await scope.innerText()).includes('参照範囲の確認'));
+  const link=scope.locator('.detail-relation [data-action=select]').first();assert(await link.count(),'planned task has a blocker');
+  const reasonId=await link.getAttribute('data-id'),scroll=await page.locator('#listBody').evaluate(e=>e.scrollTop);
+  await capture('task-scope-before');const navBefore=navigations;
+  await link.click();assert((await page.locator('.detail-path').innerText()).includes(before.project.artifacts.find(a=>a.id===reasonId).key));
+  await page.locator('#inspector [data-action=back-panel]').click();
+  assert((await page.locator('.detail-path').innerText()).includes(task.key));
+  assert.equal(await page.locator('#listBody').evaluate(e=>e.scrollTop),scroll);assert.equal(navigations,navBefore);
+  await capture('task-scope-return');
+  await page.locator('#inspector [data-action=close-panel]').click();await page.locator('#search').fill('');
+ });
+
  assert(!before.project.changeSets.some(c=>['open','ready'].includes(c.status)&&c.items.length),'Existing pending changes: do not mutate or apply user work');
  assert(!before.project.artifacts.some(a=>a.key===key),'Do not duplicate probe');
  // Compare the rendered project's exported state to the freshest server revision before writes.
  const fresh=await api();assert.deepEqual(fresh,before,'Project changed while creating backup');
- await page.locator('#filterType').selectOption('question');await page.locator('[data-action=new]').click();await page.locator('#dialogForm [name=type]').selectOption('question');await page.locator('#dialogForm [name=key]').fill(key);await page.locator('#dialogForm [name=title]').fill('自己改善01：実画面の登録・保存検査 '+run);
+ await page.locator('#filterType').selectOption('question');await page.locator('[data-action=new]').click();await page.locator('#dialogForm [name=type]').selectOption('question');await page.locator('#dialogForm [name=key]').fill(key);await page.locator('#dialogForm [name=title]').fill('自己改善02：実画面の登録・保存検査 '+run);
  await mutate('stage new question',()=>page.locator('#dialogForm button[type=submit]').click());
  const staged=await api();report.probeId=staged.project.changeSets.flatMap(c=>c.items).find(i=>i.artifact?.key===key).artifact.id;
  await page.locator('#artifactForm [name="payload.question"]').fill('Playwrightで未解決の課題を正式登録し、保存・再読込後も残ることを検証する。');await page.locator('#artifactForm [name="payload.blocking"]').check();
@@ -34,7 +52,7 @@ try{
  await check('Unresolved blocking question applies through UI',applyOwn);
  await page.reload();await loaded();const afterCreate=await api();const q=afterCreate.project.artifacts.find(a=>a.key===key);assert(q?.payload.blocking&&!q.payload.answer);report.checks.push({name:'Server reload preserves unresolved question',result:'PASS'});
  await page.locator('#search').fill(key);await page.locator(`[data-row-id="${q.id}"]`).click();await page.locator('[data-action=detail-tab][data-id=issues]').click();assert((await page.locator('#detailBody').innerText()).includes('未解決事項'));await capture('unresolved-after-reload');
- await page.locator('#inspector [data-action=edit]').first().click();await page.locator('#artifactForm [name="payload.answer"]').fill('PASS: GitHub Actions上のPlaywrightで登録→変更適用→再読込を検証。未解決状態の保存を確認したためこの検査項目を解決。実行記録: '+report.runUrl+'。元の不具合は自己改善01で修正。タスク別の着手判定や全機能完了を意味しない。');
+ await page.locator('#inspector [data-action=edit]').first().click();await page.locator('#artifactForm [name="payload.answer"]').fill('PASS: TASK-IMP-02の範囲別停止理由表示→理由を1クリック→戻る1クリックを検証。ページ遷移・一覧スクロール変化なし。登録→変更適用→再読込も検証。未解決状態の保存を確認したためこの検査項目を解決。実行記録: '+report.runUrl+'。元の不具合は自己改善02で修正。タスク別の着手判定や全機能完了を意味しない。');
  await mutate('stage probe resolution',()=>page.locator('button[form=artifactForm]').click());await check('Resolve recorded question through UI',applyOwn);
  await page.reload();await loaded();const after=await api();await fs.writeFile(out+'/after-api.json',JSON.stringify(after,null,2));
  await check('Original artifacts and relations unchanged',async()=>{for(const a of before.project.artifacts)assert.deepEqual(after.project.artifacts.find(x=>x.id===a.id),a);assert.deepEqual(after.project.relations,before.project.relations);assert.equal(after.project.artifacts.length,before.project.artifacts.length+1)});
