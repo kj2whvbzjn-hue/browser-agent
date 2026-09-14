@@ -1,0 +1,31 @@
+name: Engineering Design Graph live self-test
+on:
+  workflow_dispatch:
+  push:
+    branches: [test/engineering-design-self-improvement]
+    paths:
+      - .github/workflows/engineering-design-self01.yml
+      - projects/engineering-design-graph/tests/live-self01.mjs
+permissions:
+  contents: read
+concurrency:
+  group: engineering-design-graph-live
+  cancel-in-progress: false
+jobs:
+  live-self-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: node projects/engineering-design-graph/tests/live-self01.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: engineering-design-self01
+          path: artifacts/design-self01
+          retention-days: 14
