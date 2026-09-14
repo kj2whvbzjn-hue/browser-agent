@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "b943-public-gauge-order-runtime-e2e",
-  "taskFile": "projects/guild-adventure/tasks/b943-public-gauge-order-runtime.json",
-  "runRequest": 45,
-  "note": "Validate deployed GA-B486.274 / GKS-B943 through the public player UI before starting TASK-NIP-22-01."
+  "label": "b944-public-monster-runtime-e2e",
+  "taskFile": "projects/guild-adventure/tasks/b944-public-monster-runtime.json",
+  "runRequest": 46,
+  "note": "Validate deployed GA-B486.275 / GKS-B944 through the public player UI before starting TASK-NIP-12-01."
 }
