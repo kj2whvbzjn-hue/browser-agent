@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "project": "guild-adventure",
-  "label": "b944-public-monster-runtime-e2e",
-  "taskFile": "projects/guild-adventure/tasks/b944-public-monster-runtime.json",
-  "runRequest": 46,
-  "note": "Validate deployed GA-B486.275 / GKS-B944 through the public player UI before starting TASK-NIP-12-01."
+  "label": "b945-public-damage-runtime-e2e",
+  "taskFile": "projects/guild-adventure/tasks/b945-public-damage-runtime.json",
+  "runRequest": 47,
+  "note": "Validate deployed GA-B486.276 / GKS-B945 through the public player UI before starting TASK-NIP-08-02."
 }
