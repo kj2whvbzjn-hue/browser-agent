@@ -9,20 +9,57 @@ export class BrowserAgent {
     this.page = null;
     this.generation = 0;
     this.elementMap = new Map();
+    this.connectionMode = null;
+    this.ownsBrowser = false;
+    this.ownsContext = false;
+  }
+
+  requestedConnectionMode() {
+    return this.options.connectionMode || process.env.BROWSER_CONNECTION_MODE || 'launch';
   }
 
   async launch() {
     if (this.context) return;
+    const mode = this.requestedConnectionMode();
     const headless = this.options.headless ?? (process.env.BROWSER_HEADLESS !== 'false');
+    const viewport = this.options.viewport || { width: 1440, height: 900 };
     const userDataDir = this.options.userDataDir || process.env.BROWSER_USER_DATA_DIR;
-    if (userDataDir) {
-      this.context = await chromium.launchPersistentContext(userDataDir, { headless, viewport: this.options.viewport || { width: 1440, height: 900 } });
+
+    this.connectionMode = mode;
+    this.ownsBrowser = false;
+    this.ownsContext = false;
+
+    if (mode === 'existing') {
+      const endpointURL = this.options.cdpEndpoint || process.env.BROWSER_CDP_ENDPOINT;
+      if (!endpointURL) throw new Error('BROWSER_CDP_ENDPOINT is required when BROWSER_CONNECTION_MODE=existing');
+      this.browser = await chromium.connectOverCDP(endpointURL);
+      this.context = this.browser.contexts()[0];
+      if (!this.context) throw new Error('Existing browser has no attachable browser context');
+      const pages = this.context.pages();
+      const preferredUrl = this.options.preferredUrl || process.env.BROWSER_EXISTING_PREFERRED_URL;
+      this.page = (preferredUrl ? pages.find(page => page.url().includes(preferredUrl)) : null) || pages.find(page => page.url() !== 'about:blank') || pages[0];
+      if (!this.page) throw new Error('Existing browser has no attachable page');
+    } else if (mode === 'persistent') {
+      if (!userDataDir) throw new Error('BROWSER_USER_DATA_DIR is required when BROWSER_CONNECTION_MODE=persistent');
+      this.context = await chromium.launchPersistentContext(userDataDir, { headless, viewport });
+      this.ownsContext = true;
       this.page = this.context.pages()[0] || await this.context.newPage();
+    } else if (mode === 'launch') {
+      if (userDataDir) {
+        this.context = await chromium.launchPersistentContext(userDataDir, { headless, viewport });
+        this.ownsContext = true;
+        this.page = this.context.pages()[0] || await this.context.newPage();
+      } else {
+        this.browser = await chromium.launch({ headless });
+        this.ownsBrowser = true;
+        this.context = await this.browser.newContext({ viewport });
+        this.ownsContext = true;
+        this.page = await this.context.newPage();
+      }
     } else {
-      this.browser = await chromium.launch({ headless });
-      this.context = await this.browser.newContext({ viewport: this.options.viewport || { width: 1440, height: 900 } });
-      this.page = await this.context.newPage();
+      throw new Error(`Unknown BROWSER_CONNECTION_MODE: ${mode}`);
     }
+
     this.page.setDefaultTimeout(Number(process.env.BROWSER_ACTION_TIMEOUT_MS || 10000));
     this.page.setDefaultNavigationTimeout(Number(process.env.BROWSER_NAVIGATION_TIMEOUT_MS || 30000));
   }
@@ -50,15 +87,20 @@ export class BrowserAgent {
   async screenshot(path){this.requirePage();await this.page.screenshot({path,fullPage:false});return{ok:true,path,url:this.page.url()};}
 
   async reset({ relaunch = false } = {}) {
-    const context=this.context,browser=this.browser;
-    this.browser=null; this.context=null; this.page=null; this.generation=0; this.elementMap.clear();
-    const closePromise=context?context.close():browser?browser.close():Promise.resolve();
+    const context=this.context,browser=this.browser,ownsContext=this.ownsContext,ownsBrowser=this.ownsBrowser;
+    this.browser=null; this.context=null; this.page=null; this.generation=0; this.elementMap.clear(); this.ownsBrowser=false; this.ownsContext=false;
+
+    // Existing-browser mode is deliberately non-destructive: never close a browser or context we did not create.
+    let closePromise=Promise.resolve();
+    if (ownsContext && context) closePromise=context.close();
+    else if (ownsBrowser && browser) closePromise=browser.close();
+
     const closeTimeoutMs=Number(process.env.BROWSER_RESET_TIMEOUT_MS||8000);
     let timer;
     try { await Promise.race([closePromise.catch(()=>{}),new Promise(resolve=>{timer=setTimeout(resolve,closeTimeoutMs);})]); }
     finally { clearTimeout(timer); }
-    if (relaunch) { await this.launch(); await this.page.goto('about:blank'); return this.getPage(); }
-    return {ok:true};
+    if (relaunch) { await this.launch(); if (this.connectionMode !== 'existing') await this.page.goto('about:blank'); return this.getPage(); }
+    return {ok:true,detached:!ownsContext&&!ownsBrowser};
   }
 
   async recover(){return this.reset({relaunch:true});}
