@@ -15,16 +15,28 @@ permissions:
   contents: read
   actions: write
 
-concurrency:
-  group: supabase-browser-session
-  cancel-in-progress: false
-
 jobs:
+  launch-from-issue:
+    if: >-
+      github.event_name == 'issues' &&
+      github.actor == github.repository_owner &&
+      startsWith(github.event.issue.title, '[browser-launch]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch writable browser session
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh workflow run supabase-browser-session.yml --repo "$GH_REPO" --ref main -f idle_minutes=20
+
   browser-session:
     if: >-
-      github.actor == github.repository_owner &&
-      (github.event_name == 'workflow_dispatch' ||
-       (github.event_name == 'issues' && startsWith(github.event.issue.title, '[browser-launch]')))
+      github.event_name == 'workflow_dispatch' &&
+      github.actor == github.repository_owner
+    concurrency:
+      group: supabase-browser-session
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
