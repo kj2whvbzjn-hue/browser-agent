@@ -4,12 +4,17 @@ on:
   issues:
     types: [opened]
 
+# This workflow intentionally has read-only repository permissions.
 permissions:
   contents: read
 
 jobs:
   browser-task:
-    if: startsWith(github.event.issue.title, '[browser-task]')
+    # Security gate: only the repository owner can submit executable browser tasks,
+    # and the issue title must use the dedicated prefix.
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      startsWith(github.event.issue.title, '[browser-task]')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
