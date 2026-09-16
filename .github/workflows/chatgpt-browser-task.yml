@@ -13,7 +13,7 @@ jobs:
       github.event.issue.user.login == github.repository_owner &&
       startsWith(github.event.issue.title, '[browser-task]')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 360
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,8 +26,31 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install browser and live-view dependencies
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y xvfb x11vnc novnc websockify
+
+      - name: Connect runner to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Start virtual display and iPhone live view
+        env:
+          DISPLAY: ':99'
+        run: |
+          Xvfb :99 -screen 0 1440x900x24 -ac > /tmp/xvfb.log 2>&1 &
+          sleep 2
+          x11vnc -display :99 -forever -shared -nopw -listen 0.0.0.0 -rfbport 5900 > /tmp/x11vnc.log 2>&1 &
+          websockify --web=/usr/share/novnc 6080 localhost:5900 > /tmp/novnc.log 2>&1 &
+          sleep 2
+          TS_IP="$(tailscale ip -4 | head -n1)"
+          echo "============================================================"
+          echo "IPHONE LIVE VIEW (requires iPhone connected to same Tailscale tailnet)"
+          echo "http://${TS_IP}:6080/vnc.html?autoconnect=1&resize=scale"
+          echo "============================================================"
 
       - name: Build task from issue body
         env:
@@ -53,6 +76,9 @@ jobs:
           NODE
 
       - name: Run Playwright task
+        env:
+          DISPLAY: ':99'
+          BROWSER_HEADLESS: 'false'
         run: node scripts/run-task.mjs tasks/chatgpt-issue.json
 
       - name: Upload artifacts
