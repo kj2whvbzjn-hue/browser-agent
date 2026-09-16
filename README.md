@@ -1,6 +1,18 @@
 # browser-agent
 
+> **AI / ChatGPT: start here.** If the user asks you to open, use, continue, or operate the browser, read [`BROWSER_AGENT_INSTRUCTIONS.md`](./BROWSER_AGENT_INSTRUCTIONS.md) first and follow it directly. Do not ask the user to explain the browser architecture again.
+>
+> Typical instruction: **「ブラウザを開いて」 / “Open the browser.”**
+
 Standalone Playwright browser automation environment designed to run in GitHub Actions.
+
+## AI-operated persistent browser
+
+This repository also contains a persistent browser-control path using GitHub Actions + Playwright with a private Supabase command/result relay. The authoritative operating procedure for AI agents is:
+
+**[`BROWSER_AGENT_INSTRUCTIONS.md`](./BROWSER_AGENT_INSTRUCTIONS.md)**
+
+When this repository is supplied as the browser-agent source, an AI should discover that document from this README and use it instead of requiring the user to restate setup details.
 
 ## Role
 
