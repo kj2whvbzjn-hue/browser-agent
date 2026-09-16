@@ -35,6 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BROWSER_SESSION_ISSUE: ${{ inputs.issue_number }}
-          BROWSER_SESSION_IDLE_MS: ${{ fromJSON(inputs.idle_minutes) * 60000 }}
+          BROWSER_SESSION_IDLE_MINUTES: ${{ inputs.idle_minutes }}
           BROWSER_HEADLESS: 'true'
-        run: node scripts/github-issue-session-bridge.mjs
+        run: |
+          export BROWSER_SESSION_IDLE_MS=$((BROWSER_SESSION_IDLE_MINUTES * 60000))
+          node scripts/github-issue-session-bridge.mjs
