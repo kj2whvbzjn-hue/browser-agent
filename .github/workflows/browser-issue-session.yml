@@ -1,0 +1,42 @@
+name: Browser Issue Session
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue used as the browser command/response queue
+        required: true
+        type: string
+      idle_minutes:
+        description: Stop after this many idle minutes
+        required: false
+        default: '20'
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  browser-session:
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: browser-connector-poc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Run Issue-backed browser session
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BROWSER_SESSION_ISSUE: ${{ inputs.issue_number }}
+          BROWSER_SESSION_IDLE_MINUTES: ${{ inputs.idle_minutes }}
+          BROWSER_HEADLESS: 'true'
+        run: |
+          export BROWSER_SESSION_IDLE_MS=$((BROWSER_SESSION_IDLE_MINUTES * 60000))
+          node scripts/github-issue-session-bridge.mjs
