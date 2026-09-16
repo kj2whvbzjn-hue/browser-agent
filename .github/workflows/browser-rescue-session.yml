@@ -14,19 +14,15 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  # GitHub creates a workflow run for every opened issue before the job-level
-  # title guard is evaluated. Put unrelated issue events in their own group so
-  # they can skip immediately instead of waiting behind a real rescue session.
-  group: ${{ github.event_name == 'issues' && !startsWith(github.event.issue.title, '[browser-rescue]') && format('browser-rescue-skip-{0}', github.run_id) || 'browser-rescue-session' }}
-  cancel-in-progress: false
-
 jobs:
   rescue-browser:
     if: >-
       github.actor == github.repository_owner &&
       (github.event_name == 'workflow_dispatch' ||
        (github.event_name == 'issues' && startsWith(github.event.issue.title, '[browser-rescue]')))
+    concurrency:
+      group: browser-rescue-session
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
