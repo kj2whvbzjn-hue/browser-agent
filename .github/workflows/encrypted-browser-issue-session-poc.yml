@@ -1,0 +1,45 @@
+name: Encrypted Browser Issue Session PoC
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Existing Issue used only for encrypted transport PoC
+        required: true
+        type: string
+      idle_minutes:
+        description: Idle timeout
+        required: false
+        default: '10'
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: encrypted-browser-issue-session-${{ inputs.issue_number }}
+  cancel-in-progress: true
+
+jobs:
+  encrypted-session:
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: encrypted-issue-transport-poc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Run encrypted Issue-backed browser session
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BROWSER_SESSION_ISSUE: ${{ inputs.issue_number }}
+          BROWSER_SESSION_ID: ${{ github.run_id }}
+          BROWSER_SESSION_IDLE_MS: '600000'
+          BROWSER_HEADLESS: 'true'
+        run: node scripts/encrypted-issue-session-bridge.mjs
