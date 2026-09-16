@@ -1,0 +1,8 @@
+{
+  "steps": [
+    { "action": "goto", "url": "https://example.com" },
+    { "action": "assertText", "text": "Example Domain" },
+    { "action": "dumpPage", "name": "page" },
+    { "action": "screenshot", "name": "final" }
+  ]
+}
