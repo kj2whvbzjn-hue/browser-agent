@@ -7,6 +7,7 @@
   "scripts": {
     "run": "node scripts/run-task.mjs tasks/task.json",
     "mcp": "node connector/mcp-server.mjs",
+    "mcp:http": "node connector/mcp-http-server.mjs",
     "test:elementid": "node scripts/run-browser-agent-elementid-e2e.mjs",
     "test:mcp": "node scripts/run-mcp-browser-e2e.mjs"
   },
