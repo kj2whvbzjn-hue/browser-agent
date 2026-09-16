@@ -1,0 +1,38 @@
+name: Browser Agent elementId E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - browser-connector-poc
+    paths:
+      - 'scripts/browser-agent.mjs'
+      - 'scripts/page-observer.mjs'
+      - 'scripts/run-browser-agent-elementid-e2e.mjs'
+      - '.github/workflows/browser-agent-elementid-e2e.yml'
+
+jobs:
+  elementid-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Run elementId E2E
+        run: node scripts/run-browser-agent-elementid-e2e.mjs
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-agent-elementid-e2e
+          path: artifacts-browser-agent-elementid/
+          if-no-files-found: warn
+          retention-days: 7
