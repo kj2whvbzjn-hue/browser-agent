@@ -37,13 +37,27 @@ jobs:
           npx playwright install --with-deps chromium
           sudo apt-get update
           sudo apt-get install -y xvfb x11vnc novnc websockify
-      - name: Restore persistent browser profile
+      - name: Require browser profile encryption key
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: |
+          test -n "$BROWSER_PROFILE_KEY" || { echo 'BROWSER_PROFILE_KEY secret is required'; exit 1; }
+      - name: Restore encrypted browser profile
         uses: actions/cache/restore@v4
         with:
-          path: /tmp/browser-user-data
-          key: browser-profile-${{ github.repository_id }}-${{ github.run_id }}
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-${{ github.run_id }}
           restore-keys: |
-            browser-profile-${{ github.repository_id }}-
+            browser-profile-encrypted-${{ github.repository_id }}-
+      - name: Decrypt browser profile
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: |
+          rm -rf /tmp/browser-user-data
+          mkdir -p /tmp/browser-user-data
+          if [ -f /tmp/browser-profile.enc ]; then
+            node scripts/browser-profile-crypto.mjs decrypt /tmp/browser-user-data /tmp/browser-profile.enc
+          fi
       - name: Connect runner to Tailscale
         uses: tailscale/github-action@v4
         with:
@@ -71,9 +85,18 @@ jobs:
         run: |
           export BROWSER_SESSION_IDLE_MS=$((${IDLE_MINUTES:-20} * 60000))
           node scripts/supabase-browser-session-bridge.mjs
-      - name: Save persistent browser profile
+      - name: Encrypt persistent browser profile
+        if: always()
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: |
+          if [ -n "$BROWSER_PROFILE_KEY" ] && [ -d /tmp/browser-user-data ]; then
+            node scripts/browser-profile-crypto.mjs encrypt /tmp/browser-user-data /tmp/browser-profile.enc
+          fi
+          rm -rf /tmp/browser-user-data
+      - name: Save encrypted browser profile
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: /tmp/browser-user-data
-          key: browser-profile-${{ github.repository_id }}-${{ github.run_id }}
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-${{ github.run_id }}
