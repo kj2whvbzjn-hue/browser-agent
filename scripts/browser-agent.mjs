@@ -15,21 +15,28 @@ export class BrowserAgent {
     if (this.context) return this.getPage();
     const headless = this.options.headless ?? (process.env.BROWSER_HEADLESS !== 'false');
     const userDataDir = this.options.userDataDir || process.env.BROWSER_USER_DATA_DIR;
-    if (userDataDir) {
-      this.context = await chromium.launchPersistentContext(userDataDir, { headless, viewport: this.options.viewport || { width: 1440, height: 900 } });
-      this.page = this.context.pages()[0] || await this.context.newPage();
-    } else {
-      this.browser = await chromium.launch({ headless });
-      this.context = await this.browser.newContext({ viewport: this.options.viewport || { width: 1440, height: 900 } });
-      this.page = await this.context.newPage();
+    try {
+      if (userDataDir) {
+        this.context = await chromium.launchPersistentContext(userDataDir, { headless, viewport: this.options.viewport || { width: 1440, height: 900 } });
+        this.page = this.context.pages()[0] || await this.context.newPage();
+      } else {
+        this.browser = await chromium.launch({ headless });
+        this.context = await this.browser.newContext({ viewport: this.options.viewport || { width: 1440, height: 900 } });
+        this.page = await this.context.newPage();
+      }
+      this.page.setDefaultTimeout(Number(process.env.BROWSER_ACTION_TIMEOUT_MS || 10000));
+      this.page.setDefaultNavigationTimeout(Number(process.env.BROWSER_NAVIGATION_TIMEOUT_MS || 30000));
+      if (url) await this.page.goto(url, { waitUntil: 'domcontentloaded' });
+      return this.getPage();
+    } catch (error) {
+      await this.reset().catch(() => {});
+      throw error;
     }
-    if (url) await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    return this.getPage();
   }
 
   async goto(url) {
     this.requirePage();
-    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
     return this.getPage();
   }
 
@@ -77,12 +84,20 @@ export class BrowserAgent {
   async press(key) { this.requirePage(); await this.page.keyboard.press(String(key)); return {ok:true,action:'press',key,url:this.page.url()}; }
   async scroll(direction='down',amount=700) { this.requirePage(); const dy=direction==='up'?-Math.abs(amount):Math.abs(amount); await this.page.mouse.wheel(0,dy); return {ok:true,action:'scroll',direction,amount,url:this.page.url()}; }
   async screenshot(path) { this.requirePage(); await this.page.screenshot({path,fullPage:false}); return {ok:true,path,url:this.page.url()}; }
-  async end() {
-    if (this.context) await this.context.close();
-    else if (this.browser) await this.browser.close();
-    this.browser=this.context=this.page=null;
+
+  async reset() {
+    const context = this.context;
+    const browser = this.browser;
+    this.browser = null;
+    this.context = null;
+    this.page = null;
+    this.generation = 0;
     this.elementMap.clear();
+    if (context) await context.close().catch(() => {});
+    else if (browser) await browser.close().catch(() => {});
     return {ok:true};
   }
+
+  async end() { return this.reset(); }
   requirePage() { if(!this.page) throw new Error('Browser is not started'); }
 }
