@@ -33,7 +33,7 @@ jobs:
   browser-session:
     if: >-
       github.event_name == 'workflow_dispatch' &&
-      github.actor == github.repository_owner
+      (github.actor == github.repository_owner || github.actor == 'github-actions[bot]')
     concurrency:
       group: supabase-browser-session
       cancel-in-progress: false
