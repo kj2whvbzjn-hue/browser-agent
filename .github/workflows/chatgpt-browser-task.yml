@@ -4,14 +4,11 @@ on:
   issues:
     types: [opened]
 
-# This workflow intentionally has read-only repository permissions.
 permissions:
   contents: read
 
 jobs:
   browser-task:
-    # Security gate: only the repository owner can submit executable browser tasks,
-    # and the issue title must use the dedicated prefix.
     if: >-
       github.event.issue.user.login == github.repository_owner &&
       startsWith(github.event.issue.title, '[browser-task]')
@@ -37,7 +34,23 @@ jobs:
           ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
           mkdir -p tasks artifacts-chatgpt
-          node -e "const fs=require('fs'); const raw=process.env.ISSUE_BODY||''; const m=raw.match(/```(?:json)?\\s*([\\s\\S]*?)```/i); const text=(m?m[1]:raw).trim(); const task=JSON.parse(text); task.outputDir='artifacts-chatgpt'; if(!Array.isArray(task.steps)) throw new Error('Issue JSON must contain steps[]'); fs.writeFileSync('tasks/chatgpt-issue.json', JSON.stringify(task,null,2));"
+          node <<'NODE'
+          const fs = require('fs');
+          const raw = process.env.ISSUE_BODY || '';
+          const fence = String.fromCharCode(96).repeat(3);
+          let text = raw.trim();
+          if (text.startsWith(fence)) {
+            const firstNewline = text.indexOf('\n');
+            const lastFence = text.lastIndexOf(fence);
+            if (firstNewline >= 0 && lastFence > firstNewline) {
+              text = text.slice(firstNewline + 1, lastFence).trim();
+            }
+          }
+          const task = JSON.parse(text);
+          task.outputDir = 'artifacts-chatgpt';
+          if (!Array.isArray(task.steps)) throw new Error('Issue JSON must contain steps[]');
+          fs.writeFileSync('tasks/chatgpt-issue.json', JSON.stringify(task, null, 2));
+          NODE
 
       - name: Run Playwright task
         run: node scripts/run-task.mjs tasks/chatgpt-issue.json
