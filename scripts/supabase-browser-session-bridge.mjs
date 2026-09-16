@@ -12,11 +12,15 @@ async function execute(c){const a=c.args||{};switch(c.action){case'start':return
 async function executeWithTimeout(c){
   if(c.action==='humanTakeover'||c.action==='end') return execute(c);
   let timer;
-  try{
-    return await Promise.race([
-      execute(c),
-      new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(`Command ${c.action} timed out after ${commandTimeoutMs}ms`)),commandTimeoutMs);})
-    ]);
+  const timeout = new Promise((_,reject)=>{timer=setTimeout(()=>reject(Object.assign(new Error(`Command ${c.action} timed out after ${commandTimeoutMs}ms`),{code:'BROWSER_COMMAND_TIMEOUT'})),commandTimeoutMs);});
+  try {
+    return await Promise.race([execute(c),timeout]);
+  } catch (error) {
+    if (error?.code === 'BROWSER_COMMAND_TIMEOUT') {
+      await agent.reset().catch(()=>{});
+      humanControl=false;
+    }
+    throw error;
   } finally { clearTimeout(timer); }
 }
 const initialLiveUrl=await liveViewUrl();
