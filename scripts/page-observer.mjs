@@ -26,7 +26,7 @@ export async function observePage(page, generation) {
       const role = el.getAttribute('role') || ({button:'button',a:'link',textarea:'textbox',select:'combobox'}[tag] ?? (tag === 'input' ? (el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : 'textbox') : null));
       const label = el.getAttribute('aria-label') || el.getAttribute('placeholder') || el.getAttribute('title') || '';
       elements.push({
-        domIndex: elements.length,
+        domIndex: [...document.querySelectorAll(selector)].indexOf(el),
         tag,
         role,
         label,
@@ -44,6 +44,7 @@ export async function observePage(page, generation) {
 
   const elements = raw.elements.map((el, i) => ({
     id: `g${generation}-e${i + 1}`,
+    domIndex: el.domIndex,
     role: el.role,
     label: clean(el.label),
     text: clean(el.text),
