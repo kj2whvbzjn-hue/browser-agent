@@ -42,57 +42,34 @@ export class BrowserAgent {
     if (Number(match[1]) !== this.generation) throw new Error(`Stale elementId ${elementId}; call getPage() again`);
     const element = this.elementMap.get(elementId);
     if (!element) throw new Error(`Unknown elementId: ${elementId}`);
-
-    if (element.role && element.label) {
-      return this.page.getByRole(element.role, { name: element.label, exact: true }).first();
-    }
     if (element.name) return this.page.locator(`[name=${JSON.stringify(element.name)}]`).first();
-    if (element.role && element.text) {
-      return this.page.getByRole(element.role, { name: element.text, exact: true }).first();
-    }
+    if (element.role && element.label) return this.page.getByRole(element.role, { name: element.label, exact: true }).first();
+    if (element.role && element.text) return this.page.getByRole(element.role, { name: element.text, exact: true }).first();
     if (element.type) return this.page.locator(`[type=${JSON.stringify(element.type)}]`).first();
-    throw new Error(`Element ${elementId} has no stable semantic locator; call getPage() again`);
+    if (Number.isInteger(element.domIndex)) {
+      const selector = ['button','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(',');
+      return this.page.locator(selector).nth(element.domIndex);
+    }
+    throw new Error(`Element ${elementId} has no usable locator; call getPage() again`);
   }
 
-  async fill(elementId, text) {
-    const locator = this.locatorFor(elementId);
-    await locator.fill(String(text), { timeout: 10000 });
-    return { ok: true, action: 'fill', elementId, url: this.page.url() };
+  async clickWithFallback(elementId) {
+    const element = this.elementMap.get(elementId);
+    const primary = this.locatorFor(elementId);
+    try { await primary.click({ timeout: 4000 }); return; }
+    catch (primaryError) {
+      if (!element?.bounds) throw primaryError;
+      const { x, y, width, height } = element.bounds;
+      if (!(width > 0 && height > 0)) throw primaryError;
+      await this.page.mouse.click(x + width / 2, y + height / 2);
+    }
   }
 
-  async click(elementId) {
-    const locator = this.locatorFor(elementId);
-    await locator.click({ timeout: 10000 });
-    return { ok: true, action: 'click', elementId, url: this.page.url() };
-  }
-
-  async press(key) {
-    this.requirePage();
-    await this.page.keyboard.press(String(key));
-    return { ok: true, action: 'press', key, url: this.page.url() };
-  }
-
-  async scroll(direction = 'down', amount = 700) {
-    this.requirePage();
-    const dy = direction === 'up' ? -Math.abs(amount) : Math.abs(amount);
-    await this.page.mouse.wheel(0, dy);
-    return { ok: true, action: 'scroll', direction, amount, url: this.page.url() };
-  }
-
-  async screenshot(path) {
-    this.requirePage();
-    await this.page.screenshot({ path, fullPage: false });
-    return { ok: true, path, url: this.page.url() };
-  }
-
-  async end() {
-    if (this.browser) await this.browser.close();
-    this.browser = this.context = this.page = null;
-    this.elementMap.clear();
-    return { ok: true };
-  }
-
-  requirePage() {
-    if (!this.page) throw new Error('Browser is not started');
-  }
+  async fill(elementId, text) { const locator=this.locatorFor(elementId); await locator.fill(String(text),{timeout:10000}); return {ok:true,action:'fill',elementId,url:this.page.url()}; }
+  async click(elementId) { await this.clickWithFallback(elementId); return {ok:true,action:'click',elementId,url:this.page.url()}; }
+  async press(key) { this.requirePage(); await this.page.keyboard.press(String(key)); return {ok:true,action:'press',key,url:this.page.url()}; }
+  async scroll(direction='down',amount=700) { this.requirePage(); const dy=direction==='up'?-Math.abs(amount):Math.abs(amount); await this.page.mouse.wheel(0,dy); return {ok:true,action:'scroll',direction,amount,url:this.page.url()}; }
+  async screenshot(path) { this.requirePage(); await this.page.screenshot({path,fullPage:false}); return {ok:true,path,url:this.page.url()}; }
+  async end() { if(this.browser) await this.browser.close(); this.browser=this.context=this.page=null; this.elementMap.clear(); return {ok:true}; }
+  requirePage() { if(!this.page) throw new Error('Browser is not started'); }
 }
