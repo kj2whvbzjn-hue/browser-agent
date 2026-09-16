@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { BrowserAgent } from './browser-agent.mjs';
 
 const base = process.env.SUPABASE_URL;
@@ -11,6 +12,7 @@ const headers = { apikey:key, Authorization:`Bearer ${key}`, 'Content-Type':'app
 const agent = new BrowserAgent({ headless: process.env.BROWSER_HEADLESS !== 'false' });
 let lastActivity = Date.now();
 let stopped = false;
+let humanControl = false;
 
 async function rest(path, options={}) {
   const r = await fetch(`${base}/rest/v1/${path}`, { ...options, headers:{...headers,...options.headers} });
@@ -20,6 +22,10 @@ async function rest(path, options={}) {
 }
 async function patchSession(body) {
   return rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify(body)});
+}
+async function liveViewUrl() {
+  try { return (await readFile('/tmp/browser-live-url.txt', 'utf8')).trim(); }
+  catch { return null; }
 }
 async function execute(c) {
   const a=c.args||{};
@@ -31,7 +37,16 @@ async function execute(c) {
     case 'click': return agent.click(a.elementId);
     case 'press': return agent.press(a.key);
     case 'scroll': return agent.scroll(a.direction,a.amount);
-    case 'end': stopped=true; return agent.end();
+    case 'humanTakeover': {
+      humanControl = true;
+      return { state:'human', liveViewUrl:await liveViewUrl() };
+    }
+    case 'resume': {
+      humanControl = false;
+      const page = await agent.getPage();
+      return { state:'ready', page };
+    }
+    case 'end': stopped=true; humanControl=false; return agent.end();
     default: throw new Error(`Unknown action: ${c.action}`);
   }
 }
@@ -41,20 +56,23 @@ console.log(`SUPABASE_BROWSER_SESSION_READY session_id=${sessionId}`);
 
 while(!stopped && Date.now()-lastActivity < idleMs) {
   await patchSession({heartbeat_at:new Date().toISOString()});
-  const rows=await rest(`browser_relay_commands?session_id=eq.${encodeURIComponent(sessionId)}&status=eq.pending&select=id,command_id,action,args&order=id.asc&limit=1`);
-  if(!rows?.length){ await new Promise(r=>setTimeout(r,pollMs)); continue; }
-  const c=rows[0]; lastActivity=Date.now();
+  const rows=await rest(`browser_relay_commands?session_id=eq.${encodeURIComponent(sessionId)}&status=eq.pending&select=id,command_id,action,args&order=id.asc&limit=50`);
+  const c = humanControl ? rows?.find(row => row.action === 'resume' || row.action === 'end') : rows?.[0];
+  if(!c){ await new Promise(r=>setTimeout(r,pollMs)); continue; }
+  lastActivity=Date.now();
   await rest(`browser_relay_commands?id=eq.${c.id}&status=eq.pending`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'running',started_at:new Date().toISOString()})});
-  await patchSession({state:'busy'});
+  await patchSession({state: humanControl && c.action !== 'resume' && c.action !== 'end' ? 'human' : 'busy'});
   try {
     const value=await execute(c);
-    const generation=(value && Number.isInteger(value.generation)) ? value.generation : undefined;
+    const generation=(value && Number.isInteger(value.generation)) ? value.generation :
+      (value?.page && Number.isInteger(value.page.generation) ? value.page.generation : undefined);
     await rest(`browser_relay_commands?id=eq.${c.id}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'done',result:value??null,completed_at:new Date().toISOString()})});
-    await patchSession({state: stopped?'ended':'ready', ...(generation!==undefined?{generation}:{}), ...(stopped?{ended_at:new Date().toISOString()}:{})});
+    const state = stopped ? 'ended' : humanControl ? 'human' : 'ready';
+    await patchSession({state, ...(generation!==undefined?{generation}:{}), ...(stopped?{ended_at:new Date().toISOString()}:{})});
   } catch(e) {
     const error=String(e?.stack||e);
     await rest(`browser_relay_commands?id=eq.${c.id}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'error',error,completed_at:new Date().toISOString()})});
-    await patchSession({state:'error',last_error:error});
+    await patchSession({state: humanControl?'human':'error',last_error:error});
   }
 }
 if(!stopped){ await agent.end().catch(()=>{}); await patchSession({state:'ended',ended_at:new Date().toISOString()}); }
