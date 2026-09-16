@@ -1,0 +1,25 @@
+name: Encrypted Issue Transport PoC
+
+on:
+  push:
+    branches: [encrypted-issue-transport-poc]
+    paths:
+      - 'scripts/encrypted-issue-transport.mjs'
+      - 'scripts/run-encrypted-issue-transport-poc.mjs'
+      - '.github/workflows/encrypted-issue-transport-poc.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  crypto-roundtrip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify encrypted command and response round trip
+        run: node scripts/run-encrypted-issue-transport-poc.mjs
