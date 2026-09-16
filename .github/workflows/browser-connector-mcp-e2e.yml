@@ -1,0 +1,32 @@
+name: Browser Connector MCP E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - browser-connector-poc
+    paths:
+      - 'connector/**'
+      - 'scripts/browser-agent.mjs'
+      - 'scripts/page-observer.mjs'
+      - 'scripts/run-mcp-browser-e2e.mjs'
+      - 'package.json'
+      - '.github/workflows/browser-connector-mcp-e2e.yml'
+
+jobs:
+  mcp-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Run MCP Browser Connector E2E
+        run: npm run test:mcp
