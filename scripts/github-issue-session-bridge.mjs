@@ -41,7 +41,13 @@ function parse(body) {
   return { commandId: m[1], command: JSON.parse(m[2]) };
 }
 
-console.log(`ISSUE_SESSION_BRIDGE_READY issue=${issueNumber}`);
+// Establish the queue cursor before accepting commands. This makes each
+// workflow run a fresh session: comments that existed before the bridge
+// became ready are history and must never be replayed into a new browser.
+const initialComments = await gh(`/issues/${issueNumber}/comments?per_page=100&sort=created&direction=asc`);
+lastCommentId = initialComments.reduce((max, comment) => Math.max(max, Number(comment.id) || 0), 0);
+console.log(`ISSUE_SESSION_BRIDGE_READY issue=${issueNumber} cursor=${lastCommentId}`);
+
 try {
   while (Date.now() - lastActivity < idleMs) {
     const comments = await gh(`/issues/${issueNumber}/comments?per_page=100&sort=created&direction=asc`);
