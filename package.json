@@ -1,13 +1,18 @@
 {
   "name": "browser-agent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Standalone Playwright browser automation runner for GitHub Actions.",
+  "description": "Stateful Playwright browser agent and MCP connector PoC.",
   "scripts": {
-    "run": "node scripts/run-task.mjs tasks/task.json"
+    "run": "node scripts/run-task.mjs tasks/task.json",
+    "mcp": "node connector/mcp-server.mjs",
+    "test:elementid": "node scripts/run-browser-agent-elementid-e2e.mjs",
+    "test:mcp": "node scripts/run-mcp-browser-e2e.mjs"
   },
   "dependencies": {
-    "playwright": "^1.55.0"
+    "@modelcontextprotocol/sdk": "^1.18.1",
+    "playwright": "^1.55.0",
+    "zod": "^3.25.0"
   }
 }
