@@ -47,7 +47,7 @@ export class BrowserAgent {
     if (element.role && element.text) return this.page.getByRole(element.role, { name: element.text, exact: true }).first();
     if (element.type) return this.page.locator(`[type=${JSON.stringify(element.type)}]`).first();
     if (Number.isInteger(element.domIndex)) {
-      const selector = ['button','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(',');
+      const selector = ['button','summary','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(',');
       return this.page.locator(selector).nth(element.domIndex);
     }
     throw new Error(`Element ${elementId} has no usable locator; call getPage() again`);
