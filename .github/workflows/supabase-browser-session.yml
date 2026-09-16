@@ -8,6 +8,8 @@ on:
         required: false
         default: '20'
         type: string
+  issues:
+    types: [opened]
 
 permissions:
   contents: read
@@ -18,7 +20,10 @@ concurrency:
 
 jobs:
   browser-session:
-    if: github.actor == github.repository_owner
+    if: >-
+      github.actor == github.repository_owner &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'issues' && startsWith(github.event.issue.title, '[browser-launch]')))
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -54,7 +59,7 @@ jobs:
           BROWSER_SESSION_ID: ${{ github.run_id }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          IDLE_MINUTES: ${{ inputs.idle_minutes }}
+          IDLE_MINUTES: ${{ github.event.inputs.idle_minutes || '20' }}
         run: |
           export BROWSER_SESSION_IDLE_MS=$((${IDLE_MINUTES:-20} * 60000))
           node scripts/supabase-browser-session-bridge.mjs
