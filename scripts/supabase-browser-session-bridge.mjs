@@ -13,6 +13,7 @@ const agent = new BrowserAgent({ headless: process.env.BROWSER_HEADLESS !== 'fal
 let lastActivity = Date.now();
 let stopped = false;
 let humanControl = false;
+let fatalError = null;
 
 async function rest(path, options={}) {
   const r = await fetch(`${base}/rest/v1/${path}`, { ...options, headers:{...headers,...options.headers} });
@@ -24,7 +25,7 @@ async function patchSession(body) {
   return rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify(body)});
 }
 async function liveViewUrl() {
-  try { return (await readFile('/tmp/browser-live-url.txt', 'utf8')).trim(); }
+  try { return (await readFile('/tmp/browser-live-url.txt', 'utf8')).trim() || null; }
   catch { return null; }
 }
 async function execute(c) {
@@ -38,10 +39,14 @@ async function execute(c) {
     case 'press': return agent.press(a.key);
     case 'scroll': return agent.scroll(a.direction,a.amount);
     case 'humanTakeover': {
+      const url = await liveViewUrl();
+      if (!url) throw new Error('Live View URL is not available');
       humanControl = true;
-      return { state:'human', liveViewUrl:await liveViewUrl() };
+      await patchSession({state:'human',live_url:url,last_error:null});
+      return { state:'human', liveViewUrl:url };
     }
     case 'resume': {
+      if (!humanControl) throw new Error('Human takeover is not active');
       humanControl = false;
       const page = await agent.getPage();
       return { state:'ready', page };
@@ -51,28 +56,45 @@ async function execute(c) {
   }
 }
 
-await rest('browser_relay_sessions?on_conflict=session_id', {method:'POST', headers:{Prefer:'resolution=merge-duplicates,return=minimal'}, body:JSON.stringify({session_id:sessionId,state:'ready',heartbeat_at:new Date().toISOString()})});
+const initialLiveUrl = await liveViewUrl();
+await rest('browser_relay_sessions?on_conflict=session_id', {method:'POST', headers:{Prefer:'resolution=merge-duplicates,return=minimal'}, body:JSON.stringify({session_id:sessionId,state:'ready',heartbeat_at:new Date().toISOString(),live_url:initialLiveUrl,last_error:null,ended_at:null})});
 console.log(`SUPABASE_BROWSER_SESSION_READY session_id=${sessionId}`);
 
-while(!stopped && Date.now()-lastActivity < idleMs) {
-  await patchSession({heartbeat_at:new Date().toISOString()});
-  const rows=await rest(`browser_relay_commands?session_id=eq.${encodeURIComponent(sessionId)}&status=eq.pending&select=id,command_id,action,args&order=id.asc&limit=50`);
-  const c = humanControl ? rows?.find(row => row.action === 'resume' || row.action === 'end') : rows?.[0];
-  if(!c){ await new Promise(r=>setTimeout(r,pollMs)); continue; }
-  lastActivity=Date.now();
-  await rest(`browser_relay_commands?id=eq.${c.id}&status=eq.pending`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'running',started_at:new Date().toISOString()})});
-  await patchSession({state: humanControl && c.action !== 'resume' && c.action !== 'end' ? 'human' : 'busy'});
-  try {
-    const value=await execute(c);
-    const generation=(value && Number.isInteger(value.generation)) ? value.generation :
-      (value?.page && Number.isInteger(value.page.generation) ? value.page.generation : undefined);
-    await rest(`browser_relay_commands?id=eq.${c.id}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'done',result:value??null,completed_at:new Date().toISOString()})});
-    const state = stopped ? 'ended' : humanControl ? 'human' : 'ready';
-    await patchSession({state, ...(generation!==undefined?{generation}:{}), ...(stopped?{ended_at:new Date().toISOString()}:{})});
-  } catch(e) {
-    const error=String(e?.stack||e);
-    await rest(`browser_relay_commands?id=eq.${c.id}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'error',error,completed_at:new Date().toISOString()})});
-    await patchSession({state: humanControl?'human':'error',last_error:error});
+try {
+  while(!stopped && Date.now()-lastActivity < idleMs) {
+    await patchSession({heartbeat_at:new Date().toISOString()});
+    const rows=await rest(`browser_relay_commands?session_id=eq.${encodeURIComponent(sessionId)}&status=eq.pending&select=id,command_id,action,args&order=id.asc&limit=50`);
+    const c = humanControl ? rows?.find(row => row.action === 'resume' || row.action === 'end') : rows?.[0];
+    if(!c){ await new Promise(r=>setTimeout(r,pollMs)); continue; }
+    lastActivity=Date.now();
+
+    const claimed=await rest(`browser_relay_commands?id=eq.${c.id}&status=eq.pending`, {method:'PATCH', headers:{Prefer:'return=representation'}, body:JSON.stringify({status:'running',started_at:new Date().toISOString()})});
+    if (!claimed?.length) continue;
+
+    await patchSession({state:'busy'});
+    try {
+      const value=await execute(c);
+      const generation=(value && Number.isInteger(value.generation)) ? value.generation :
+        (value?.page && Number.isInteger(value.page.generation) ? value.page.generation : undefined);
+      await rest(`browser_relay_commands?id=eq.${c.id}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'done',result:value??null,error:null,completed_at:new Date().toISOString()})});
+      const state = stopped ? 'ended' : humanControl ? 'human' : 'ready';
+      await patchSession({state,last_error:null,...(generation!==undefined?{generation}:{}),...(stopped?{ended_at:new Date().toISOString()}:{})});
+    } catch(e) {
+      const error=String(e?.stack||e);
+      await rest(`browser_relay_commands?id=eq.${c.id}`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'error',error,completed_at:new Date().toISOString()})});
+      // A command failure is recoverable while the bridge/browser is alive. Keep the
+      // session usable and expose the error separately instead of poisoning state.
+      await patchSession({state:humanControl?'human':'ready',last_error:error});
+    }
   }
+} catch (e) {
+  fatalError = String(e?.stack||e);
+  throw e;
+} finally {
+  if (!stopped) await agent.end().catch(()=>{});
+  const endedAt = new Date().toISOString();
+  await patchSession({state:fatalError?'error':'ended',ended_at:endedAt,...(fatalError?{last_error:fatalError}:{})}).catch(()=>{});
+  // Pending commands cannot ever complete once this runner exits. Mark them so callers
+  // do not wait forever; keep completed history for diagnostics.
+  await rest(`browser_relay_commands?session_id=eq.${encodeURIComponent(sessionId)}&status=eq.pending`, {method:'PATCH', headers:{Prefer:'return=minimal'}, body:JSON.stringify({status:'error',error:fatalError||'Browser session ended before command execution',completed_at:endedAt})}).catch(()=>{});
 }
-if(!stopped){ await agent.end().catch(()=>{}); await patchSession({state:'ended',ended_at:new Date().toISOString()}); }
