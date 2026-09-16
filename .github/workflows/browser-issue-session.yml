@@ -19,6 +19,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: browser-issue-session-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: true
+
 jobs:
   browser-session:
     if: >-
@@ -69,18 +73,20 @@ jobs:
           fi
           echo "ISSUE_NUMBER=$ISSUE_NUMBER" >> "$GITHUB_ENV"
           echo "IDLE_MINUTES=$IDLE_MINUTES" >> "$GITHUB_ENV"
+          echo "SESSION_ID=$GITHUB_RUN_ID" >> "$GITHUB_ENV"
       - name: Post Live View URL to session issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           LIVE_URL="$(cat /tmp/browser-live-url.txt)"
-          printf '%s\n%s\n%s\n' '<!-- browser-session-live-view -->' 'Browser session Live View (Tailscale required):' "$LIVE_URL" > /tmp/live-comment.txt
+          printf '%s\n%s\n%s\n%s\n' "<!-- browser-session-live-view:${SESSION_ID} -->" "Browser session ${SESSION_ID} Live View (Tailscale required):" "$LIVE_URL" "Commands must target sessionId ${SESSION_ID}." > /tmp/live-comment.txt
           gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/live-comment.txt
       - name: Run Issue-backed browser session
         env:
           DISPLAY: ':99'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BROWSER_HEADLESS: 'false'
+          BROWSER_SESSION_ID: ${{ env.SESSION_ID }}
         run: |
           export BROWSER_SESSION_ISSUE="$ISSUE_NUMBER"
           export BROWSER_SESSION_IDLE_MS=$((IDLE_MINUTES * 60000))
