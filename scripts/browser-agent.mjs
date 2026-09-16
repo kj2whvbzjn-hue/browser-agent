@@ -15,11 +15,16 @@ export class BrowserAgent {
     if (this.context) return;
     const headless = this.options.headless ?? (process.env.BROWSER_HEADLESS !== 'false');
     const userDataDir = this.options.userDataDir || process.env.BROWSER_USER_DATA_DIR;
+    const browserEngine = this.options.browserEngine || process.env.BROWSER_ENGINE || 'chromium';
+    if (!['chromium', 'chrome'].includes(browserEngine)) throw new Error(`Unsupported BROWSER_ENGINE: ${browserEngine}`);
+    const launchOptions = { headless };
+    if (browserEngine === 'chrome') launchOptions.channel = 'chrome';
+    const contextOptions = { ...launchOptions, viewport: this.options.viewport || { width: 1440, height: 900 } };
     if (userDataDir) {
-      this.context = await chromium.launchPersistentContext(userDataDir, { headless, viewport: this.options.viewport || { width: 1440, height: 900 } });
+      this.context = await chromium.launchPersistentContext(userDataDir, contextOptions);
       this.page = this.context.pages()[0] || await this.context.newPage();
     } else {
-      this.browser = await chromium.launch({ headless });
+      this.browser = await chromium.launch(launchOptions);
       this.context = await this.browser.newContext({ viewport: this.options.viewport || { width: 1440, height: 900 } });
       this.page = await this.context.newPage();
     }
