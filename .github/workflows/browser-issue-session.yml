@@ -12,6 +12,8 @@ on:
         required: false
         default: '20'
         type: string
+  issues:
+    types: [opened]
 
 permissions:
   contents: read
@@ -19,7 +21,9 @@ permissions:
 
 jobs:
   browser-session:
-    if: github.actor == github.repository_owner
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.actor == github.repository_owner) ||
+      (github.event_name == 'issues' && github.event.issue.user.login == github.repository_owner && startsWith(github.event.issue.title, '[browser-session]'))
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -50,10 +54,24 @@ jobs:
           LIVE_URL="http://${TS_IP}:6080/vnc.html?autoconnect=1&resize=scale"
           echo "$LIVE_URL" > /tmp/browser-live-url.txt
           echo "IPHONE LIVE VIEW: $LIVE_URL"
+      - name: Resolve session settings
+        env:
+          DISPATCH_ISSUE: ${{ inputs.issue_number }}
+          DISPATCH_IDLE_MINUTES: ${{ inputs.idle_minutes }}
+          EVENT_ISSUE: ${{ github.event.issue.number }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "issues" ]; then
+            ISSUE_NUMBER="$EVENT_ISSUE"
+            IDLE_MINUTES="20"
+          else
+            ISSUE_NUMBER="$DISPATCH_ISSUE"
+            IDLE_MINUTES="${DISPATCH_IDLE_MINUTES:-20}"
+          fi
+          echo "ISSUE_NUMBER=$ISSUE_NUMBER" >> "$GITHUB_ENV"
+          echo "IDLE_MINUTES=$IDLE_MINUTES" >> "$GITHUB_ENV"
       - name: Post Live View URL to session issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER: ${{ inputs.issue_number }}
         run: |
           LIVE_URL="$(cat /tmp/browser-live-url.txt)"
           printf '%s\n%s\n%s\n' '<!-- browser-session-live-view -->' 'Browser session Live View (Tailscale required):' "$LIVE_URL" > /tmp/live-comment.txt
@@ -62,9 +80,8 @@ jobs:
         env:
           DISPLAY: ':99'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BROWSER_SESSION_ISSUE: ${{ inputs.issue_number }}
-          BROWSER_SESSION_IDLE_MINUTES: ${{ inputs.idle_minutes }}
           BROWSER_HEADLESS: 'false'
         run: |
-          export BROWSER_SESSION_IDLE_MS=$((BROWSER_SESSION_IDLE_MINUTES * 60000))
+          export BROWSER_SESSION_ISSUE="$ISSUE_NUMBER"
+          export BROWSER_SESSION_IDLE_MS=$((IDLE_MINUTES * 60000))
           node scripts/github-issue-session-bridge.mjs
