@@ -103,20 +103,23 @@ jobs:
           export BROWSER_SESSION_IDLE_MS=$((${IDLE_MINUTES:-20} * 60000))
           node scripts/supabase-browser-session-bridge.mjs
       - name: Encrypt persistent browser profile
+        id: encrypt-profile
         if: ${{ always() && !cancelled() }}
         env:
           BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
         run: |
           set -euo pipefail
+          echo "cache_ready=false" >> "$GITHUB_OUTPUT"
           if [ -n "$BROWSER_PROFILE_KEY" ] && [ -d /tmp/browser-user-data ]; then
             rm -f /tmp/browser-profile.enc.next
             node scripts/browser-profile-crypto.mjs encrypt /tmp/browser-user-data /tmp/browser-profile.enc.next
             test -s /tmp/browser-profile.enc.next
             mv /tmp/browser-profile.enc.next /tmp/browser-profile.enc
+            echo "cache_ready=true" >> "$GITHUB_OUTPUT"
           fi
           rm -rf /tmp/browser-user-data
       - name: Save encrypted browser profile
-        if: ${{ always() && !cancelled() && hashFiles('/tmp/browser-profile.enc') != '' }}
+        if: ${{ always() && !cancelled() && steps.encrypt-profile.outputs.cache_ready == 'true' }}
         uses: actions/cache/save@v4
         with:
           path: /tmp/browser-profile.enc
