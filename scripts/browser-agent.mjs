@@ -43,15 +43,47 @@ export class BrowserAgent {
     const element = this.elementMap.get(elementId);
     if (!element) throw new Error(`Unknown elementId: ${elementId}`);
 
-    if (element.role && element.label) {
-      return this.page.getByRole(element.role, { name: element.label, exact: true }).first();
-    }
+    // Prefer attributes that map directly to the observed DOM node. Accessible-name
+    // reconstruction can differ from innerText after a human-driven navigation.
     if (element.name) return this.page.locator(`[name=${JSON.stringify(element.name)}]`).first();
+    if (element.role && element.label) {
+      const byLabel = this.page.getByRole(element.role, { name: element.label, exact: true });
+      return byLabel.first();
+    }
     if (element.role && element.text) {
-      return this.page.getByRole(element.role, { name: element.text, exact: true }).first();
+      const byText = this.page.getByRole(element.role, { name: element.text, exact: true });
+      return byText.first();
     }
     if (element.type) return this.page.locator(`[type=${JSON.stringify(element.type)}]`).first();
-    throw new Error(`Element ${elementId} has no stable semantic locator; call getPage() again`);
+
+    // Last-resort locator: the observer records the element's stable order among
+    // actionable DOM nodes. Rebuild that same selector and use the recorded index.
+    if (Number.isInteger(element.domIndex)) {
+      const selector = [
+        'button', 'input', 'textarea', 'select', 'a[href]',
+        '[role="button"]', '[role="link"]', '[role="textbox"]',
+        '[role="checkbox"]', '[role="radio"]', '[role="combobox"]',
+        '[contenteditable="true"]'
+      ].join(',');
+      return this.page.locator(selector).nth(element.domIndex);
+    }
+    throw new Error(`Element ${elementId} has no usable locator; call getPage() again`);
+  }
+
+  async clickWithFallback(elementId) {
+    const element = this.elementMap.get(elementId);
+    const primary = this.locatorFor(elementId);
+    try {
+      await primary.click({ timeout: 4000 });
+      return;
+    } catch (primaryError) {
+      if (!element?.bounds) throw primaryError;
+      // Bounds come from the exact observed node, so a coordinate click is a safe
+      // fallback within the same generation when semantic lookup disagrees.
+      const { x, y, width, height } = element.bounds;
+      if (!(width > 0 && height > 0)) throw primaryError;
+      await this.page.mouse.click(x + width / 2, y + height / 2);
+    }
   }
 
   async fill(elementId, text) {
@@ -61,8 +93,7 @@ export class BrowserAgent {
   }
 
   async click(elementId) {
-    const locator = this.locatorFor(elementId);
-    await locator.click({ timeout: 10000 });
+    await this.clickWithFallback(elementId);
     return { ok: true, action: 'click', elementId, url: this.page.url() };
   }
 
