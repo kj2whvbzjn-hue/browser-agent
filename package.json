@@ -9,7 +9,8 @@
     "mcp": "node connector/mcp-server.mjs",
     "mcp:http": "node connector/mcp-http-server.mjs",
     "test:elementid": "node scripts/run-browser-agent-elementid-e2e.mjs",
-    "test:mcp": "node scripts/run-mcp-browser-e2e.mjs"
+    "test:mcp": "node scripts/run-mcp-browser-e2e.mjs",
+    "test:mcp:http": "node scripts/run-mcp-http-browser-e2e.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
