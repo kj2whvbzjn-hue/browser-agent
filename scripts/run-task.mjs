@@ -21,7 +21,9 @@ async function loadTaskDefinition(requestedPath) {
 const { task, taskPath, selectionPath, selection } = await loadTaskDefinition(requestedTaskPath);
 const outputDir = path.resolve(task.outputDir || 'artifacts');
 await fs.mkdir(outputDir, { recursive: true });
-const browser = await chromium.launch({ headless: true });
+const headless = process.env.BROWSER_HEADLESS !== 'false';
+console.log(`BROWSER headless=${headless}`);
+const browser = await chromium.launch({ headless });
 const context = await browser.newContext({ viewport: task.viewport || { width: 1440, height: 900 }, userAgent: task.userAgent || undefined });
 
 const patchMessages = [];
@@ -104,6 +106,13 @@ async function runStep(step, index) {
     case 'waitForText': await page.getByText(step.text, { exact: step.exact ?? false }).waitFor({ state: 'visible', timeout: step.timeout || 15000 }); break;
     case 'waitForSelector': await (await locatorForSelector(step)).waitFor({ state: step.state || 'visible', timeout: step.timeout || 15000 }); break;
     case 'wait': await page.waitForTimeout(step.ms || 1000); break;
+    case 'humanPause': {
+      const ms = step.ms || 600000;
+      console.log(`HUMAN CONTROL WINDOW OPEN for ${Math.round(ms / 1000)} seconds. Use the noVNC URL from the workflow log.`);
+      await page.waitForTimeout(ms);
+      console.log('HUMAN CONTROL WINDOW CLOSED; Playwright resuming.');
+      break;
+    }
     case 'screenshot': await screenshot(step.name || label); break;
     case 'dumpPage': await dumpPage(step.name || label); break;
     case 'dumpStorage': await dumpStorage(step.name || label); break;
