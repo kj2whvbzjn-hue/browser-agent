@@ -30,13 +30,43 @@ jobs:
         with:
           node-version: '22'
       - run: npm install
-      - run: npx playwright install --with-deps chromium
+      - name: Install browser and Live View dependencies
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y xvfb x11vnc novnc websockify
+      - name: Connect runner to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: Start virtual display and iPhone Live View
+        env:
+          DISPLAY: ':99'
+        run: |
+          Xvfb :99 -screen 0 1440x900x24 -ac > /tmp/xvfb.log 2>&1 &
+          sleep 2
+          x11vnc -display :99 -forever -shared -nopw -listen 0.0.0.0 -rfbport 5900 > /tmp/x11vnc.log 2>&1 &
+          websockify --web=/usr/share/novnc 6080 localhost:5900 > /tmp/novnc.log 2>&1 &
+          sleep 2
+          TS_IP="$(tailscale ip -4 | head -n1)"
+          LIVE_URL="http://${TS_IP}:6080/vnc.html?autoconnect=1&resize=scale"
+          echo "$LIVE_URL" > /tmp/browser-live-url.txt
+          echo "IPHONE LIVE VIEW: $LIVE_URL"
+      - name: Post Live View URL to session issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: |
+          LIVE_URL="$(cat /tmp/browser-live-url.txt)"
+          printf '%s\n%s\n%s\n' '<!-- browser-session-live-view -->' 'Browser session Live View (Tailscale required):' "$LIVE_URL" > /tmp/live-comment.txt
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/live-comment.txt
       - name: Run Issue-backed browser session
         env:
+          DISPLAY: ':99'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BROWSER_SESSION_ISSUE: ${{ inputs.issue_number }}
           BROWSER_SESSION_IDLE_MINUTES: ${{ inputs.idle_minutes }}
-          BROWSER_HEADLESS: 'true'
+          BROWSER_HEADLESS: 'false'
         run: |
           export BROWSER_SESSION_IDLE_MS=$((BROWSER_SESSION_IDLE_MINUTES * 60000))
           node scripts/github-issue-session-bridge.mjs
