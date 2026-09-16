@@ -1,0 +1,3 @@
+ChatGPT issue trigger installed on 2026-09-16.
+Workflow: .github/workflows/chatgpt-browser-task.yml
+Trigger: newly opened issue with title prefix [browser-task]
