@@ -16,7 +16,7 @@ permissions:
 # fresh GitHub-hosted runner generations. A no-op generation marker keeps this file
 # available as a safe push trigger for explicit restore E2E runs.
 env:
-  SPLIT_HOST_E2E_GENERATION: 'B'
+  SPLIT_HOST_E2E_GENERATION: 'C'
 
 jobs:
   browser-host:
