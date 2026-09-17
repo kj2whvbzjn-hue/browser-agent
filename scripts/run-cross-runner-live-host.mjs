@@ -9,6 +9,11 @@ async function patch(body){return rest(`browser_relay_sessions?session_id=eq.${e
 
 const context=await chromium.launchPersistentContext(profileDir,{headless:false,args:['--remote-debugging-port=9222']});
 const page=context.pages()[0]||await context.newPage();
+await page.goto('https://example.com/');
+const previousMarker=await page.evaluate(()=>localStorage.getItem('splitBrowserHostMarker'));
+if(previousMarker==='SPLIT_HOST_PROFILE_PERSISTED') console.log('SPLIT_HOST_PROFILE_RESTORE_OK');
+else console.log('SPLIT_HOST_PROFILE_COLD_START');
+await page.evaluate(()=>localStorage.setItem('splitBrowserHostMarker','SPLIT_HOST_PROFILE_PERSISTED'));
 await page.goto('data:text/html,<title>Human Takeover E2E</title><body><h1>HUMAN_TAKEOVER_READY</h1><button onclick="document.body.dataset.human=\'done\';this.textContent=\'HUMAN_CLICK_DONE\'">Tap this button on iPhone</button></body>');
 const liveUrl=`http://${tailscaleIp}:6080/vnc.html?autoconnect=1&resize=scale`;
 await rest('browser_relay_sessions?on_conflict=session_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({session_id:sessionId,state:'ready',heartbeat_at:new Date().toISOString(),live_url:liveUrl,last_error:null,ended_at:null})});
