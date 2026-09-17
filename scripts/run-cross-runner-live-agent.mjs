@@ -10,23 +10,28 @@ const readyDeadline=Date.now()+5*60_000;
 while(Date.now()<readyDeadline){const rows=await rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}&select=state,live_url`);if(rows?.[0]?.state==='ready'&&rows[0].live_url){liveUrl=rows[0].live_url;break;}await new Promise(r=>setTimeout(r,1000));}
 if(!liveUrl) throw new Error('Live Host did not become ready');
 const host=new URL(liveUrl).hostname;
-const endpoint=`http://${host}:9333`;
 let agent;
 try{
-  agent=new BrowserAgent({connectionMode:'attach',cdpEndpoint:endpoint,preferredUrl:'chatgpt.com'});
+  agent=new BrowserAgent({connectionMode:'attach',cdpEndpoint:`http://${host}:9333`,preferredUrl:'chatgpt.com'});
   await agent.start();
-  const observed=await agent.getPage();
-  const text=observed.pageText||'';
-  const signature=`${observed.url||''}\n${observed.title||''}\n${text}`;
+  const before=await agent.getPage();
+  const signature=`${before.url||''}\n${before.title||''}\n${before.pageText||''}`;
   const challenge=/cloudflare|just a moment|verify you are human|checking your browser|route error\s*\(403\)|challenges\.cloudflare\.com/i.test(signature);
-  const chatgpt=/chatgpt\.com/i.test(observed.url||'') && /new chat|log in|where should we begin|prompt/i.test(text);
-  console.log(`CHATGPT_AGENT_OBSERVE_RESULT ${challenge?'challenge':chatgpt?'chatgpt-ui':'other'}`);
-  console.log(`CHATGPT_AGENT_OBSERVE_URL ${observed.url}`);
-  console.log(`CHATGPT_AGENT_OBSERVE_TITLE ${JSON.stringify(observed.title||'')}`);
-  console.log(`CHATGPT_AGENT_OBSERVE_TEXT ${JSON.stringify(text.slice(0,3000))}`);
-  console.log(`CHATGPT_AGENT_OBSERVE_ELEMENTS ${JSON.stringify((observed.elements||[]).slice(0,80))}`);
-  assert.ok(observed.url,'Agent did not observe a page URL');
+  const prompt=(before.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
+  console.log(`CHATGPT_AGENT_OBSERVE_RESULT ${challenge?'challenge':prompt?'chatgpt-ui':'other'}`);
+  if(challenge){console.log('CHATGPT_FILL_SKIPPED challenge');}
+  else {
+    assert.ok(prompt,'Visible ChatGPT prompt textbox not found');
+    const marker=`Browser Agent fill test ${Date.now()}`;
+    console.log(`CHATGPT_PROMPT_TARGET ${prompt.id}`);
+    await agent.fill(prompt.id,marker);
+    const after=await agent.getPage();
+    const promptAfter=(after.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
+    console.log(`CHATGPT_FILL_GENERATION ${before.generation}->${after.generation}`);
+    console.log(`CHATGPT_FILL_VALUE ${JSON.stringify(promptAfter?.value||'')}`);
+    assert.equal(promptAfter?.value,marker,'Prompt value did not survive re-observe');
+    console.log('CHATGPT_FILL_REOBSERVE_OK');
+  }
   await agent.end(); agent=null;
   await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
-  console.log('CHATGPT_AGENT_OBSERVE_OK');
 }catch(error){await patch({state:'error',last_error:String(error?.stack||error)}).catch(()=>{});throw error;}finally{if(agent)await agent.end().catch(()=>{});}
