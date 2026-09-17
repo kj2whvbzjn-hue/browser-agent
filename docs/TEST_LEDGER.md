@@ -1,0 +1,68 @@
+# Browser Agent Test Ledger
+
+更新日: 2026-09-17
+
+## 目的
+
+同じ実験を繰り返さないための恒久的な試験台帳。新しいブラウザ実験を開始する前に必ずこのファイルを確認し、既存の結果と重複する試験は実行しない。
+
+## 運用ルール
+
+1. 各試験は「目的 / 構成 / Run / 結果 / 判定 / 次に何を検証するか」を残す。
+2. `PASS` は再試験しない。関連コード変更で回帰確認が必要な場合だけ、理由を明記して再実行する。
+3. `BLOCKED` は同じ構成のまま再実行しない。前提条件またはアーキテクチャが変わった場合のみ再開する。
+4. Cloudflare/CAPTCHA/本人確認の回避は行わない。
+5. main は安定系。実験は `experiment/official-chrome-channel` で行い、明示承認なしに main へ merge しない。
+6. 観測用ブラウザとテストブラウザを混同しない。
+
+## 実証済み — 再試験不要
+
+| 項目 | Run / Session | 結果 | 判定 |
+|---|---|---|---|
+| Adaptive observe -> one action -> reobserve | 既存E2E | generation付きelementId、stale ID拒否を確認 | PASS |
+| fill / click / navigation | 既存E2E | 正常動作 | PASS |
+| humanTakeover -> iPhone -> resume -> same browser reobserve | Issue #53 / Run 35159040051 | 同一browser/context/pageで復帰 | PASS |
+| navigation timeout recovery | Session 35144054791 | timeout後recoverし正常gotoまで確認 | PASS |
+| encrypted persistent browser profile | Run 35158618322 ほか | 暗号化cache保存/復元を確認 | PASS |
+| cross-generation encrypted profile restore | Run 35167278188 | PROFILE_GENERATION_RESTORE_OK | PASS |
+| split Browser Host / Agent | Run 35167672032 | 別runnerからCDP attach成功 | PASS |
+| fresh Agent reconnect to same Browser Host | Run 35168969600 | attach -> end -> fresh Agent -> reattach/reobserve成功 | PASS |
+| encrypted profile across fresh runner generations | Run 35168969600 | SPLIT_HOST_PROFILE_RESTORE_OK | PASS |
+| ChatGPT page observe | Run 35171243123 | chatgpt-ui、24 elements、prompt観測 | PASS |
+| ChatGPT fill + reobserve | Run 35171610193 | generation 2->3、入力後再観測 | PASS |
+| ChatGPT send + response observation | Run 35172971487 + regex修正版後続run | `ChatGPT said: 42` を観測、回帰修正済み | PASS |
+
+## 失敗・打ち切り — 同じ構成で再実行禁止
+
+| 項目 | Run / Session | 結果 | 判定 |
+|---|---|---|---|
+| GitHub-hosted fresh browserでChatGPT challenge | Issue #55 / 35162602990 | Cloudflare challenge。人間操作でも通過不能 | BLOCKED |
+| long-running GitHub-hosted ChatGPT browser | Run 35169953219 | Cloudflare Route Error 403 | BLOCKED |
+| ChatGPT login humanTakeover attempt | Run 35174945543 / live-35174945543 | human状態には到達したがLive ViewはCloudflare Route Error 403。認証画面へ進めない | BLOCKED |
+
+### BLOCKEDの意味
+
+上記3件は同じ根本条件を持つ: **GitHub-hosted runnerで新規に起動したブラウザからChatGPT認証を成立させようとしている**。この構成をそのまま再実行しても新しい情報は得られないため、再試験禁止。
+
+UA書換え、webdriver隠蔽、fingerprint spoofing、stealth plugin、proxy、challenge solver等による検知回避は試験対象外。
+
+## 現在の次試験
+
+### T-ATTACH-EXISTING-01 — 既存の正常ブラウザへのAgent attach
+
+**目的:** GitHub-hosted runnerが新規ChatGPTブラウザを生成する経路を使わず、正常にChatGPTを利用できる既存Browser HostへBrowser AgentがCDP attachし、`getPage -> 1 action -> getPage` を実行できるか確認する。
+
+**重要:** 「既存Browser Host」の実体と配置方法を先に確定する。GitHub-hosted runner上で同じfresh Chromeを立ち上げただけなら過去のBLOCKED試験と同一なので実行しない。
+
+**合格条件:**
+- Agentが既存Browser HostへCDP attachできる。
+- ChatGPTの正常UIを観測できる。
+- 認証済みならログイン状態を維持したまま再観測できる。
+- Agent processを切り替えても同じBrowser Hostへ再attachできる。
+- Cloudflare challenge回避処理を一切使わない。
+
+**次の作業:** 既存Browser Hostをどこに置くかを設計・確定し、その条件が過去BLOCKED構成と異なることを確認してから初回試験を1本だけ実行する。
+
+## Run #18 後始末
+
+`live-35174945543` は 2026-09-17 に Supabase session state を `ended` に変更済み。同構成の再実行は禁止。
