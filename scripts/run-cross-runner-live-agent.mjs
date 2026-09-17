@@ -6,6 +6,7 @@ const headers={apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'applicat
 async function rest(path,options={}){const r=await fetch(`${base}/rest/v1/${path}`,{...options,headers:{...headers,...options.headers}});const text=await r.text();if(!r.ok)throw new Error(`Supabase ${r.status}: ${text}`);return text?JSON.parse(text):null;}
 async function patch(body){return rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(body)});}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const assistantAnswerVisible=text=>/ChatGPT said:\s*42(?:\s|$)/i.test(text);
 let liveUrl;
 const readyDeadline=Date.now()+5*60_000;
 while(Date.now()<readyDeadline){const rows=await rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}&select=state,live_url`);if(rows?.[0]?.state==='ready'&&rows[0].live_url){liveUrl=rows[0].live_url;break;}await sleep(1000);}
@@ -23,7 +24,6 @@ try{
   if(challenge){console.log('CHATGPT_RESPONSE_REGRESSION_SKIPPED challenge');}
   else {
     assert.ok(prompt,'Visible ChatGPT prompt textbox not found');
-    // Expected answer is deliberately absent from the user prompt so observing it proves more than echoing the prompt.
     const marker=`Browser Agent regression ${Date.now()}`;
     const request=`${marker}. Return the decimal result of forty-one plus one, digits only.`;
     assert.ok(!request.includes('42'),'Expected response leaked into prompt');
@@ -41,15 +41,12 @@ try{
       observed=await agent.getPage();
       promptAfter=(observed.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
       const text=observed.pageText||'';
-      const cleared=!promptAfter?.value;
-      const markerVisible=text.includes(marker);
-      const answerVisible=/(^|\n)42(\n|$)/m.test(text);
-      if(cleared&&markerVisible&&answerVisible) break;
+      if(!promptAfter?.value&&text.includes(marker)&&assistantAnswerVisible(text)) break;
     }
     const text=observed?.pageText||'';
     const cleared=!promptAfter?.value;
     const markerVisible=text.includes(marker);
-    const answerVisible=/(^|\n)42(\n|$)/m.test(text);
+    const answerVisible=assistantAnswerVisible(text);
     console.log(`CHATGPT_SEND_URL ${observed?.url||''}`);
     console.log(`CHATGPT_PROMPT_CLEARED ${cleared}`);
     console.log(`CHATGPT_USER_MESSAGE_VISIBLE ${markerVisible}`);
