@@ -1,0 +1,34 @@
+name: Browser Agent Live Observer
+
+on:
+  workflow_dispatch:
+    inputs:
+      session_id:
+        description: Running Browser Host session id
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Connect observer to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: Observe existing browser without closing host
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          TARGET_BROWSER_SESSION_ID: ${{ inputs.session_id }}
+        run: node scripts/run-live-host-observer.mjs
