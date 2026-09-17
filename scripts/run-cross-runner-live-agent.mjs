@@ -20,28 +20,45 @@ try{
   const challenge=/cloudflare|just a moment|verify you are human|checking your browser|route error\s*\(403\)|challenges\.cloudflare\.com/i.test(signature);
   const prompt=(before.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
   console.log(`CHATGPT_AGENT_OBSERVE_RESULT ${challenge?'challenge':prompt?'chatgpt-ui':'other'}`);
-  if(challenge){console.log('CHATGPT_SEND_SKIPPED challenge');}
+  if(challenge){console.log('CHATGPT_RESPONSE_REGRESSION_SKIPPED challenge');}
   else {
     assert.ok(prompt,'Visible ChatGPT prompt textbox not found');
-    const marker=`Browser Agent send test ${Date.now()}. Reply with exactly: BROWSER_AGENT_SEND_OK`;
-    await agent.fill(prompt.id,marker);
+    // Expected answer is deliberately absent from the user prompt so observing it proves more than echoing the prompt.
+    const marker=`Browser Agent regression ${Date.now()}`;
+    const request=`${marker}. Return the decimal result of forty-one plus one, digits only.`;
+    assert.ok(!request.includes('42'),'Expected response leaked into prompt');
+    await agent.fill(prompt.id,request);
     const filled=await agent.getPage();
     const promptFilled=(filled.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
-    assert.equal(promptFilled?.value,marker,'Prompt value did not survive re-observe');
+    assert.equal(promptFilled?.value,request,'Prompt value did not survive re-observe');
     console.log('CHATGPT_FILL_REOBSERVE_OK');
-    assert.ok(promptFilled,'Prompt disappeared before send');
-    // press() is intentionally a page-level action. The fresh observation above
-    // establishes the current state; Enter is the single next action.
     await agent.press('Enter');
     console.log('CHATGPT_SEND_ACTION_OK');
-    let observed;
-    const deadline=Date.now()+30_000;
-    while(Date.now()<deadline){await sleep(1000);observed=await agent.getPage();const text=observed.pageText||'';if(text.includes('BROWSER_AGENT_SEND_OK'))break;}
+    let observed, promptAfter;
+    const deadline=Date.now()+45_000;
+    while(Date.now()<deadline){
+      await sleep(1000);
+      observed=await agent.getPage();
+      promptAfter=(observed.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
+      const text=observed.pageText||'';
+      const cleared=!promptAfter?.value;
+      const markerVisible=text.includes(marker);
+      const answerVisible=/(^|\n)42(\n|$)/m.test(text);
+      if(cleared&&markerVisible&&answerVisible) break;
+    }
     const text=observed?.pageText||'';
+    const cleared=!promptAfter?.value;
+    const markerVisible=text.includes(marker);
+    const answerVisible=/(^|\n)42(\n|$)/m.test(text);
     console.log(`CHATGPT_SEND_URL ${observed?.url||''}`);
+    console.log(`CHATGPT_PROMPT_CLEARED ${cleared}`);
+    console.log(`CHATGPT_USER_MESSAGE_VISIBLE ${markerVisible}`);
+    console.log(`CHATGPT_ASSISTANT_ANSWER_VISIBLE ${answerVisible}`);
     console.log(`CHATGPT_SEND_TEXT ${JSON.stringify(text.slice(-3000))}`);
-    assert.ok(text.includes('BROWSER_AGENT_SEND_OK'),'Sent conversation/response was not observable');
-    console.log('CHATGPT_SEND_REOBSERVE_OK');
+    assert.ok(cleared,'Prompt was not cleared after Enter submission');
+    assert.ok(markerVisible,'Submitted user message was not observable');
+    assert.ok(answerVisible,'Assistant response was not observable');
+    console.log('CHATGPT_RESPONSE_REGRESSION_OK');
   }
   await agent.end(); agent=null;
   await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
