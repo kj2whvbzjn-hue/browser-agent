@@ -71,6 +71,17 @@ UA書換え、webdriver隠蔽、fingerprint spoofing、stealth plugin、proxy、
 - 保存系: `Encrypt persistent browser profile`、`Save encrypted browser profile`、`Remove browser profile material` がすべて `success`。
 - 判定: `PASS (encrypted profile restore/decrypt -> browser session -> encrypt/save -> plaintext cleanup workflow verified)`
 
+### V-003 — adaptive human takeover — Issue #53 / Run 35159040051
+
+- 確認日: 2026-09-17
+- Issue #53 title: `[browser-launch] adaptive takeover E2E`。Issue本文はlaunch triggerのみで、browser commands/page dataはIssueへ保存しない設計であることを確認。
+- Workflow: `Supabase Browser Session` / run #44 / `workflow_dispatch` / main。
+- Head SHA: `cdd590cda34d5829771e5a1b5f4668a39289e13c`。
+- GitHub Actions結論: `success`。
+- `Restore encrypted browser profile`、`Decrypt browser profile`、Tailscale、Live View、`Run private Supabase browser session`、再暗号化・保存・plaintext削除がすべて `success`。
+- 注意: takeover/resume時の個別Supabase command/page snapshotはIssueにもActions step summaryにも保存されていないため、「iPhone操作後に同一browser/context/pageへresumeした」というcommand-level証跡はGitHub側だけからは再構成できない。既存のE2E実施記録とIssue/Runの目的・成功状態は整合する。
+- 判定: `PASS (takeover E2E run verified; command-level evidence external to GitHub records)`
+
 ## 現在の次試験
 
 ### T-ATTACH-EXISTING-01 — 既存の正常ブラウザへのAgent attach
