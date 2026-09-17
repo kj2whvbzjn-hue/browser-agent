@@ -104,6 +104,19 @@ UA書換え、webdriver隠蔽、fingerprint spoofing、stealth plugin、proxy、
 - したがって、Browser HostとBrowser Agentを別GitHub-hosted runner/jobへ分離した構成で、Agent側からhuman takeover待機を経てresume完了まで到達したことをActions一次ログで確認できる。
 - 判定: `PASS (split Host/Agent jobs and cross-runner human resume directly verified in Actions log)`
 
+### V-006 — fresh Agent reconnect + encrypted profile across runner generations — Run 35168969600
+
+- 確認日: 2026-09-17
+- 独立AI確認: GeminiへこのRunだけを割り当てたが、Geminiは公開GitHub一次証拠へ到達できず「検証不可」と報告した。この報告自体をPASS根拠には採用しない。
+- GitHub Actions一次証拠: `browser-host` job `105036269302` = `success`、`browser-agent` job `105036269406` = `success`。Host/Agentは別job・別GitHub-hosted runner（ログ上のWorker IDおよびAzure Regionも別）で実行。
+- Branch / generation: `experiment/official-chrome-channel`、両jobで `SPLIT_HOST_E2E_GENERATION: C`。checkout SHA `6c047a0aac9a5b18bbc2bc5ff23e9c93ad8cc275`。
+- encrypted profile: Hostのcache restoreで `Cache hit for restore-key: split-browser-profile-1360823355-35168703585`、`Cache restored successfully`、`Cache restored from key: split-browser-profile-1360823355-35168703585` を確認。前Runの暗号化cacheをfresh Run 35168969600へ復元している。
+- Host実ログ: `SPLIT_HOST_PROFILE_RESTORE_OK`、`CROSS_RUNNER_LIVE_READY http://100.127.84.40:6080/...`、終了時 `CROSS_RUNNER_LIVE_HOST_STOP`。その後profileを再暗号化し `Cache saved with key: split-browser-profile-1360823355-35168969600`、plaintext profile materialを削除。
+- Agent実ログ: `CROSS_RUNNER_SESSION_ID: live-35168969600`、`HUMAN_TAKEOVER_WAIT http://100.127.84.40:6080/...`、`CROSS_RUNNER_HUMAN_RESUME_OK`。Agent側Tailscaleも接続成功。
+- 照合結果: Geminiの「repository/runへアクセスできず一次証拠なし」という報告はGitHub一次証拠と矛盾するため棄却。Actions一次ログは、分離Host/Agent、前Run由来暗号化profile復元、同じLive View endpointでのhuman takeover/resumeを直接支持する。
+- 制限: このRunのAgentログには「attach -> agent process終了 -> 別のfresh Agent process -> reattach」を個別に識別する専用ログマーカーは出ていない。したがって、`fresh Agent reconnect` の細粒度なプロセス切替手順までをこのRunの公開Actionsログだけで完全再構成できるとは記載しない。一方、Host/Agent分離とprofile世代間復元・human resumeは直接確認済み。
+- 判定: `PASS (Host/Agent split, generation-C encrypted profile restore, Live View takeover/resume directly verified; exact intra-test fresh-Agent process transition is not fully reconstructable from public log markers)`
+
 ## 現在の次試験
 
 ### T-ATTACH-EXISTING-01 — 既存の正常ブラウザへのAgent attach
