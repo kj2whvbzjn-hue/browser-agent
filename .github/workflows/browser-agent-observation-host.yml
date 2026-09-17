@@ -1,0 +1,39 @@
+name: Browser Agent Observation Host
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  observation-host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get update && sudo apt-get install -y x11vnc novnc websockify socat
+      - name: Connect observation host to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: Start isolated observation display
+        run: |
+          Xvfb :99 -screen 0 1440x900x24 >/tmp/observation-xvfb.log 2>&1 &
+          x11vnc -display :99 -forever -shared -rfbport 5900 -localhost >/tmp/observation-x11vnc.log 2>&1 &
+          websockify --web=/usr/share/novnc/ 6080 localhost:5900 >/tmp/observation-novnc.log 2>&1 &
+          TS_IP="$(tailscale ip -4 | head -n1)"
+          socat TCP-LISTEN:9333,fork,reuseaddr,bind="$TS_IP" TCP:127.0.0.1:9222 &
+          echo "TAILSCALE_IP=$TS_IP" >> "$GITHUB_ENV"
+      - name: Run isolated observation browser
+        env:
+          DISPLAY: ':99'
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          OBSERVATION_SESSION_ID: observation-${{ github.run_id }}
+          OBSERVATION_HOST_MINUTES: '350'
+        run: node scripts/run-observation-host.mjs
