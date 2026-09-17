@@ -1,4 +1,3 @@
-import assert from 'node:assert/strict';
 import { BrowserAgent } from './browser-agent.mjs';
 const base=process.env.SUPABASE_URL,key=process.env.SUPABASE_SECRET_KEY,sessionId=process.env.CROSS_RUNNER_SESSION_ID;
 if(!base||!key||!sessionId) throw new Error('Missing live agent configuration');
@@ -23,29 +22,16 @@ try {
   console.log(`CHATGPT_LOGIN_URL ${page.url||''}`);
   console.log(`CHATGPT_HUMAN_TAKEOVER_URL ${liveUrl}`);
   if(challenge) throw new Error('ChatGPT challenge requires human review; no automated bypass attempted');
-  if(!loggedOut){console.log('CHATGPT_LOGIN_ALREADY_PRESENT');await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});}
-  else {
+  if(!loggedOut){
+    console.log('CHATGPT_LOGIN_ALREADY_PRESENT');
+    await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
+    await agent.end(); agent=null;
+  } else {
     await patch({state:'human',last_error:null});
     console.log('CHATGPT_HUMAN_TAKEOVER_READY');
-    const deadline=Date.now()+10*60_000;
-    let resumed=false;
-    while(Date.now()<deadline){
-      await sleep(2000);
-      const rows=await rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}&select=state`);
-      if(rows?.[0]?.state==='ready'){resumed=true;break;}
-      if(rows?.[0]?.state==='ended') throw new Error('Human takeover ended before resume');
-    }
-    assert.ok(resumed,'Timed out waiting for RESUME after human login');
-    const after=await agent.getPage();
-    const afterText=after.pageText||'';
-    const afterChallenge=/cloudflare|just a moment|verify you are human|checking your browser|route error\s*\(403\)/i.test(`${after.url}\n${after.title}\n${afterText}`);
-    const stillLoggedOut=/\bLog in\b/i.test(afterText);
-    console.log(`CHATGPT_POST_LOGIN_STATE ${afterChallenge?'challenge':stillLoggedOut?'logged-out':'authenticated-ui'}`);
-    console.log(`CHATGPT_POST_LOGIN_URL ${after.url||''}`);
-    assert.ok(!afterChallenge,'Challenge remained after human takeover');
-    assert.ok(!stillLoggedOut,'ChatGPT still appears logged out after RESUME');
-    console.log('CHATGPT_HUMAN_LOGIN_RESUME_OK');
-    await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
+    console.log('CHATGPT_AGENT_EXITING_FOR_OBSERVABLE_TAKEOVER');
+    await agent.end(); agent=null;
+    // End this job immediately so GitHub exposes its logs while the independent host stays alive.
+    // A fresh agent run will attach after the human login and re-observe the same persistent browser.
   }
-  await agent.end(); agent=null;
 } catch(error){await patch({state:'error',last_error:String(error?.stack||error)}).catch(()=>{});throw error;} finally {if(agent) await agent.end().catch(()=>{});}
