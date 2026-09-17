@@ -1,5 +1,5 @@
-import { chromium } from 'playwright';
 import { observePage } from './page-observer.mjs';
+import { createBrowserProvider } from './browser-provider.mjs';
 
 export class BrowserAgent {
   constructor(options = {}) {
@@ -9,25 +9,18 @@ export class BrowserAgent {
     this.page = null;
     this.generation = 0;
     this.elementMap = new Map();
+    this.ownership = null;
+    this.connectionMode = null;
   }
 
   async launch() {
     if (this.context) return;
-    const headless = this.options.headless ?? (process.env.BROWSER_HEADLESS !== 'false');
-    const userDataDir = this.options.userDataDir || process.env.BROWSER_USER_DATA_DIR;
-    const browserEngine = this.options.browserEngine || process.env.BROWSER_ENGINE || 'chromium';
-    if (!['chromium', 'chrome'].includes(browserEngine)) throw new Error(`Unsupported BROWSER_ENGINE: ${browserEngine}`);
-    const launchOptions = { headless };
-    if (browserEngine === 'chrome') launchOptions.channel = 'chrome';
-    const contextOptions = { ...launchOptions, viewport: this.options.viewport || { width: 1440, height: 900 } };
-    if (userDataDir) {
-      this.context = await chromium.launchPersistentContext(userDataDir, contextOptions);
-      this.page = this.context.pages()[0] || await this.context.newPage();
-    } else {
-      this.browser = await chromium.launch(launchOptions);
-      this.context = await this.browser.newContext({ viewport: this.options.viewport || { width: 1440, height: 900 } });
-      this.page = await this.context.newPage();
-    }
+    const connection = await createBrowserProvider(this.options).connect();
+    this.browser = connection.browser;
+    this.context = connection.context;
+    this.page = connection.page;
+    this.ownership = connection.ownership;
+    this.connectionMode = connection.mode;
     this.page.setDefaultTimeout(Number(process.env.BROWSER_ACTION_TIMEOUT_MS || 10000));
     this.page.setDefaultNavigationTimeout(Number(process.env.BROWSER_NAVIGATION_TIMEOUT_MS || 30000));
   }
@@ -55,15 +48,21 @@ export class BrowserAgent {
   async screenshot(path){this.requirePage();await this.page.screenshot({path,fullPage:false});return{ok:true,path,url:this.page.url()};}
 
   async reset({ relaunch = false } = {}) {
-    const context=this.context,browser=this.browser;
-    this.browser=null; this.context=null; this.page=null; this.generation=0; this.elementMap.clear();
-    const closePromise=context?context.close():browser?browser.close():Promise.resolve();
+    const context=this.context,browser=this.browser,ownership=this.ownership;
+    this.browser=null; this.context=null; this.page=null; this.generation=0; this.elementMap.clear(); this.ownership=null; this.connectionMode=null;
+    let closePromise=Promise.resolve();
+    if (ownership === 'owned-context' && context) closePromise=context.close();
+    else if (ownership === 'owned-browser' && browser) closePromise=browser.close();
     const closeTimeoutMs=Number(process.env.BROWSER_RESET_TIMEOUT_MS||8000);
     let timer;
     try { await Promise.race([closePromise.catch(()=>{}),new Promise(resolve=>{timer=setTimeout(resolve,closeTimeoutMs);})]); }
     finally { clearTimeout(timer); }
-    if (relaunch) { await this.launch(); await this.page.goto('about:blank'); return this.getPage(); }
-    return {ok:true};
+    if (relaunch) {
+      await this.launch();
+      if (this.connectionMode !== 'attach') await this.page.goto('about:blank');
+      return this.getPage();
+    }
+    return {ok:true,detached:ownership==='attached'};
   }
 
   async recover(){return this.reset({relaunch:true});}
