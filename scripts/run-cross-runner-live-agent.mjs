@@ -13,22 +13,20 @@ const host=new URL(liveUrl).hostname;
 const endpoint=`http://${host}:9333`;
 let agent;
 try{
- agent=new BrowserAgent({connectionMode:'attach',cdpEndpoint:endpoint});
- await agent.start();
- const first=await agent.getPage();
- assert.match(first.pageText,/HUMAN_TAKEOVER_READY/);
- await agent.end(); agent=null;
- await patch({state:'human',last_error:null});
- console.log(`HUMAN_TAKEOVER_WAIT ${liveUrl}`);
- const deadline=Date.now()+15*60_000;
- while(Date.now()<deadline){const rows=await rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}&select=state`);if(rows?.[0]?.state==='busy'||rows?.[0]?.state==='ready') break;await new Promise(r=>setTimeout(r,1000));}
- const rows=await rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}&select=state`);
- if(!['busy','ready'].includes(rows?.[0]?.state)) throw new Error('Human takeover was not resumed in time');
- agent=new BrowserAgent({connectionMode:'attach',cdpEndpoint:endpoint});
- await agent.start();
- const resumed=await agent.getPage();
- assert.match(resumed.pageText,/HUMAN_CLICK_DONE/);
- await agent.end(); agent=null;
- await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
- console.log('CROSS_RUNNER_HUMAN_RESUME_OK');
+  agent=new BrowserAgent({connectionMode:'attach',cdpEndpoint:endpoint,preferredUrl:'chatgpt.com'});
+  await agent.start();
+  const observed=await agent.getPage();
+  const text=observed.pageText||'';
+  const signature=`${observed.url||''}\n${observed.title||''}\n${text}`;
+  const challenge=/cloudflare|just a moment|verify you are human|checking your browser|route error\s*\(403\)|challenges\.cloudflare\.com/i.test(signature);
+  const chatgpt=/chatgpt\.com/i.test(observed.url||'') && /new chat|log in|where should we begin|prompt/i.test(text);
+  console.log(`CHATGPT_AGENT_OBSERVE_RESULT ${challenge?'challenge':chatgpt?'chatgpt-ui':'other'}`);
+  console.log(`CHATGPT_AGENT_OBSERVE_URL ${observed.url}`);
+  console.log(`CHATGPT_AGENT_OBSERVE_TITLE ${JSON.stringify(observed.title||'')}`);
+  console.log(`CHATGPT_AGENT_OBSERVE_TEXT ${JSON.stringify(text.slice(0,3000))}`);
+  console.log(`CHATGPT_AGENT_OBSERVE_ELEMENTS ${JSON.stringify((observed.elements||[]).slice(0,80))}`);
+  assert.ok(observed.url,'Agent did not observe a page URL');
+  await agent.end(); agent=null;
+  await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
+  console.log('CHATGPT_AGENT_OBSERVE_OK');
 }catch(error){await patch({state:'error',last_error:String(error?.stack||error)}).catch(()=>{});throw error;}finally{if(agent)await agent.end().catch(()=>{});}
