@@ -1,0 +1,27 @@
+name: Browser Agent Attach E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - experiment/official-chrome-channel
+    paths:
+      - 'scripts/browser-agent.mjs'
+      - 'scripts/browser-provider.mjs'
+      - 'scripts/page-observer.mjs'
+      - 'scripts/run-browser-agent-attach-e2e.mjs'
+      - '.github/workflows/browser-agent-attach-e2e.yml'
+
+jobs:
+  attach-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Verify attach, detach, host survival, and reattach
+        run: node scripts/run-browser-agent-attach-e2e.mjs
