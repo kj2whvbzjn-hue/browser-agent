@@ -29,7 +29,10 @@ try{
     const promptFilled=(filled.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
     assert.equal(promptFilled?.value,marker,'Prompt value did not survive re-observe');
     console.log('CHATGPT_FILL_REOBSERVE_OK');
-    await agent.press(promptFilled.id,'Enter');
+    assert.ok(promptFilled,'Prompt disappeared before send');
+    // press() is intentionally a page-level action. The fresh observation above
+    // establishes the current state; Enter is the single next action.
+    await agent.press('Enter');
     console.log('CHATGPT_SEND_ACTION_OK');
     let observed;
     const deadline=Date.now()+30_000;
