@@ -82,6 +82,17 @@ UA書換え、webdriver隠蔽、fingerprint spoofing、stealth plugin、proxy、
 - 注意: takeover/resume時の個別Supabase command/page snapshotはIssueにもActions step summaryにも保存されていないため、「iPhone操作後に同一browser/context/pageへresumeした」というcommand-level証跡はGitHub側だけからは再構成できない。既存のE2E実施記録とIssue/Runの目的・成功状態は整合する。
 - 判定: `PASS (takeover E2E run verified; command-level evidence external to GitHub records)`
 
+### V-004 — cross-generation encrypted profile restore — Run 35167278188
+
+- 確認日: 2026-09-17
+- Workflow: `Browser Agent Profile Generation E2E` / run #2 / `experiment/official-chrome-channel`。
+- Head SHA: `49f33883106f84eb3ee45e58fe8981245c3789de` (`Fix encrypted profile decrypt argument order`)。
+- GitHub Actions結論: `success`。
+- generation-a: profile作成 -> 暗号化 -> `encrypted-profile` artifact upload がすべて `success`。
+- generation-b: artifact download -> profile decrypt -> restored profile verification がすべて `success`。
+- generation-b実ログで `PROFILE_GENERATION_RESTORE_OK` を直接確認。
+- 判定: `PASS (encrypted profile created in generation A was transferred, decrypted and verified in generation B)`
+
 ## 現在の次試験
 
 ### T-ATTACH-EXISTING-01 — 既存の正常ブラウザへのAgent attach
