@@ -13,12 +13,12 @@ permissions:
   contents: read
 
 env:
-  SPLIT_HOST_E2E_GENERATION: 'D-6H'
+  SPLIT_HOST_E2E_GENERATION: 'E-CHATGPT'
 
 jobs:
   browser-host:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,14 +58,14 @@ jobs:
           TS_IP="$(tailscale ip -4 | head -n1)"
           socat TCP-LISTEN:9333,fork,reuseaddr,bind="$TS_IP" TCP:127.0.0.1:9222 &
           echo "TAILSCALE_IP=$TS_IP" >> "$GITHUB_ENV"
-      - name: Run six-hour Browser Host
+      - name: Run ChatGPT Test Host
         env:
           DISPLAY: ':99'
           BROWSER_PROFILE_DIR: /tmp/browser-user-data
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           CROSS_RUNNER_SESSION_ID: live-${{ github.run_id }}
-          CROSS_RUNNER_HOST_MINUTES: '350'
+          CROSS_RUNNER_HOST_MINUTES: '50'
         run: node scripts/run-cross-runner-live-host.mjs
       - name: Encrypt persistent browser profile
         id: encrypt-profile
@@ -91,3 +91,23 @@ jobs:
       - name: Remove profile material
         if: always()
         run: rm -rf /tmp/browser-user-data /tmp/browser-profile.enc /tmp/browser-profile.enc.next
+
+  browser-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Connect agent to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: Attach and observe ChatGPT test browser
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CROSS_RUNNER_SESSION_ID: live-${{ github.run_id }}
+        run: node scripts/run-cross-runner-live-agent.mjs
