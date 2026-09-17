@@ -22,7 +22,7 @@
 | Adaptive observe -> one action -> reobserve | 既存E2E | generation付きelementId、stale ID拒否を確認 | PASS |
 | fill / click / navigation | 既存E2E | 正常動作 | PASS |
 | humanTakeover -> iPhone -> resume -> same browser reobserve | Issue #53 / Run 35159040051 | 同一browser/context/pageで復帰 | PASS |
-| navigation timeout recovery | Session 35144054791 | timeout後recoverし正常gotoまで確認 | PASS |
+| navigation timeout recovery | Run / Session 35144054791 | timeout後recoverし正常gotoまで確認 | PASS |
 | encrypted persistent browser profile | Run 35158618322 ほか | 暗号化cache保存/復元を確認 | PASS |
 | cross-generation encrypted profile restore | Run 35167278188 | PROFILE_GENERATION_RESTORE_OK | PASS |
 | split Browser Host / Agent | Run 35167672032 | 別runnerからCDP attach成功 | PASS |
@@ -45,6 +45,19 @@
 上記3件は同じ根本条件を持つ: **GitHub-hosted runnerで新規に起動したブラウザからChatGPT認証を成立させようとしている**。この構成をそのまま再実行しても新しい情報は得られないため、再試験禁止。
 
 UA書換え、webdriver隠蔽、fingerprint spoofing、stealth plugin、proxy、challenge solver等による検知回避は試験対象外。
+
+## 逐次再確認記録
+
+### V-001 — navigation timeout recovery — Run 35144054791
+
+- 確認日: 2026-09-17
+- Workflow: `Supabase Browser Session` / run #17 / main
+- Head SHA: `552a26245586e73ff45c44c8776c6bbc077d4836` (`fix: recover browser before accepting commands after timeout`)
+- GitHub Actions結論: `success`
+- Browser session step: `Run private Supabase browser session` が `success`、`SUPABASE_BROWSER_SESSION_READY session_id=35144054791` を確認。
+- Live View構成: Tailscale接続、Xvfb、x11vnc、noVNC/websockify の起動成功をログで確認。
+- 注意: ActionsログにはSupabase経由で投入した個別コマンド列そのものは出力されていない。そのため「unroutable IPへのgoto timeout -> recover -> example.comへのgoto成功」という個別コマンド結果は、このActionsログ単体からは再構成できない。既存の実施記録とrun/commit整合性は確認できるが、ログで直接確認できる範囲は上記まで。
+- 判定: `PASS (run/workflow/recovery build verified; command-level evidence is external to Actions log)`
 
 ## 現在の次試験
 
