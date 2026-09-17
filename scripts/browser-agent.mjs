@@ -21,8 +21,12 @@ export class BrowserAgent {
     this.page = connection.page;
     this.ownership = connection.ownership;
     this.connectionMode = connection.mode;
-    this.page.setDefaultTimeout(Number(process.env.BROWSER_ACTION_TIMEOUT_MS || 10000));
-    this.page.setDefaultNavigationTimeout(Number(process.env.BROWSER_NAVIGATION_TIMEOUT_MS || 30000));
+    this.applyPageTimeouts(this.page);
+  }
+
+  applyPageTimeouts(page) {
+    page.setDefaultTimeout(Number(process.env.BROWSER_ACTION_TIMEOUT_MS || 10000));
+    page.setDefaultNavigationTimeout(Number(process.env.BROWSER_NAVIGATION_TIMEOUT_MS || 30000));
   }
 
   async start(url) {
@@ -39,6 +43,9 @@ export class BrowserAgent {
 
   async goto(url) { this.requirePage(); await this.page.goto(url, { waitUntil: 'domcontentloaded' }); return this.getPage(); }
   async getPage() { this.requirePage(); this.generation += 1; const state=await observePage(this.page,this.generation); this.elementMap.clear(); for(const element of state.elements)this.elementMap.set(element.id,element); return state; }
+  async listPages(){this.requireContext();const pages=this.context.pages();return{activePageIndex:Math.max(0,pages.indexOf(this.page)),pages:pages.map((page,index)=>({index,url:page.url(),title:null,active:page===this.page}))};}
+  async newPage(url){this.requireContext();const page=await this.context.newPage();this.applyPageTimeouts(page);this.page=page;this.generation=0;this.elementMap.clear();if(url)await page.goto(url,{waitUntil:'domcontentloaded'});const state=await this.getPage();return{pageIndex:this.context.pages().indexOf(page),page:state};}
+  async switchPage(index){this.requireContext();const pages=this.context.pages(),i=Number(index);if(!Number.isInteger(i)||i<0||i>=pages.length)throw new Error(`Invalid page index: ${index}`);this.page=pages[i];this.applyPageTimeouts(this.page);this.generation=0;this.elementMap.clear();await this.page.bringToFront().catch(()=>{});const state=await this.getPage();return{pageIndex:i,page:state};}
   locatorFor(elementId) { this.requirePage(); const match=/^g(\d+)-e(\d+)$/.exec(String(elementId)); if(!match)throw new Error(`Invalid elementId: ${elementId}`); if(Number(match[1])!==this.generation)throw new Error(`Stale elementId ${elementId}; call getPage() again`); const element=this.elementMap.get(elementId); if(!element)throw new Error(`Unknown elementId: ${elementId}`); const selector=['button','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(','); if(Number.isInteger(element.domIndex))return this.page.locator(selector).nth(element.domIndex); if(element.role&&element.label)return this.page.getByRole(element.role,{name:element.label,exact:true}).first(); if(element.role&&element.text)return this.page.getByRole(element.role,{name:element.text,exact:true}).first(); if(element.name)return this.page.locator(`[name=${JSON.stringify(element.name)}]`).filter({visible:true}).first(); if(element.type)return this.page.locator(`[type=${JSON.stringify(element.type)}]`).filter({visible:true}).first(); throw new Error(`Element ${elementId} has no usable locator; call getPage() again`); }
   async clickWithFallback(elementId) { const element=this.elementMap.get(elementId),primary=this.locatorFor(elementId); try{await primary.click({timeout:4000});return;}catch(primaryError){if(!element?.bounds)throw primaryError;const{x,y,width,height}=element.bounds;if(!(width>0&&height>0))throw primaryError;await this.page.mouse.click(x+width/2,y+height/2);} }
   async fill(elementId,text){const locator=this.locatorFor(elementId);await locator.fill(String(text),{timeout:10000});return{ok:true,action:'fill',elementId,url:this.page.url()};}
@@ -67,5 +74,6 @@ export class BrowserAgent {
 
   async recover(){return this.reset({relaunch:true});}
   async end(){return this.reset({relaunch:false});}
+  requireContext(){if(!this.context)throw new Error('Browser is not started');}
   requirePage(){if(!this.page)throw new Error('Browser is not started');}
 }
