@@ -1,12 +1,13 @@
 import { chromium } from 'playwright';
 
 const base=process.env.SUPABASE_URL,key=process.env.SUPABASE_SECRET_KEY,sessionId=process.env.CROSS_RUNNER_SESSION_ID,tailscaleIp=process.env.TAILSCALE_IP;
+const profileDir=process.env.BROWSER_PROFILE_DIR||'/tmp/browser-user-data';
 if(!base||!key||!sessionId||!tailscaleIp) throw new Error('Missing live host configuration');
 const headers={apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'application/json'};
 async function rest(path,options={}){const r=await fetch(`${base}/rest/v1/${path}`,{...options,headers:{...headers,...options.headers}});const text=await r.text();if(!r.ok)throw new Error(`Supabase ${r.status}: ${text}`);return text?JSON.parse(text):null;}
 async function patch(body){return rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(body)});}
 
-const context=await chromium.launchPersistentContext(`/tmp/cross-runner-live-${process.pid}`,{headless:false,args:['--remote-debugging-port=9222']});
+const context=await chromium.launchPersistentContext(profileDir,{headless:false,args:['--remote-debugging-port=9222']});
 const page=context.pages()[0]||await context.newPage();
 await page.goto('data:text/html,<title>Human Takeover E2E</title><body><h1>HUMAN_TAKEOVER_READY</h1><button onclick="document.body.dataset.human=\'done\';this.textContent=\'HUMAN_CLICK_DONE\'">Tap this button on iPhone</button></body>');
 const liveUrl=`http://${tailscaleIp}:6080/vnc.html?autoconnect=1&resize=scale`;
