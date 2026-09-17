@@ -59,6 +59,18 @@ UA書換え、webdriver隠蔽、fingerprint spoofing、stealth plugin、proxy、
 - 注意: ActionsログにはSupabase経由で投入した個別コマンド列そのものは出力されていない。そのため「unroutable IPへのgoto timeout -> recover -> example.comへのgoto成功」という個別コマンド結果は、このActionsログ単体からは再構成できない。既存の実施記録とrun/commit整合性は確認できるが、ログで直接確認できる範囲は上記まで。
 - 判定: `PASS (run/workflow/recovery build verified; command-level evidence is external to Actions log)`
 
+### V-002 — encrypted persistent browser profile — Run 35158618322
+
+- 確認日: 2026-09-17
+- Workflow: `Supabase Browser Session` / run #42 / `workflow_dispatch` / main
+- Head SHA: `cdd590cda34d5829771e5a1b5f4668a39289e13c` (`Fix encrypted profile save readiness check`)
+- GitHub Actions結論: `success`
+- 暗号化鍵必須チェック: `Require browser profile encryption key` = `success`。
+- 復元系: `Restore encrypted browser profile` と `Decrypt browser profile` = `success`。
+- セッション本体: `Run private Supabase browser session` = `success`。
+- 保存系: `Encrypt persistent browser profile`、`Save encrypted browser profile`、`Remove browser profile material` がすべて `success`。
+- 判定: `PASS (encrypted profile restore/decrypt -> browser session -> encrypt/save -> plaintext cleanup workflow verified)`
+
 ## 現在の次試験
 
 ### T-ATTACH-EXISTING-01 — 既存の正常ブラウザへのAgent attach
