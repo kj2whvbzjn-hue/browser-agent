@@ -14,7 +14,27 @@ const previousMarker=await page.evaluate(()=>localStorage.getItem('splitBrowserH
 if(previousMarker==='SPLIT_HOST_PROFILE_PERSISTED') console.log('SPLIT_HOST_PROFILE_RESTORE_OK');
 else console.log('SPLIT_HOST_PROFILE_COLD_START');
 await page.evaluate(()=>localStorage.setItem('splitBrowserHostMarker','SPLIT_HOST_PROFILE_PERSISTED'));
-await page.goto('data:text/html,<title>Human Takeover E2E</title><body><h1>HUMAN_TAKEOVER_READY</h1><button onclick="document.body.dataset.human=\'done\';this.textContent=\'HUMAN_CLICK_DONE\'">Tap this button on iPhone</button></body>');
+
+let chatgptResult='unknown';
+try {
+  const response=await page.goto('https://chatgpt.com/',{waitUntil:'domcontentloaded',timeout:45_000});
+  await page.waitForTimeout(5000);
+  const url=page.url();
+  const title=await page.title().catch(()=> '');
+  const bodyText=(await page.locator('body').innerText({timeout:5000}).catch(()=> '')).slice(0,1200);
+  const challenge=/challenge|cloudflare|verify you are human|checking your browser|security verification/i.test(`${url}\n${title}\n${bodyText}`);
+  const promptVisible=await page.locator('#prompt-textarea,[name="prompt-textarea"],[contenteditable="true"]').filter({visible:true}).count().catch(()=>0);
+  chatgptResult=challenge?'challenge':promptVisible>0?'chatgpt-ui':'page-loaded';
+  console.log(`CHATGPT_CONNECTION_RESULT ${chatgptResult}`);
+  console.log(`CHATGPT_CONNECTION_STATUS ${response?.status?.() ?? 'none'}`);
+  console.log(`CHATGPT_CONNECTION_URL ${url}`);
+  console.log(`CHATGPT_CONNECTION_TITLE ${JSON.stringify(title)}`);
+} catch(error) {
+  chatgptResult='navigation-error';
+  console.log(`CHATGPT_CONNECTION_RESULT ${chatgptResult}`);
+  console.log(`CHATGPT_CONNECTION_ERROR ${JSON.stringify(error?.message||String(error))}`);
+}
+
 const liveUrl=`http://${tailscaleIp}:6080/vnc.html?autoconnect=1&resize=scale`;
 await rest('browser_relay_sessions?on_conflict=session_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({session_id:sessionId,state:'ready',heartbeat_at:new Date().toISOString(),live_url:liveUrl,last_error:null,ended_at:null})});
 console.log(`CROSS_RUNNER_LIVE_READY ${liveUrl}`);
