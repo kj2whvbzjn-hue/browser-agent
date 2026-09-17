@@ -93,6 +93,17 @@ UA書換え、webdriver隠蔽、fingerprint spoofing、stealth plugin、proxy、
 - generation-b実ログで `PROFILE_GENERATION_RESTORE_OK` を直接確認。
 - 判定: `PASS (encrypted profile created in generation A was transferred, decrypted and verified in generation B)`
 
+### V-005 — split Browser Host / Agent + human resume — Run 35167672032
+
+- 確認日: 2026-09-17
+- Branch: `experiment/official-chrome-channel`。Agent job checkout SHA は `15665bf596e932db29e26e4c589f76d9ba1ce638`。
+- GitHub Actions結論: `browser-host` = `success`、`browser-agent` = `success`。
+- Host側: encrypted profile restore/decrypt、Tailscale、Live View、`Run split Browser Host`、再暗号化/save/plaintext cleanup がすべて `success`。
+- Agent側: Tailscale接続後、別jobで `Attach, yield to human, and resume` = `success`。
+- Agent実ログで `CROSS_RUNNER_SESSION_ID=live-35167672032`、`HUMAN_TAKEOVER_WAIT`、その後 `CROSS_RUNNER_HUMAN_RESUME_OK` を直接確認。
+- したがって、Browser HostとBrowser Agentを別GitHub-hosted runner/jobへ分離した構成で、Agent側からhuman takeover待機を経てresume完了まで到達したことをActions一次ログで確認できる。
+- 判定: `PASS (split Host/Agent jobs and cross-runner human resume directly verified in Actions log)`
+
 ## 現在の次試験
 
 ### T-ATTACH-EXISTING-01 — 既存の正常ブラウザへのAgent attach
