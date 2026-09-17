@@ -43,6 +43,6 @@ jobs:
       - name: Decrypt profile
         env:
           BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
-        run: node scripts/browser-profile-crypto.mjs decrypt /tmp/profile-transfer/browser-profile.enc /tmp/browser-profile-generation
+        run: node scripts/browser-profile-crypto.mjs decrypt /tmp/browser-profile-generation /tmp/profile-transfer/browser-profile.enc
       - name: Verify restored profile
         run: node scripts/run-profile-generation-b.mjs
