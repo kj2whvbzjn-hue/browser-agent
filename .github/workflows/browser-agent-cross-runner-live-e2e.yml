@@ -12,6 +12,12 @@ on:
 permissions:
   contents: read
 
+# This workflow intentionally persists only the AES-encrypted browser profile between
+# fresh GitHub-hosted runner generations. A no-op generation marker keeps this file
+# available as a safe push trigger for explicit restore E2E runs.
+env:
+  SPLIT_HOST_E2E_GENERATION: 'B'
+
 jobs:
   browser-host:
     runs-on: ubuntu-latest
