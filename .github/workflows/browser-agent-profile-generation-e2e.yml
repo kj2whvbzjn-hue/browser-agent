@@ -1,0 +1,48 @@
+name: Browser Agent Profile Generation E2E
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiment/official-chrome-channel]
+permissions:
+  contents: read
+jobs:
+  generation-a:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Create profile
+        run: node scripts/run-profile-generation-a.mjs
+      - name: Encrypt profile
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: node scripts/browser-profile-crypto.mjs encrypt /tmp/browser-profile-generation /tmp/browser-profile.enc
+      - uses: actions/upload-artifact@v4
+        with:
+          name: encrypted-profile
+          path: /tmp/browser-profile.enc
+          retention-days: 1
+  generation-b:
+    needs: generation-a
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: encrypted-profile
+          path: /tmp/profile-transfer
+      - name: Decrypt profile
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: node scripts/browser-profile-crypto.mjs decrypt /tmp/profile-transfer/browser-profile.enc /tmp/browser-profile-generation
+      - name: Verify restored profile
+        run: node scripts/run-profile-generation-b.mjs
