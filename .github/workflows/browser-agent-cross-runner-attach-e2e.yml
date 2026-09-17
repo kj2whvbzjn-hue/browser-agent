@@ -1,0 +1,65 @@
+name: Browser Agent Cross Runner Attach E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - experiment/official-chrome-channel
+    paths:
+      - 'scripts/browser-agent.mjs'
+      - 'scripts/browser-provider.mjs'
+      - 'scripts/page-observer.mjs'
+      - 'scripts/run-cross-runner-browser-host.mjs'
+      - 'scripts/run-cross-runner-browser-agent.mjs'
+      - '.github/workflows/browser-agent-cross-runner-attach-e2e.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  browser-host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get update && sudo apt-get install -y socat
+      - name: Connect host to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: Start remote Browser Host
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CROSS_RUNNER_SESSION_ID: cross-${{ github.run_id }}
+        run: |
+          TS_IP="$(tailscale ip -4 | head -n1)"
+          socat TCP-LISTEN:9333,fork,reuseaddr,bind="$TS_IP" TCP:127.0.0.1:9222 &
+          export TAILSCALE_IP="$TS_IP"
+          node scripts/run-cross-runner-browser-host.mjs
+
+  browser-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Connect agent to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: Attach from a different runner and reattach
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CROSS_RUNNER_SESSION_ID: cross-${{ github.run_id }}
+        run: node scripts/run-cross-runner-browser-agent.mjs
