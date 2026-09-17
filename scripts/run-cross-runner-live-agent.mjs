@@ -6,57 +6,46 @@ const headers={apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'applicat
 async function rest(path,options={}){const r=await fetch(`${base}/rest/v1/${path}`,{...options,headers:{...headers,...options.headers}});const text=await r.text();if(!r.ok)throw new Error(`Supabase ${r.status}: ${text}`);return text?JSON.parse(text):null;}
 async function patch(body){return rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(body)});}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const assistantAnswerVisible=text=>/ChatGPT said:\s*42(?:\s|$)/i.test(text);
 let liveUrl;
 const readyDeadline=Date.now()+5*60_000;
 while(Date.now()<readyDeadline){const rows=await rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}&select=state,live_url`);if(rows?.[0]?.state==='ready'&&rows[0].live_url){liveUrl=rows[0].live_url;break;}await sleep(1000);}
 if(!liveUrl) throw new Error('Live Host did not become ready');
 const host=new URL(liveUrl).hostname;
 let agent;
-try{
+try {
   agent=new BrowserAgent({connectionMode:'attach',cdpEndpoint:`http://${host}:9333`,preferredUrl:'chatgpt.com'});
   await agent.start();
-  const before=await agent.getPage();
-  const signature=`${before.url||''}\n${before.title||''}\n${before.pageText||''}`;
+  const page=await agent.getPage();
+  const signature=`${page.url||''}\n${page.title||''}\n${page.pageText||''}`;
   const challenge=/cloudflare|just a moment|verify you are human|checking your browser|route error\s*\(403\)|challenges\.cloudflare\.com/i.test(signature);
-  const prompt=(before.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
-  console.log(`CHATGPT_AGENT_OBSERVE_RESULT ${challenge?'challenge':prompt?'chatgpt-ui':'other'}`);
-  if(challenge){console.log('CHATGPT_RESPONSE_REGRESSION_SKIPPED challenge');}
+  const loggedOut=/\bLog in\b/i.test(page.pageText||'');
+  console.log(`CHATGPT_LOGIN_STATE ${challenge?'challenge':loggedOut?'logged-out':'possibly-authenticated'}`);
+  console.log(`CHATGPT_LOGIN_URL ${page.url||''}`);
+  console.log(`CHATGPT_HUMAN_TAKEOVER_URL ${liveUrl}`);
+  if(challenge) throw new Error('ChatGPT challenge requires human review; no automated bypass attempted');
+  if(!loggedOut){console.log('CHATGPT_LOGIN_ALREADY_PRESENT');await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});}
   else {
-    assert.ok(prompt,'Visible ChatGPT prompt textbox not found');
-    const marker=`Browser Agent regression ${Date.now()}`;
-    const request=`${marker}. Return the decimal result of forty-one plus one, digits only.`;
-    assert.ok(!request.includes('42'),'Expected response leaked into prompt');
-    await agent.fill(prompt.id,request);
-    const filled=await agent.getPage();
-    const promptFilled=(filled.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
-    assert.equal(promptFilled?.value,request,'Prompt value did not survive re-observe');
-    console.log('CHATGPT_FILL_REOBSERVE_OK');
-    await agent.press('Enter');
-    console.log('CHATGPT_SEND_ACTION_OK');
-    let observed, promptAfter;
-    const deadline=Date.now()+45_000;
+    await patch({state:'human',last_error:null});
+    console.log('CHATGPT_HUMAN_TAKEOVER_READY');
+    const deadline=Date.now()+10*60_000;
+    let resumed=false;
     while(Date.now()<deadline){
-      await sleep(1000);
-      observed=await agent.getPage();
-      promptAfter=(observed.elements||[]).find(e=>e.editable&&e.role==='textbox'&&(e.name==='prompt'||/chat with chatgpt/i.test(e.label||'')));
-      const text=observed.pageText||'';
-      if(!promptAfter?.value&&text.includes(marker)&&assistantAnswerVisible(text)) break;
+      await sleep(2000);
+      const rows=await rest(`browser_relay_sessions?session_id=eq.${encodeURIComponent(sessionId)}&select=state`);
+      if(rows?.[0]?.state==='ready'){resumed=true;break;}
+      if(rows?.[0]?.state==='ended') throw new Error('Human takeover ended before resume');
     }
-    const text=observed?.pageText||'';
-    const cleared=!promptAfter?.value;
-    const markerVisible=text.includes(marker);
-    const answerVisible=assistantAnswerVisible(text);
-    console.log(`CHATGPT_SEND_URL ${observed?.url||''}`);
-    console.log(`CHATGPT_PROMPT_CLEARED ${cleared}`);
-    console.log(`CHATGPT_USER_MESSAGE_VISIBLE ${markerVisible}`);
-    console.log(`CHATGPT_ASSISTANT_ANSWER_VISIBLE ${answerVisible}`);
-    console.log(`CHATGPT_SEND_TEXT ${JSON.stringify(text.slice(-3000))}`);
-    assert.ok(cleared,'Prompt was not cleared after Enter submission');
-    assert.ok(markerVisible,'Submitted user message was not observable');
-    assert.ok(answerVisible,'Assistant response was not observable');
-    console.log('CHATGPT_RESPONSE_REGRESSION_OK');
+    assert.ok(resumed,'Timed out waiting for RESUME after human login');
+    const after=await agent.getPage();
+    const afterText=after.pageText||'';
+    const afterChallenge=/cloudflare|just a moment|verify you are human|checking your browser|route error\s*\(403\)/i.test(`${after.url}\n${after.title}\n${afterText}`);
+    const stillLoggedOut=/\bLog in\b/i.test(afterText);
+    console.log(`CHATGPT_POST_LOGIN_STATE ${afterChallenge?'challenge':stillLoggedOut?'logged-out':'authenticated-ui'}`);
+    console.log(`CHATGPT_POST_LOGIN_URL ${after.url||''}`);
+    assert.ok(!afterChallenge,'Challenge remained after human takeover');
+    assert.ok(!stillLoggedOut,'ChatGPT still appears logged out after RESUME');
+    console.log('CHATGPT_HUMAN_LOGIN_RESUME_OK');
+    await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
   }
   await agent.end(); agent=null;
-  await patch({state:'ended',ended_at:new Date().toISOString(),last_error:null});
-}catch(error){await patch({state:'error',last_error:String(error?.stack||error)}).catch(()=>{});throw error;}finally{if(agent)await agent.end().catch(()=>{});}
+} catch(error){await patch({state:'error',last_error:String(error?.stack||error)}).catch(()=>{});throw error;} finally {if(agent) await agent.end().catch(()=>{});}
