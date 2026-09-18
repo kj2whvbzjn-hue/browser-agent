@@ -77,20 +77,26 @@ export class BrowserAgent {
       }finally{clearTimeout(timer);}
     };
     try{
-      await primary.click({timeout:4000,noWaitAfter:true});
-      let request=navigationRequest;
-      if(!request){
-        let timer;
-        try{
-          request=await Promise.race([
-            requestSeen,
-            new Promise(resolve=>{timer=setTimeout(()=>resolve(null),25);})
-          ]);
-        }finally{clearTimeout(timer);}
+      let primaryError=null;
+      try{
+        await primary.click({timeout:4000,noWaitAfter:true});
+      }catch(error){
+        primaryError=error;
       }
-      if(request)await waitForCommit();
-      return;
-    }catch(primaryError){
+      if(!primaryError){
+        let request=navigationRequest;
+        if(!request){
+          let timer;
+          try{
+            request=await Promise.race([
+              requestSeen,
+              new Promise(resolve=>{timer=setTimeout(()=>resolve(null),25);})
+            ]);
+          }finally{clearTimeout(timer);}
+        }
+        if(request)await waitForCommit();
+        return;
+      }
       if(navigationRequest){
         await waitForCommit();
         return;
