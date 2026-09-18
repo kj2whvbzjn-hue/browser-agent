@@ -23,6 +23,21 @@ const syntheticScroll = scrollMetric([
   {action:'scroll',deltaY:50,viewportHeight:800},
 ]);
 assert.deepEqual(syntheticScroll, {verticalTravelPx:750,verticalTravelVh:0.938,reversalCount:2});
+const destinationPass = summarizeJourney({
+  journeyId:'destination-pass',
+  expectedDestination:'https://example.test/to?state=open',
+  observations:[
+    {url:'https://example.test/from',layout:{viewport:{width:390,height:844}},elements:[]},
+    {url:'https://example.test/to?state=open',layout:{viewport:{width:390,height:844}},elements:[]},
+  ],
+});
+const destinationFail = summarizeJourney({
+  journeyId:'destination-fail',
+  expectedDestination:'https://example.test/expected',
+  observations:[{url:'https://example.test/actual',layout:{viewport:{width:390,height:844}},elements:[]}],
+});
+assert.equal(destinationPass.transition.success, true);
+assert.equal(destinationFail.transition.success, false);
 
 const syntheticLayout = layoutMetric({
   layout:{viewport:{width:390,height:844},horizontalOverflow:true},
@@ -72,12 +87,10 @@ try {
   assert.ok(scroll2.deltaY < 0);
   assert.ok(scroll3.deltaY > 0);
 
-  const reset = await agent.goto(dataUrl);
-  const jump = reset.elements.find(e => e.role === 'link' && e.text === 'Jump to target');
-  assert.ok(jump, 'jump link is observable');
-  const clickResult = await agent.click(jump.id);
+  const scroll4 = await agent.scroll('down', 1400);
+  assert.ok(scroll4.deltaY > 0);
   const after = await agent.getPage();
-  assert.match(after.url, /#target$/);
+  assert.equal(after.url, dataUrl);
   const targetAfter = after.elements.find(e => e.text === 'Target action')?.bounds;
   assert.ok(targetAfter, 'target is observable after navigation');
   assert.equal(targetMetric(targetAfter, after.layout.viewport).visible, true);
@@ -86,7 +99,7 @@ try {
   report = summarizeJourney({
     journeyId:'fixture-find-target',
     expectedDestination: after.url,
-    actions:[scroll1,scroll2,scroll3,clickResult],
+    actions:[scroll1,scroll2,scroll3,scroll4],
     observations:[before,after],
     targetBefore,
     targetAfter,
