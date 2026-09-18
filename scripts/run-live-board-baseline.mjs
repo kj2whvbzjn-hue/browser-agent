@@ -89,8 +89,9 @@ async function runViewport(viewportClass,width,height) {
     const task=filtered.elements.find(e=>e.role==='link'&&new RegExp(`#?${taskNumber}\\b`).test(String(e.text||'')));
     assert.ok(task,'selected projected task link must be observable after search');
     const targetBefore=task.bounds;
+    const navigation=agent.page.waitForURL(expectedTaskUrl,{waitUntil:'domcontentloaded',timeout:15000});
     const click=await agent.click(task.id);
-    await agent.page.waitForLoadState('domcontentloaded');
+    await navigation;
     const after=await agent.getPage();
     const report1=summarizeJourney({
       journeyId:'board/find-open-task',
