@@ -114,6 +114,7 @@ Supported actions:
 - `click`
 - `press`
 - `scroll`
+- `setViewport` — change the active page viewport using `{ "width": <int>, "height": <int> }`; allowed range is width 240–3840 and height 320–2160
 - `humanTakeover`
 - `resume`
 - `end`
@@ -179,6 +180,8 @@ When the user simply says 「ブラウザを開いて」:
 For a requested URL, use `goto` with the URL in `args` according to the bridge's expected command shape. After navigation, inspect the returned observation or call `getPage`.
 
 For page interactions, prefer observed current-generation element IDs rather than guessing selectors.
+
+For responsive verification, use `setViewport` on the active page and then use the fresh observation returned by that command. Viewport changes invalidate prior element IDs because the command re-observes the page and advances the generation.
 
 ## Human takeover
 
