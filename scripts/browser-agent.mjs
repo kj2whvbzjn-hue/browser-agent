@@ -54,6 +54,7 @@ export class BrowserAgent {
   async click(elementId){await this.clickWithFallback(elementId);return{ok:true,action:'click',elementId,url:this.page.url()};}
   async press(key){this.requirePage();await this.page.keyboard.press(String(key));return{ok:true,action:'press',key,url:this.page.url()};}
   async scroll(direction='down',amount=700){this.requirePage();const dy=direction==='up'?-Math.abs(amount):Math.abs(amount);await this.page.mouse.wheel(0,dy);return{ok:true,action:'scroll',direction,amount,url:this.page.url()};}
+  async setViewport(width,height){this.requirePage();const w=Number(width),h=Number(height);if(!Number.isInteger(w)||!Number.isInteger(h)||w<240||w>3840||h<320||h>2160)throw new Error('setViewport requires integer width 240-3840 and height 320-2160');await this.page.setViewportSize({width:w,height:h});const page=await this.getPage();return{ok:true,action:'setViewport',width:w,height:h,page};}
   async screenshot(path){this.requirePage();await this.page.screenshot({path,fullPage:false});return{ok:true,path,url:this.page.url()};}
 
   async reset({ relaunch = false } = {}) {
