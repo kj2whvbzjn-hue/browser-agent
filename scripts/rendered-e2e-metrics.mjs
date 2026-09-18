@@ -1,5 +1,22 @@
 export const RENDERED_E2E_SCHEMA = 'browser-agent-rendered-e2e:v1';
 
+export function sanitizeUrl(value) {
+  const raw = String(value || '');
+  try {
+    const url = new URL(raw);
+    if (url.protocol === 'http:' || url.protocol === 'https:') {
+      return {
+        originPath: `${url.origin}${url.pathname}`,
+        queryKeys: [...new Set([...url.searchParams.keys()])].sort(),
+        hasHash: Boolean(url.hash),
+      };
+    }
+    return { originPath: `${url.protocol}//`, queryKeys: [], hasHash: Boolean(url.hash) };
+  } catch {
+    return { originPath: '', queryKeys: [], hasHash: false };
+  }
+}
+
 function finite(value, fallback = 0) {
   const n = Number(value);
   return Number.isFinite(n) ? n : fallback;
@@ -82,8 +99,8 @@ export function summarizeJourney({
     journeyId: String(journeyId || ''),
     transition: {
       success: expectedDestination == null ? Boolean(lastUrl) : lastUrl === String(expectedDestination),
-      destination: lastUrl,
-      expectedDestination: expectedDestination == null ? null : String(expectedDestination),
+      destination: sanitizeUrl(lastUrl),
+      expectedDestination: expectedDestination == null ? null : sanitizeUrl(expectedDestination),
     },
     actionCount: actions.length,
     ...scrollMetric(actions),
