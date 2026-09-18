@@ -8,6 +8,7 @@ on:
       - 'scripts/page-observer.mjs'
       - 'scripts/rendered-e2e-metrics.mjs'
       - 'scripts/run-rendered-e2e-metrics.mjs'
+      - 'scripts/run-live-board-baseline.mjs'
       - '.github/workflows/rendered-e2e-metrics.yml'
   push:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - 'scripts/page-observer.mjs'
       - 'scripts/rendered-e2e-metrics.mjs'
       - 'scripts/run-rendered-e2e-metrics.mjs'
+      - 'scripts/run-live-board-baseline.mjs'
       - '.github/workflows/rendered-e2e-metrics.yml'
 
 permissions:
@@ -35,10 +37,15 @@ jobs:
       - name: Run rendered E2E metric regressions
         timeout-minutes: 5
         run: node scripts/run-rendered-e2e-metrics.mjs
+      - name: Run public deployed-board baseline
+        timeout-minutes: 10
+        run: node scripts/run-live-board-baseline.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: rendered-e2e-metrics
-          path: artifacts-rendered-e2e-metrics/
+          path: |
+            artifacts-rendered-e2e-metrics/
+            artifacts-live-board-baseline/
           if-no-files-found: error
           retention-days: 14

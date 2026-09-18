@@ -52,9 +52,12 @@ export function layoutMetric(observation) {
   const clipped = elements.filter(({ bounds }) =>
     bounds.x < 0 || bounds.x + bounds.width > viewport.width
   ).map(e => e.id);
+  const documentWidth = finite(observation?.layout?.document?.width, finite(viewport.width));
+  const horizontalOverflowPx = Math.max(0, Math.round(documentWidth - finite(viewport.width)));
   return {
     viewport: { width: finite(viewport.width), height: finite(viewport.height) },
-    horizontalOverflow: Boolean(observation?.layout?.horizontalOverflow),
+    horizontalOverflow: horizontalOverflowPx > 0,
+    horizontalOverflowPx,
     overlappingInteractivePairs: overlaps,
     clippedInteractiveElements: clipped,
   };
@@ -111,6 +114,7 @@ export function summarizeJourney({
     },
     layout: {
       horizontalOverflow: layout.some(x => x.horizontalOverflow),
+      horizontalOverflowPx: layout.reduce((max, x) => Math.max(max, finite(x.horizontalOverflowPx)), 0),
       overlapCount: layout.reduce((sum, x) => sum + x.overlappingInteractivePairs.length, 0),
       clippedInteractiveCount: layout.reduce((sum, x) => sum + x.clippedInteractiveElements.length, 0),
     },
