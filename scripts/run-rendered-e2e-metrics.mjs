@@ -40,7 +40,7 @@ assert.equal(destinationPass.transition.success, true);
 assert.equal(destinationFail.transition.success, false);
 
 const syntheticLayout = layoutMetric({
-  layout:{viewport:{width:390,height:844},horizontalOverflow:true},
+  layout:{viewport:{width:390,height:844},document:{width:410,height:844},horizontalOverflow:true},
   elements:[
     {id:'a',bounds:{x:0,y:0,width:200,height:40}},
     {id:'b',bounds:{x:180,y:0,width:100,height:40}},
@@ -48,6 +48,7 @@ const syntheticLayout = layoutMetric({
   ],
 });
 assert.equal(syntheticLayout.horizontalOverflow, true);
+assert.equal(syntheticLayout.horizontalOverflowPx, 20);
 assert.equal(syntheticLayout.overlappingInteractivePairs.length, 1);
 assert.deepEqual(syntheticLayout.clippedInteractiveElements, ['c']);
 
@@ -95,6 +96,7 @@ try {
   assert.ok(targetAfter, 'target is observable after navigation');
   assert.equal(targetMetric(targetAfter, after.layout.viewport).visible, true);
   assert.equal(layoutMetric(after).horizontalOverflow, false);
+  assert.equal(layoutMetric(after).horizontalOverflowPx, 0);
 
   report = summarizeJourney({
     journeyId:'fixture-find-target',
@@ -113,7 +115,23 @@ try {
   assert.equal(report.target.before.visible, false);
   assert.equal(report.target.after.visible, true);
   assert.equal(report.layout.horizontalOverflow, false);
+  assert.equal(report.layout.horizontalOverflowPx, 0);
   assert.deepEqual(report.viewports, ['390x844']);
+
+  const departedTarget = summarizeJourney({
+    journeyId:'departed-target',
+    expectedDestination:'https://example.test/destination',
+    observations:[
+      {url:'https://example.test/source',layout:{viewport:{width:390,height:844},document:{width:390,height:844}},elements:[]},
+      {url:'https://example.test/destination',layout:{viewport:{width:390,height:844},document:{width:390,height:844}},elements:[]},
+    ],
+    targetBefore:{x:10,y:20,width:30,height:20},
+    targetAfter:null,
+  });
+  assert.equal(departedTarget.transition.success, true);
+  assert.equal(departedTarget.target.before.visible, true);
+  assert.equal(departedTarget.target.after.visible, false);
+  assert.equal(departedTarget.target.after.distancePx, null);
 
   await fs.writeFile(path.join(outputDir,'result.json'), JSON.stringify({ok:true,report}, null, 2));
   console.log('RENDERED_E2E_METRICS_OK');
