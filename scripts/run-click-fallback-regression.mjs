@@ -8,7 +8,7 @@ const outputDir='artifacts-browser-agent-elementid';
 await fs.mkdir(outputDir,{recursive:true});
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-const counts={delayed:0,fast:0};
+const counts={delayed:0,fast:0,stalled:0};
 
 function html(body,script=''){
   return '<!doctype html><html><head><meta charset="utf-8"></head><body>'+body+(script?'<script>'+script+'</script>':'')+'</body></html>';
@@ -18,7 +18,7 @@ const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://127.0.0.1');
   if(url.pathname==='/source'){
     const kind=url.searchParams.get('kind');
-    const target=kind==='delayed'?'/delayed':'/fast';
+    const target=kind==='delayed'?'/delayed':kind==='stalled'?'/stalled':'/fast';
     res.writeHead(200,{'content-type':'text/html; charset=utf-8'});
     res.end(html('<a href="'+target+'">Navigate</a>'));
     return;
@@ -28,6 +28,15 @@ const server=http.createServer(async(req,res)=>{
     await sleep(5200);
     res.writeHead(200,{'content-type':'text/html; charset=utf-8'});
     res.end(html('<div>DELAYED_DESTINATION</div>'));
+    return;
+  }
+  if(url.pathname==='/stalled'){
+    counts.stalled+=1;
+    await sleep(1400);
+    if(!res.destroyed){
+      res.writeHead(200,{'content-type':'text/html; charset=utf-8'});
+      res.end(html('<div>STALL_DESTINATION</div>'));
+    }
     return;
   }
   if(url.pathname==='/fast'){
@@ -123,6 +132,43 @@ async function fastCase(){
   }
 }
 
+async function stalledCommitCase(){
+  counts.stalled=0;
+  const agent=new BrowserAgent({headless:true});
+  const previousTimeout=process.env.BROWSER_NAVIGATION_TIMEOUT_MS;
+  try{
+    const link=await observedLink(agent,base+'/source?kind=stalled');
+    const listenersBefore={
+      request:agent.page.listenerCount('request'),
+      framenavigated:agent.page.listenerCount('framenavigated')
+    };
+    process.env.BROWSER_NAVIGATION_TIMEOUT_MS='400';
+    const started=Date.now();
+    let error=null;
+    try{
+      await agent.click(link.id);
+    }catch(caught){
+      error=String(caught?.message||caught);
+    }
+    const elapsedMs=Date.now()-started;
+    const listenersAfter={
+      request:agent.page.listenerCount('request'),
+      framenavigated:agent.page.listenerCount('framenavigated')
+    };
+    return {
+      requests:counts.stalled,
+      elapsed_ms:elapsedMs,
+      error,
+      listeners_before:listenersBefore,
+      listeners_after:listenersAfter
+    };
+  }finally{
+    if(previousTimeout===undefined)delete process.env.BROWSER_NAVIGATION_TIMEOUT_MS;
+    else process.env.BROWSER_NAVIGATION_TIMEOUT_MS=previousTimeout;
+    await agent.end().catch(()=>{});
+  }
+}
+
 async function fallbackCase(){
   const agent=new ForcedPrimaryFailureAgent({headless:true});
   try{
@@ -137,29 +183,35 @@ async function fallbackCase(){
   }
 }
 
-let legacyDelayed,fixedDelayed,fast,fallback;
+let legacyDelayed,fixedDelayed,fast,stalled,fallback;
 try{
   legacyDelayed=await delayedCase(LegacyAgent);
   fixedDelayed=await delayedCase(BrowserAgent);
   fast=await fastCase();
+  stalled=await stalledCommitCase();
   fallback=await fallbackCase();
 
   const findings={
     failing_before_duplicate_dispatch:legacyDelayed.requests>1,
     fixed_delayed_navigation_single_dispatch:fixedDelayed.requests===1&&fixedDelayed.final_path==='/delayed',
     fast_navigation_immediate_follow_up:fast.requests===1&&fast.destination_ready&&fast.follow_up,
+    stalled_navigation_single_timeout:stalled.requests===1&&/Navigation did not commit within 400ms/.test(stalled.error||'')&&stalled.elapsed_ms>=350&&stalled.elapsed_ms<700,
+    stalled_navigation_listener_cleanup:stalled.listeners_after.request===stalled.listeners_before.request&&stalled.listeners_after.framenavigated===stalled.listeners_before.framenavigated,
     predispatch_failure_still_falls_back:fallback.fallback_effect
   };
 
   assert.equal(findings.failing_before_duplicate_dispatch,true,'legacy behavior must reproduce duplicate dispatch');
   assert.equal(findings.fixed_delayed_navigation_single_dispatch,true,'fixed behavior must avoid duplicate delayed-navigation dispatch');
   assert.equal(findings.fast_navigation_immediate_follow_up,true,'fixed behavior must preserve immediate fast-navigation follow-up');
+  assert.equal(findings.stalled_navigation_single_timeout,true,'dispatched navigation without commit must surface after one timeout without fallback dispatch');
+  assert.equal(findings.stalled_navigation_listener_cleanup,true,'request/navigation listeners must be cleaned up after commit timeout');
   assert.equal(findings.predispatch_failure_still_falls_back,true,'genuine pre-dispatch failure must retain coordinate fallback');
 
   const payload={
     schema:'browser-agent-click-fallback-regression:v1',
     findings,
-    counts:{legacy_delayed_requests:legacyDelayed.requests,fixed_delayed_requests:fixedDelayed.requests,fast_requests:fast.requests}
+    counts:{legacy_delayed_requests:legacyDelayed.requests,fixed_delayed_requests:fixedDelayed.requests,fast_requests:fast.requests,stalled_requests:stalled.requests},
+    stalled
   };
   await fs.writeFile(path.join(outputDir,'click-fallback-regression.json'),JSON.stringify(payload,null,2));
   console.log('CLICK_FALLBACK_REGRESSION_OK '+JSON.stringify(payload));
