@@ -15,8 +15,22 @@ export async function observePage(page, generation) {
       const label=el.getAttribute('aria-label')||el.getAttribute('placeholder')||el.getAttribute('title')||'';
       elements.push({domIndex:nodes.indexOf(el),tag,role,label,text:(el.innerText||el.textContent||'').trim(),type:el.getAttribute('type'),name:el.getAttribute('name'),value:'value' in el?String(el.value??''):null,disabled:'disabled' in el?Boolean(el.disabled):false,editable:tag==='textarea'||tag==='input'||el.isContentEditable,x:Math.round(r.x),y:Math.round(r.y),width:Math.round(r.width),height:Math.round(r.height)});
     }
-    return {url:location.href,title:document.title,text:(document.body?.innerText||'').slice(0,12000),elements};
+    const root=document.documentElement,body=document.body;
+    const documentWidth=Math.max(root?.scrollWidth||0,body?.scrollWidth||0,innerWidth);
+    const documentHeight=Math.max(root?.scrollHeight||0,body?.scrollHeight||0,innerHeight);
+    return {
+      url:location.href,
+      title:document.title,
+      text:(body?.innerText||'').slice(0,12000),
+      elements,
+      layout:{
+        viewport:{width:innerWidth,height:innerHeight},
+        scroll:{x:scrollX,y:scrollY},
+        document:{width:documentWidth,height:documentHeight},
+        horizontalOverflow:documentWidth>innerWidth+1
+      }
+    };
   });
   const elements=raw.elements.map((el,i)=>({id:`g${generation}-e${i+1}`,domIndex:el.domIndex,role:el.role,label:clean(el.label),text:clean(el.text),type:el.type,name:el.name,value:clean(el.value,1000),disabled:el.disabled,editable:el.editable,bounds:{x:el.x,y:el.y,width:el.width,height:el.height}}));
-  return {generation,url:raw.url,title:raw.title,pageText:clean(raw.text,12000),elements};
+  return {generation,url:raw.url,title:raw.title,pageText:clean(raw.text,12000),elements,layout:raw.layout};
 }
