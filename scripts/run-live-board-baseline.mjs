@@ -32,7 +32,8 @@ function metricRecord({journeyId, viewportClass, width, height, report, statePer
       keyboard_accessibility_pass:Boolean(keyboardAccessibilityPass),
       empty_error_state_pass:Boolean(emptyErrorStatePass)
     },
-    destination:sanitizeUrl(report.transition?.destination?.originPath||'')
+    destination:report.transition?.destination||sanitizeUrl(''),
+    expected_destination:report.transition?.expectedDestination||null
   };
 }
 
@@ -206,9 +207,17 @@ const all=[
   ...(await runViewport('narrow',390,844))
 ];
 assert.equal(all.length,8);
-assert.ok(all.every(r=>r.metrics.transition_success),'all live journeys must transition successfully');
-assert.ok(all.every(r=>r.metrics.state_persistence_pass),'state persistence must pass');
-assert.ok(all.every(r=>r.metrics.keyboard_accessibility_pass),'keyboard accessibility must pass');
-assert.ok(all.every(r=>r.metrics.empty_error_state_pass),'empty/error handling must pass');
-await fs.writeFile(path.join(outputDir,'baseline.json'),JSON.stringify({ok:true,records:all},null,2));
+const checks={
+  transition_success:all.every(r=>r.metrics.transition_success),
+  state_persistence_pass:all.every(r=>r.metrics.state_persistence_pass),
+  keyboard_accessibility_pass:all.every(r=>r.metrics.keyboard_accessibility_pass),
+  empty_error_state_pass:all.every(r=>r.metrics.empty_error_state_pass)
+};
+await fs.writeFile(path.join(outputDir,'baseline.json'),JSON.stringify({ok:Object.values(checks).every(Boolean),checks,records:all},null,2));
+const failedTransitions=all.filter(r=>!r.metrics.transition_success).map(r=>({journey_id:r.journey_id,viewport:r.viewport.class,destination:r.destination,expected_destination:r.expected_destination}));
+if(failedTransitions.length)console.error('LIVE_BASELINE_TRANSITION_FAILURES '+JSON.stringify(failedTransitions));
+assert.ok(checks.transition_success,'all live journeys must transition successfully');
+assert.ok(checks.state_persistence_pass,'state persistence must pass');
+assert.ok(checks.keyboard_accessibility_pass,'keyboard accessibility must pass');
+assert.ok(checks.empty_error_state_pass,'empty/error handling must pass');
 console.log('LIVE_RENDERED_BASELINE_OK');
