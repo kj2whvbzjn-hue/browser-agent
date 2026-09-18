@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { BrowserAgent } from './browser-agent.mjs';
-import { layoutMetric, rectOverlap, scrollMetric, summarizeJourney, targetMetric } from './rendered-e2e-metrics.mjs';
+import { layoutMetric, rectOverlap, sanitizeUrl, scrollMetric, summarizeJourney, targetMetric } from './rendered-e2e-metrics.mjs';
 
 const outputDir = 'artifacts-rendered-e2e-metrics';
 await fs.mkdir(outputDir, { recursive: true });
@@ -11,6 +11,10 @@ assert.equal(rectOverlap({x:0,y:0,width:20,height:20},{x:10,y:10,width:20,height
 assert.equal(rectOverlap({x:0,y:0,width:5,height:5},{x:10,y:10,width:5,height:5}), 0);
 assert.deepEqual(targetMetric({x:10,y:20,width:20,height:20},{width:100,height:100}), {visible:true,distancePx:0});
 assert.deepEqual(targetMetric({x:10,y:150,width:20,height:20},{width:100,height:100}), {visible:false,distancePx:50});
+const sanitized = sanitizeUrl('https://example.test/board?q=secret&state=open#private-fragment');
+assert.deepEqual(sanitized, {originPath:'https://example.test/board',queryKeys:['q','state'],hasHash:true});
+assert.equal(JSON.stringify(sanitized).includes('secret'), false);
+assert.equal(JSON.stringify(sanitized).includes('private-fragment'), false);
 
 const syntheticScroll = scrollMetric([
   {action:'scroll',deltaY:400,viewportHeight:800},
