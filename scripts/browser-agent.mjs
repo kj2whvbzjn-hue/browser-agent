@@ -49,7 +49,67 @@ export class BrowserAgent {
   async listPages() { if(!this.context)throw new Error('Browser is not started'); return{pages:await Promise.all(this.context.pages().map(async(page,index)=>({index,url:page.url(),title:await page.title().catch(()=>''),active:page===this.page})))}; }
   async switchPage(index) { if(!this.context)throw new Error('Browser is not started'); const pages=this.context.pages(); const i=Number(index); if(!Number.isInteger(i)||i<0||i>=pages.length)throw new Error(`Invalid page index: ${index}`); this.page=this.configurePage(pages[i]); this.generation=0; this.elementMap.clear(); await this.page.bringToFront().catch(()=>{}); const page=await this.getPage(); return{pageIndex:i,page}; }
   locatorFor(elementId) { this.requirePage(); const match=/^g(\d+)-e(\d+)$/.exec(String(elementId)); if(!match)throw new Error(`Invalid elementId: ${elementId}`); if(Number(match[1])!==this.generation)throw new Error(`Stale elementId ${elementId}; call getPage() again`); const element=this.elementMap.get(elementId); if(!element)throw new Error(`Unknown elementId: ${elementId}`); const selector=['button','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(','); if(Number.isInteger(element.domIndex))return this.page.locator(selector).nth(element.domIndex); if(element.role&&element.label)return this.page.getByRole(element.role,{name:element.label,exact:true}).first(); if(element.role&&element.text)return this.page.getByRole(element.role,{name:element.text,exact:true}).first(); if(element.name)return this.page.locator(`[name=${JSON.stringify(element.name)}]`).filter({visible:true}).first(); if(element.type)return this.page.locator(`[type=${JSON.stringify(element.type)}]`).filter({visible:true}).first(); throw new Error(`Element ${elementId} has no usable locator; call getPage() again`); }
-  async clickWithFallback(elementId) { const element=this.elementMap.get(elementId),primary=this.locatorFor(elementId); try{await primary.click({timeout:4000});return;}catch(primaryError){if(!element?.bounds)throw primaryError;const{x,y,width,height}=element.bounds;if(!(width>0&&height>0))throw primaryError;await this.page.mouse.click(x+width/2,y+height/2);} }
+  async clickWithFallback(elementId) {
+    const element=this.elementMap.get(elementId),primary=this.locatorFor(elementId),page=this.page,mainFrame=page.mainFrame();
+    let navigationRequest=null,navigationCommitted=false,resolveRequest,resolveCommit;
+    const requestSeen=new Promise(resolve=>{resolveRequest=resolve;});
+    const commitSeen=new Promise(resolve=>{resolveCommit=resolve;});
+    const onRequest=request=>{
+      if(navigationRequest||!request.isNavigationRequest())return;
+      try{
+        if(request.frame()===mainFrame){navigationRequest=request;resolveRequest(request);}
+      }catch{}
+    };
+    const onNavigated=frame=>{
+      if(frame===mainFrame&&!navigationCommitted){navigationCommitted=true;resolveCommit(frame);}
+    };
+    page.on('request',onRequest);
+    page.on('framenavigated',onNavigated);
+    const waitForCommit=async()=>{
+      if(navigationCommitted)return;
+      const timeout=Math.max(1,Number(process.env.BROWSER_NAVIGATION_TIMEOUT_MS||30000));
+      let timer;
+      try{
+        await Promise.race([
+          commitSeen,
+          new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(`Navigation did not commit within ${timeout}ms after click dispatch`)),timeout);})
+        ]);
+      }finally{clearTimeout(timer);}
+    };
+    try{
+      let primaryError=null;
+      try{
+        await primary.click({timeout:4000,noWaitAfter:true});
+      }catch(error){
+        primaryError=error;
+      }
+      if(!primaryError){
+        let request=navigationRequest;
+        if(!request){
+          let timer;
+          try{
+            request=await Promise.race([
+              requestSeen,
+              new Promise(resolve=>{timer=setTimeout(()=>resolve(null),25);})
+            ]);
+          }finally{clearTimeout(timer);}
+        }
+        if(request)await waitForCommit();
+        return;
+      }
+      if(navigationRequest){
+        await waitForCommit();
+        return;
+      }
+      if(!element?.bounds)throw primaryError;
+      const{x,y,width,height}=element.bounds;
+      if(!(width>0&&height>0))throw primaryError;
+      await page.mouse.click(x+width/2,y+height/2);
+    }finally{
+      page.off('request',onRequest);
+      page.off('framenavigated',onNavigated);
+    }
+  }
   async fill(elementId,text){const locator=this.locatorFor(elementId);await locator.fill(String(text),{timeout:10000});return{ok:true,action:'fill',elementId,url:this.page.url()};}
   async click(elementId){await this.clickWithFallback(elementId);return{ok:true,action:'click',elementId,url:this.page.url()};}
   async press(key){this.requirePage();await this.page.keyboard.press(String(key));return{ok:true,action:'press',key,url:this.page.url()};}
