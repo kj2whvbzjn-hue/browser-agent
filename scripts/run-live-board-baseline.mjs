@@ -25,7 +25,7 @@ function metricRecord({journeyId, viewportClass, width, height, report, statePer
       target_visible_after:Boolean(report.target?.after?.visible),
       target_distance_before_px:report.target?.before?.distancePx==null?0:Number(report.target.before.distancePx),
       target_distance_after_px:report.target?.after?.distancePx==null?0:Number(report.target.after.distancePx),
-      horizontal_overflow_px:report.layout?.horizontalOverflow?1:0,
+      horizontal_overflow_px:Number(report.layout?.horizontalOverflowPx||0),
       overlap_count:Number(report.layout?.overlapCount||0),
       clipping_count:Number(report.layout?.clippedInteractiveCount||0),
       state_persistence_pass:Boolean(statePersistencePass),
@@ -108,7 +108,7 @@ async function runViewport(viewportClass,width,height) {
       actions:[fill,click],
       observations:[before,filtered,after],
       targetBefore:landingTask?.bounds||targetBefore,
-      targetAfter:targetBefore
+      targetAfter:null
     });
     records.push(metricRecord({
       journeyId:'board/find-open-task',viewportClass,width,height,report:report1,
@@ -122,27 +122,43 @@ async function runViewport(viewportClass,width,height) {
     await agent.page.locator('#review').selectOption('needed');
     await waitBoard(agent);
     filtered=await agent.getPage();
-    const rowsShown=await agent.page.locator('.task-link').count();
+    const visibleReviewLinks=agent.page.locator('.task-link:visible');
+    const rowsShown=await visibleReviewLinks.count();
     const emptyVisible=await agent.page.locator('#fallback').isVisible();
-    assert.ok(rowsShown>0||emptyVisible,'review filter must produce items or explicit empty state');
-    const firstTask=filtered.elements.find(e=>e.role==='link'&&/—|#|\d/.test(String(e.text||'')));
+    assert.ok(rowsShown>0||emptyVisible,'review filter must produce visible items or explicit empty state');
     let report2;
-    if(firstTask){
+    if(rowsShown>0){
+      const expectedReviewUrl=await visibleReviewLinks.first().getAttribute('href');
+      assert.ok(expectedReviewUrl&&expectedReviewUrl.startsWith('https://github.com/kj2whvbzjn-hue/ai-bulletin-board/issues/'),'review task must expose canonical Issue href');
+      const reviewDomIndex=await agent.page.evaluate(expected => {
+        const selector=['button','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(',');
+        const nodes=[...document.querySelectorAll(selector)];
+        const target=[...document.querySelectorAll('.task-link')].find(a =>
+          a.getClientRects().length>0 && String(a.getAttribute('href')||'')===expected
+        );
+        return target ? nodes.indexOf(target) : -1;
+      }, expectedReviewUrl);
+      assert.ok(reviewDomIndex>=0,'review task must map to observer DOM index');
+      const firstTask=filtered.elements.find(e=>e.role==='link'&&e.domIndex===reviewDomIndex);
+      assert.ok(firstTask,'exact review task link must be observable by DOM index');
+      const navigation=agent.page.waitForURL(expectedReviewUrl,{waitUntil:'domcontentloaded',timeout:15000});
       const nav=await agent.click(firstTask.id);
-      await agent.page.waitForLoadState('domcontentloaded');
+      await navigation;
       const end=await agent.getPage();
       report2=summarizeJourney({
         journeyId:'board/review-needed-inspect',
-        expectedDestination:end.url,
+        expectedDestination:expectedReviewUrl,
         actions:[{action:'filter'},nav],
         observations:[before,filtered,end],
         targetBefore:firstTask.bounds,
-        targetAfter:firstTask.bounds
+        targetAfter:null
       });
     } else {
+      const expectedFilteredUrl=new URL(BOARD_URL);
+      expectedFilteredUrl.searchParams.set('review','needed');
       report2=summarizeJourney({
         journeyId:'board/review-needed-inspect',
-        expectedDestination:filtered.url,
+        expectedDestination:expectedFilteredUrl.toString(),
         actions:[{action:'filter'}],
         observations:[before,filtered],
         targetBefore:null,targetAfter:null
@@ -166,16 +182,19 @@ async function runViewport(viewportClass,width,height) {
     await agent.page.locator('#clear').click();
     await agent.page.waitForTimeout(50);
     state=await agent.getPage();
+    const clearedUrl=state.url;
     const q2=state.elements.find(e=>e.role==='searchbox'||(e.role==='textbox'&&e.name==='q'));
     const a2=await agent.fill(q2.id,'59');
     await agent.page.waitForTimeout(50);
     const changed=await agent.getPage();
+    const expectedChangedUrl=new URL(BOARD_URL);
+    expectedChangedUrl.searchParams.set('q','59');
     const persistence=new URL(searchUrl).searchParams.get('q')==='62'
-      && !new URL(BOARD_URL).search
+      && new URL(clearedUrl).search===''
       && new URL(changed.url).searchParams.get('q')==='59';
     const report3=summarizeJourney({
       journeyId:'board/search-clear-change',
-      expectedDestination:changed.url,
+      expectedDestination:expectedChangedUrl.toString(),
       actions:[a1,{action:'clear'},a2],
       observations:[before,state,changed],
       targetBefore:q1.bounds,targetAfter:q2.bounds
@@ -195,7 +214,7 @@ async function runViewport(viewportClass,width,height) {
     const final=await agent.getPage();
     const report4=summarizeJourney({
       journeyId:'board/return-keyboard',
-      expectedDestination:final.url,
+      expectedDestination:BOARD_URL,
       actions:[{action:'keyboard-tab'}],
       observations:[final],
       targetBefore:null,targetAfter:null
