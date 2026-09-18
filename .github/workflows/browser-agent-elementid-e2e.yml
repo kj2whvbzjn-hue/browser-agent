@@ -10,6 +10,12 @@ on:
       - 'scripts/page-observer.mjs'
       - 'scripts/run-browser-agent-elementid-e2e.mjs'
       - '.github/workflows/browser-agent-elementid-e2e.yml'
+  pull_request:
+    paths:
+      - 'scripts/browser-agent.mjs'
+      - 'scripts/page-observer.mjs'
+      - 'scripts/run-browser-agent-elementid-e2e.mjs'
+      - '.github/workflows/browser-agent-elementid-e2e.yml'
 
 jobs:
   elementid-e2e:
