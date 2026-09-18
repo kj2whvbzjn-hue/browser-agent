@@ -33,7 +33,7 @@ export function layoutMetric(observation) {
     }
   }
   const clipped = elements.filter(({ bounds }) =>
-    bounds.x < 0 || bounds.y < 0 || bounds.x + bounds.width > viewport.width || bounds.y + bounds.height > viewport.height
+    bounds.x < 0 || bounds.x + bounds.width > viewport.width
   ).map(e => e.id);
   return {
     viewport: { width: finite(viewport.width), height: finite(viewport.height) },
