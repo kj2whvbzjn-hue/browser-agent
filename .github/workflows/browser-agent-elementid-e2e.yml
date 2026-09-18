@@ -5,10 +5,12 @@ on:
   push:
     branches:
       - main
+      - experiment/nowaitafter-ab-r108
     paths:
       - 'scripts/browser-agent.mjs'
       - 'scripts/page-observer.mjs'
       - 'scripts/run-browser-agent-elementid-e2e.mjs'
+      - 'scripts/run-nowaitafter-ab-experiment.mjs'
       - '.github/workflows/browser-agent-elementid-e2e.yml'
   pull_request:
     paths:
@@ -34,11 +36,16 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run elementId E2E
         run: node scripts/run-browser-agent-elementid-e2e.mjs
+      - name: Run noWaitAfter A/B experiment
+        if: github.ref == 'refs/heads/experiment/nowaitafter-ab-r108'
+        run: node scripts/run-nowaitafter-ab-experiment.mjs
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: browser-agent-elementid-e2e
-          path: artifacts-browser-agent-elementid/
+          path: |
+            artifacts-browser-agent-elementid/
+            artifacts-nowaitafter-ab/
           if-no-files-found: warn
           retention-days: 7
