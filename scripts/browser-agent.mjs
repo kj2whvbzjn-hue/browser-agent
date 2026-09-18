@@ -53,14 +53,15 @@ export class BrowserAgent {
   async fill(elementId,text){const locator=this.locatorFor(elementId);await locator.fill(String(text),{timeout:10000});return{ok:true,action:'fill',elementId,url:this.page.url()};}
   async click(elementId){await this.clickWithFallback(elementId);return{ok:true,action:'click',elementId,url:this.page.url()};}
   async press(key){this.requirePage();await this.page.keyboard.press(String(key));return{ok:true,action:'press',key,url:this.page.url()};}
-  async scroll(direction='down',amount=700){this.requirePage();const dy=direction==='up'?-Math.abs(amount):Math.abs(amount);await this.page.mouse.wheel(0,dy);return{ok:true,action:'scroll',direction,amount,url:this.page.url()};}
+  async scroll(direction='down',amount=700){this.requirePage();const before=await this.page.evaluate(()=>({x:scrollX,y:scrollY,height:innerHeight}));const requested=direction==='up'?-Math.abs(Number(amount)):Math.abs(Number(amount));await this.page.mouse.wheel(0,requested);await this.page.waitForTimeout(20);const after=await this.page.evaluate(()=>({x:scrollX,y:scrollY,height:innerHeight}));return{ok:true,action:'scroll',direction,amount:Math.abs(Number(amount)),requestedDeltaY:requested,beforeY:before.y,afterY:after.y,deltaY:after.y-before.y,viewportHeight:after.height,url:this.page.url()};}
   async setViewport(width,height){this.requirePage();const w=Number(width),h=Number(height);if(!Number.isInteger(w)||!Number.isInteger(h)||w<240||w>3840||h<320||h>2160)throw new Error('setViewport requires integer width 240-3840 and height 320-2160');await this.page.setViewportSize({width:w,height:h});const page=await this.getPage();return{ok:true,action:'setViewport',width:w,height:h,page};}
   async screenshot(path){this.requirePage();await this.page.screenshot({path,fullPage:false});return{ok:true,path,url:this.page.url()};}
 
   async reset({ relaunch = false } = {}) {
     const context=this.context,browser=this.browser;
     this.browser=null; this.context=null; this.page=null; this.generation=0; this.elementMap.clear();
-    const closePromise=context?context.close():browser?browser.close():Promise.resolve();
+    const closeTarget=browser||context;
+    const closePromise=closeTarget?closeTarget.close():Promise.resolve();
     const closeTimeoutMs=Number(process.env.BROWSER_RESET_TIMEOUT_MS||8000);
     let timer;
     try { await Promise.race([closePromise.catch(()=>{}),new Promise(resolve=>{timer=setTimeout(resolve,closeTimeoutMs);})]); }

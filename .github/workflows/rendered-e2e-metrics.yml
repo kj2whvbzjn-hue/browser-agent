@@ -1,0 +1,44 @@
+name: Rendered E2E Metrics
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/browser-agent.mjs'
+      - 'scripts/page-observer.mjs'
+      - 'scripts/rendered-e2e-metrics.mjs'
+      - 'scripts/run-rendered-e2e-metrics.mjs'
+      - '.github/workflows/rendered-e2e-metrics.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/browser-agent.mjs'
+      - 'scripts/page-observer.mjs'
+      - 'scripts/rendered-e2e-metrics.mjs'
+      - 'scripts/run-rendered-e2e-metrics.mjs'
+      - '.github/workflows/rendered-e2e-metrics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Run rendered E2E metric regressions
+        timeout-minutes: 5
+        run: node scripts/run-rendered-e2e-metrics.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rendered-e2e-metrics
+          path: artifacts-rendered-e2e-metrics/
+          if-no-files-found: error
+          retention-days: 14
