@@ -24,7 +24,7 @@ permissions:
 jobs:
   metrics:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,6 +33,7 @@ jobs:
       - run: npm install
       - run: npx playwright install --with-deps chromium
       - name: Run rendered E2E metric regressions
+        timeout-minutes: 5
         run: node scripts/run-rendered-e2e-metrics.mjs
       - uses: actions/upload-artifact@v4
         if: always()
