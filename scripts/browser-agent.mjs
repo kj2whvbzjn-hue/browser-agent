@@ -60,7 +60,8 @@ export class BrowserAgent {
   async reset({ relaunch = false } = {}) {
     const context=this.context,browser=this.browser;
     this.browser=null; this.context=null; this.page=null; this.generation=0; this.elementMap.clear();
-    const closePromise=context?context.close():browser?browser.close():Promise.resolve();
+    const closeTarget=browser||context;
+    const closePromise=closeTarget?closeTarget.close():Promise.resolve();
     const closeTimeoutMs=Number(process.env.BROWSER_RESET_TIMEOUT_MS||8000);
     let timer;
     try { await Promise.race([closePromise.catch(()=>{}),new Promise(resolve=>{timer=setTimeout(resolve,closeTimeoutMs);})]); }
