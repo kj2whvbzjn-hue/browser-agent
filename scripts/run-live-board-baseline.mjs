@@ -60,26 +60,43 @@ async function runViewport(viewportClass,width,height) {
     await agent.setViewport(width,height);
     await waitBoard(agent);
 
-    // Journey 1: board landing -> search task -> open canonical task.
+    // Journey 1: board landing -> search an actually projected task -> open it.
+    // Do not hard-code one issue number: the public projection is generated on its own
+    // schedule, so a specific current Issue may legitimately not be present yet.
     let before=await agent.getPage();
     const search=before.elements.find(e=>e.role==='searchbox'||(e.role==='textbox'&&e.name==='q'));
     assert.ok(search,'search input must be observable');
-    const beforeTarget=before.elements.find(e=>e.role==='link'&&/issues\/62$/.test(String(e.text||'')))?.bounds||null;
-    const fill=await agent.fill(search.id,'62');
-    await waitBoard(agent);
+    const taskRefs=await agent.page.locator('.task-link:visible').evaluateAll(nodes =>
+      nodes.map(a => {
+        const m=String(a.getAttribute('href')||'').match(/\/issues\/(\d+)$/);
+        return m?m[1]:null;
+      }).filter(Boolean)
+    );
+    assert.ok(taskRefs.length>0,'live board must expose at least one projected canonical task');
+    const taskNumber=taskRefs[0];
+    const expectedTaskUrl=`https://github.com/kj2whvbzjn-hue/ai-bulletin-board/issues/${taskNumber}`;
+    const landingTask=before.elements.find(e=>e.role==='link'&&new RegExp(`#?${taskNumber}\\b`).test(String(e.text||'')));
+    const fill=await agent.fill(search.id,taskNumber);
+    await agent.page.waitForFunction(n =>
+      [...document.querySelectorAll('.task-link')].some(a =>
+        a.getClientRects().length>0 && String(a.getAttribute('href')||'').endsWith(`/issues/${n}`)
+      ),
+      taskNumber,
+      {timeout:5000}
+    );
     let filtered=await agent.getPage();
-    const task62=filtered.elements.find(e=>e.role==='link'&&/62/.test(String(e.text||'')));
-    assert.ok(task62,'task #62 link must be observable after search');
-    const targetBefore=task62.bounds;
-    const click=await agent.click(task62.id);
+    const task=filtered.elements.find(e=>e.role==='link'&&new RegExp(`#?${taskNumber}\\b`).test(String(e.text||'')));
+    assert.ok(task,'selected projected task link must be observable after search');
+    const targetBefore=task.bounds;
+    const click=await agent.click(task.id);
     await agent.page.waitForLoadState('domcontentloaded');
     const after=await agent.getPage();
     const report1=summarizeJourney({
       journeyId:'board/find-open-task',
-      expectedDestination:'https://github.com/kj2whvbzjn-hue/ai-bulletin-board/issues/62',
+      expectedDestination:expectedTaskUrl,
       actions:[fill,click],
       observations:[before,filtered,after],
-      targetBefore:beforeTarget||targetBefore,
+      targetBefore:landingTask?.bounds||targetBefore,
       targetAfter:targetBefore
     });
     records.push(metricRecord({
