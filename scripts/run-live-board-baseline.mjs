@@ -85,9 +85,18 @@ async function runViewport(viewportClass,width,height) {
       taskNumber,
       {timeout:5000}
     );
+    const targetDomIndex=await agent.page.evaluate(expected => {
+      const selector=['button','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(',');
+      const nodes=[...document.querySelectorAll(selector)];
+      const target=[...document.querySelectorAll('.task-link')].find(a =>
+        a.getClientRects().length>0 && String(a.getAttribute('href')||'')===expected
+      );
+      return target ? nodes.indexOf(target) : -1;
+    }, expectedTaskUrl);
+    assert.ok(targetDomIndex>=0,'selected projected task must map to observer DOM index');
     let filtered=await agent.getPage();
-    const task=filtered.elements.find(e=>e.role==='link'&&new RegExp(`#?${taskNumber}\\b`).test(String(e.text||'')));
-    assert.ok(task,'selected projected task link must be observable after search');
+    const task=filtered.elements.find(e=>e.role==='link'&&e.domIndex===targetDomIndex);
+    assert.ok(task,'exact selected projected task link must be observable by DOM index');
     const targetBefore=task.bounds;
     const navigation=agent.page.waitForURL(expectedTaskUrl,{waitUntil:'domcontentloaded',timeout:15000});
     const click=await agent.click(task.id);
