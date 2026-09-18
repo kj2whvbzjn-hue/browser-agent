@@ -9,6 +9,10 @@ export class BrowserAgent {
     this.page = null;
     this.generation = 0;
     this.elementMap = new Map();
+    this.clickDispatchBindingPages = new WeakSet();
+    this.activeClickDispatchTokens = new Set();
+    this.dispatchedClickTokens = new Set();
+    this.clickDispatchSequence = 0;
   }
 
   configurePage(page) {
@@ -49,7 +53,40 @@ export class BrowserAgent {
   async listPages() { if(!this.context)throw new Error('Browser is not started'); return{pages:await Promise.all(this.context.pages().map(async(page,index)=>({index,url:page.url(),title:await page.title().catch(()=>''),active:page===this.page})))}; }
   async switchPage(index) { if(!this.context)throw new Error('Browser is not started'); const pages=this.context.pages(); const i=Number(index); if(!Number.isInteger(i)||i<0||i>=pages.length)throw new Error(`Invalid page index: ${index}`); this.page=this.configurePage(pages[i]); this.generation=0; this.elementMap.clear(); await this.page.bringToFront().catch(()=>{}); const page=await this.getPage(); return{pageIndex:i,page}; }
   locatorFor(elementId) { this.requirePage(); const match=/^g(\d+)-e(\d+)$/.exec(String(elementId)); if(!match)throw new Error(`Invalid elementId: ${elementId}`); if(Number(match[1])!==this.generation)throw new Error(`Stale elementId ${elementId}; call getPage() again`); const element=this.elementMap.get(elementId); if(!element)throw new Error(`Unknown elementId: ${elementId}`); const selector=['button','input','textarea','select','a[href]','[role="button"]','[role="link"]','[role="textbox"]','[role="checkbox"]','[role="radio"]','[role="combobox"]','[contenteditable="true"]'].join(','); if(Number.isInteger(element.domIndex))return this.page.locator(selector).nth(element.domIndex); if(element.role&&element.label)return this.page.getByRole(element.role,{name:element.label,exact:true}).first(); if(element.role&&element.text)return this.page.getByRole(element.role,{name:element.text,exact:true}).first(); if(element.name)return this.page.locator(`[name=${JSON.stringify(element.name)}]`).filter({visible:true}).first(); if(element.type)return this.page.locator(`[type=${JSON.stringify(element.type)}]`).filter({visible:true}).first(); throw new Error(`Element ${elementId} has no usable locator; call getPage() again`); }
-  async clickWithFallback(elementId) { const element=this.elementMap.get(elementId),primary=this.locatorFor(elementId); try{await primary.click({timeout:4000});return;}catch(primaryError){if(!element?.bounds)throw primaryError;const{x,y,width,height}=element.bounds;if(!(width>0&&height>0))throw primaryError;await this.page.mouse.click(x+width/2,y+height/2);} }
+  async prepareClickDispatchProbe(primary) {
+    const page=this.page,binding='__openaiBrowserAgentClickDispatch_v1';
+    if(!this.clickDispatchBindingPages.has(page)){
+      await page.exposeBinding(binding,(_source,token)=>{const key=String(token);if(this.activeClickDispatchTokens.has(key))this.dispatchedClickTokens.add(key);});
+      this.clickDispatchBindingPages.add(page);
+    }
+    const token=`${this.generation}:${++this.clickDispatchSequence}`;
+    this.activeClickDispatchTokens.add(token);
+    try{
+      await primary.evaluate((element,{binding,token})=>{
+        element.addEventListener('click',event=>{if(!event.isTrusted)return;const mark=globalThis[binding];if(typeof mark==='function')void mark(token);},{capture:true,once:true});
+      },{binding,token});
+      return token;
+    }catch(error){
+      this.activeClickDispatchTokens.delete(token);
+      this.dispatchedClickTokens.delete(token);
+      throw error;
+    }
+  }
+  async clickWithFallback(elementId) {
+    const element=this.elementMap.get(elementId),primary=this.locatorFor(elementId);
+    let dispatchToken=null;
+    try{dispatchToken=await this.prepareClickDispatchProbe(primary);}catch{}
+    try{await primary.click({timeout:4000});return;}
+    catch(primaryError){
+      if(dispatchToken&&this.dispatchedClickTokens.has(dispatchToken))return;
+      if(!element?.bounds)throw primaryError;
+      const{x,y,width,height}=element.bounds;
+      if(!(width>0&&height>0))throw primaryError;
+      await this.page.mouse.click(x+width/2,y+height/2);
+    }finally{
+      if(dispatchToken){this.activeClickDispatchTokens.delete(dispatchToken);this.dispatchedClickTokens.delete(dispatchToken);}
+    }
+  }
   async fill(elementId,text){const locator=this.locatorFor(elementId);await locator.fill(String(text),{timeout:10000});return{ok:true,action:'fill',elementId,url:this.page.url()};}
   async click(elementId){await this.clickWithFallback(elementId);return{ok:true,action:'click',elementId,url:this.page.url()};}
   async press(key){this.requirePage();await this.page.keyboard.press(String(key));return{ok:true,action:'press',key,url:this.page.url()};}
