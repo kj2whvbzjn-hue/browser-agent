@@ -2,6 +2,8 @@ name: Import Browser Profile Rekey
 
 on:
   workflow_dispatch:
+  issues:
+    types: [opened]
     inputs:
       transfer_id:
         description: Optional rekey transfer id; blank uses newest ready transfer for this repository
@@ -14,7 +16,10 @@ permissions:
 
 jobs:
   import:
-    if: github.repository == 'GK-studio-JP/browser-agent' && github.actor == github.repository_owner
+    if: >-
+      github.repository == 'GK-studio-JP/browser-agent' &&
+      github.actor == github.repository_owner &&
+      (github.event_name == 'workflow_dispatch' || startsWith(github.event.issue.title, '[profile-rekey-import]'))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
