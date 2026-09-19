@@ -163,6 +163,26 @@ Example: if the current page is generation 5, do not click `g4-e2`. Call `getPag
 
 A stale-element rejection is a safety feature, not a reason to abandon the session.
 
+### Semantic observation fields
+
+`getPage` now returns a richer semantic observation while keeping the existing `generation`, `pageText`, `elements`, and `layout` fields. Use these fields instead of guessing from text alone:
+
+- `elements[].accessibleName` / `label` — computed semantic name using ARIA labels, associated `<label>` elements, placeholders, titles, and visible text
+- `elements[].context` — nearby row/card/form context that helps distinguish repeated controls such as multiple "Edit" buttons
+- `elements[].states` — disabled, readonly, required, checked, selected, expanded, pressed, invalid, and focused state
+- `elements[].frame` — frame id/name/url/depth; controls inside iframes are directly actionable with the returned element ID
+- `elements[].inViewport` and `elements[].occluded` — whether the control is currently in the viewport and whether another element covers its hit point
+- `elements[].coveredBy` — compact description of the covering element when occluded
+- `frames` — observed main frame + child frames
+- `dialogs` — visible HTML/ARIA dialogs
+- `accessibility` — compact Chrome Accessibility Tree summary
+- `semantic` — counts for frames, dialogs, AX nodes, occluded controls, and offscreen controls
+- `changesSincePreviousObservation` — semantic diff from the previous explicit observation
+
+Open shadow roots and iframe documents are included automatically. Prefer `accessibleName`, `context`, and `frame` when several elements have similar text. If `occluded` is true, handle the covering dialog/overlay first rather than repeatedly clicking the covered target.
+
+Mutating interactions (`fill`, `click`, `press`, `typeText`, `clickAt`, `clickText`, `scroll`) return an `outcome` diff describing URL/text/focus/dialog and interactive-element changes. After any interaction, prior element IDs are invalidated immediately; call `getPage` before using another element ID. This enforces the one-action-per-observation loop rather than relying only on caller discipline.
+
 ## Opening the browser
 
 When the user simply says 「ブラウザを開いて」:
