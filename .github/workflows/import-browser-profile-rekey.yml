@@ -48,7 +48,7 @@ jobs:
           key = os.environ["SUPABASE_SECRET_KEY"].strip()
           requested = os.environ.get("REQUESTED_TRANSFER_ID", "").strip()
           params = {
-              "select": "transfer_id,total_chunks,payload_sha256,wrapped_transport_secret",
+              "select": "transfer_id,total_chunks,payload_sha256,wrapped_transport_secret,transport_private_key_encrypted",
               "source_repo": "eq.kj2whvbzjn-hue/browser-agent",
               "target_repo": "eq.GK-studio-JP/browser-agent",
               "status": "eq.ready",
@@ -68,20 +68,19 @@ jobs:
           row = rows[0]
           if not row.get("wrapped_transport_secret"):
               raise SystemExit("Ready rekey transfer is missing wrapped transport secret.")
+          if not row.get("transport_private_key_encrypted"):
+              raise SystemExit("Ready rekey transfer is missing encrypted target private key.")
+          import base64
           with open("/tmp/browser-profile-transfer-wrapped.txt", "w", encoding="utf-8") as f:
               f.write(row["wrapped_transport_secret"])
+          with open("/tmp/browser-profile-transfer-private.enc", "wb") as f:
+              f.write(base64.b64decode(row["transport_private_key_encrypted"]))
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               f.write(f"transfer_id={row['transfer_id']}\n")
               f.write(f"total_chunks={row['total_chunks']}\n")
               f.write(f"payload_sha256={row['payload_sha256']}\n")
           print(f"PROFILE_REKEY_SELECTED id={row['transfer_id']} chunks={row['total_chunks']}")
           PY
-
-      - name: Restore encrypted one-time private key
-        uses: actions/cache/restore@v4
-        with:
-          path: /tmp/browser-profile-transfer-private.enc
-          key: browser-profile-transfer-private-${{ github.repository_id }}-${{ steps.transfer.outputs.transfer_id }}
 
       - name: Download and verify rekey ciphertext
         env:
@@ -90,7 +89,7 @@ jobs:
           EXPECTED_SHA256: ${{ steps.transfer.outputs.payload_sha256 }}
         run: |
           set -euo pipefail
-          test -s /tmp/browser-profile-transfer-private.enc || { echo "::error::Target one-time private key cache not found."; exit 1; }
+          test -s /tmp/browser-profile-transfer-private.enc || { echo "::error::Encrypted target private key was not materialized."; exit 1; }
           python - <<'PY'
           import base64, hashlib, json, os, urllib.parse, urllib.request
           base = os.environ["SUPABASE_URL"].strip().rstrip("/")
