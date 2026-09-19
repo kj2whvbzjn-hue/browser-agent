@@ -11,7 +11,8 @@
     "test:elementid": "node scripts/run-browser-agent-elementid-e2e.mjs",
     "test:mcp": "node scripts/run-mcp-browser-e2e.mjs",
     "test:mcp:http": "node scripts/run-mcp-http-browser-e2e.mjs",
-    "test:semantic": "node scripts/run-semantic-observer-e2e.mjs"
+    "test:semantic": "node scripts/run-semantic-observer-e2e.mjs",
+    "test:worker-launcher": "node scripts/run-chatgpt-worker-launcher-tests.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
