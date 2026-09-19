@@ -1,0 +1,162 @@
+name: Import Encrypted Browser Profile
+
+on:
+  workflow_dispatch:
+    inputs:
+      transfer_id:
+        description: Optional private transfer id; blank uses newest ready transfer for this repository
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  import:
+    if: github.repository == 'GK-studio-JP/browser-agent' && github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+      REQUESTED_TRANSFER_ID: ${{ inputs.transfer_id || '' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require migration secrets
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SECRET_KEY"
+          test -n "$BROWSER_PROFILE_KEY"
+
+      - name: Resolve private transfer
+        id: transfer
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          requested = os.environ.get("REQUESTED_TRANSFER_ID", "").strip()
+          params = {
+              "select": "transfer_id,total_chunks,payload_sha256",
+              "target_repo": "eq.GK-studio-JP/browser-agent",
+              "status": "eq.ready",
+              "order": "created_at.desc",
+              "limit": "1",
+          }
+          if requested:
+              params["transfer_id"] = "eq." + requested
+          req = urllib.request.Request(
+              base + "/rest/v1/browser_profile_transfers?" + urllib.parse.urlencode(params),
+              headers={"apikey": key, "User-Agent": "GitHubActions-BrowserProfileImport/1.0"},
+          )
+          with urllib.request.urlopen(req, timeout=60) as response:
+              rows = json.loads(response.read().decode())
+          if len(rows) != 1:
+              raise SystemExit("No ready Browser Agent profile transfer found.")
+          row = rows[0]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"transfer_id={row['transfer_id']}\n")
+              f.write(f"total_chunks={row['total_chunks']}\n")
+              f.write(f"payload_sha256={row['payload_sha256']}\n")
+          print(f"PROFILE_TRANSFER_SELECTED id={row['transfer_id']} chunks={row['total_chunks']}")
+          PY
+
+      - name: Download and verify transfer ciphertext
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+          EXPECTED_CHUNKS: ${{ steps.transfer.outputs.total_chunks }}
+          EXPECTED_SHA256: ${{ steps.transfer.outputs.payload_sha256 }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, os, urllib.parse, urllib.request
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          transfer_id = os.environ["TRANSFER_ID"]
+          expected_chunks = int(os.environ["EXPECTED_CHUNKS"])
+          expected_sha = os.environ["EXPECTED_SHA256"]
+          params = {
+              "select": "chunk_index,chunk_data",
+              "transfer_id": "eq." + transfer_id,
+              "order": "chunk_index.asc",
+              "limit": "1000",
+          }
+          req = urllib.request.Request(
+              base + "/rest/v1/browser_profile_transfer_chunks?" + urllib.parse.urlencode(params),
+              headers={"apikey": key, "User-Agent": "GitHubActions-BrowserProfileImport/1.0"},
+          )
+          with urllib.request.urlopen(req, timeout=120) as response:
+              rows = json.loads(response.read().decode())
+          if len(rows) != expected_chunks:
+              raise SystemExit(f"Profile transfer chunk count mismatch: got {len(rows)}, expected {expected_chunks}")
+          payload = b"".join(base64.b64decode(row["chunk_data"]) for row in rows)
+          digest = hashlib.sha256(payload).hexdigest()
+          if digest != expected_sha:
+              raise SystemExit("Profile transfer SHA-256 mismatch.")
+          with open("/tmp/browser-profile-transfer.enc", "wb") as f:
+              f.write(payload)
+          print(f"PROFILE_TRANSFER_VERIFIED bytes={len(payload)} sha256={digest}")
+          PY
+
+      - name: Decrypt transport and re-encrypt for GK repository
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/profile-import /tmp/profile-verify
+          mkdir -p /tmp/profile-import
+          TRANSFER_KEY="browser-profile-transfer:v1:${SUPABASE_SECRET_KEY}:${TRANSFER_ID}"
+          BROWSER_PROFILE_KEY="$TRANSFER_KEY" node scripts/browser-profile-crypto.mjs decrypt /tmp/profile-import /tmp/browser-profile-transfer.enc
+          BROWSER_PROFILE_KEY="$BROWSER_PROFILE_KEY" node scripts/browser-profile-crypto.mjs encrypt /tmp/profile-import /tmp/browser-profile.enc
+          test -s /tmp/browser-profile.enc
+          BROWSER_PROFILE_KEY="$BROWSER_PROFILE_KEY" node scripts/browser-profile-crypto.mjs decrypt /tmp/profile-verify /tmp/browser-profile.enc
+          test -d /tmp/profile-verify
+          echo "GK_BROWSER_PROFILE_REENCRYPT_VERIFIED"
+
+      - name: Save GK encrypted browser profile
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-import-${{ github.run_id }}
+
+      - name: Mark private transfer consumed
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import datetime, json, os, urllib.parse, urllib.request
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          transfer_id = os.environ["TRANSFER_ID"]
+          encoded = urllib.parse.quote(transfer_id, safe="")
+          headers = {
+              "apikey": key,
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal",
+              "User-Agent": "GitHubActions-BrowserProfileImport/1.0",
+          }
+          def request(method, path, value=None):
+              data = None if value is None else json.dumps(value).encode()
+              req = urllib.request.Request(base + "/rest/v1/" + path, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  response.read()
+          request("PATCH", f"browser_profile_transfers?transfer_id=eq.{encoded}", {
+              "status": "consumed",
+              "consumed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          })
+          request("DELETE", f"browser_profile_transfer_chunks?transfer_id=eq.{encoded}")
+          print(f"PROFILE_TRANSFER_CONSUMED id={transfer_id}")
+          PY
+
+      - name: Remove profile material
+        if: always()
+        run: |
+          rm -rf /tmp/profile-import /tmp/profile-verify
+          rm -f /tmp/browser-profile-transfer.enc /tmp/browser-profile.enc
