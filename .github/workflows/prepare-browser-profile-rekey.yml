@@ -2,13 +2,18 @@ name: Prepare Browser Profile Rekey Import
 
 on:
   workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   contents: read
 
 jobs:
   prepare:
-    if: github.repository == 'GK-studio-JP/browser-agent' && github.actor == github.repository_owner
+    if: >-
+      github.repository == 'GK-studio-JP/browser-agent' &&
+      github.actor == github.repository_owner &&
+      (github.event_name == 'workflow_dispatch' || startsWith(github.event.issue.title, '[profile-rekey-prepare]'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
