@@ -1,0 +1,112 @@
+name: Prepare Browser Profile Rekey Import
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    if: github.repository == 'GK-studio-JP/browser-agent' && github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require target secrets
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SECRET_KEY"
+          test -n "$BROWSER_PROFILE_KEY"
+
+      - name: Generate one-time transport keypair
+        id: transfer
+        run: |
+          set -euo pipefail
+          transfer_id="gk-rekey-${GITHUB_RUN_ID}"
+          echo "transfer_id=$transfer_id" >> "$GITHUB_OUTPUT"
+          BROWSER_PROFILE_KEY="$BROWSER_PROFILE_KEY" \
+            node scripts/browser-profile-transfer-crypto.mjs prepare \
+              /tmp/browser-profile-transfer-private.enc \
+              /tmp/browser-profile-transfer-public.pem
+
+      - name: Register transfer request
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, urllib.request
+
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          transfer_id = os.environ["TRANSFER_ID"]
+          public_key = open("/tmp/browser-profile-transfer-public.pem", encoding="utf-8").read()
+          body = {
+              "transfer_id": transfer_id,
+              "source_repo": "kj2whvbzjn-hue/browser-agent",
+              "target_repo": "GK-studio-JP/browser-agent",
+              "status": "preparing",
+              "transport_public_key": public_key,
+          }
+          req = urllib.request.Request(
+              base + "/rest/v1/browser_profile_transfers",
+              data=json.dumps(body).encode(),
+              headers={
+                  "apikey": key,
+                  "Content-Type": "application/json",
+                  "Prefer": "return=minimal",
+                  "User-Agent": "GitHubActions-BrowserProfileRekeyPrepare/1.0",
+              },
+              method="POST",
+          )
+          with urllib.request.urlopen(req, timeout=60) as response:
+              response.read()
+          print(f"PROFILE_REKEY_REQUEST_REGISTERED id={transfer_id}")
+          PY
+
+      - name: Save encrypted one-time private key
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/browser-profile-transfer-private.enc
+          key: browser-profile-transfer-private-${{ github.repository_id }}-${{ steps.transfer.outputs.transfer_id }}
+
+      - name: Open request to source
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          tid = urllib.parse.quote(os.environ["TRANSFER_ID"], safe="")
+          req = urllib.request.Request(
+              base + "/rest/v1/browser_profile_transfers?transfer_id=eq." + tid,
+              data=json.dumps({"status": "awaiting_source"}).encode(),
+              headers={
+                  "apikey": key,
+                  "Content-Type": "application/json",
+                  "Prefer": "return=minimal",
+                  "User-Agent": "GitHubActions-BrowserProfileRekeyPrepare/1.0",
+              },
+              method="PATCH",
+          )
+          with urllib.request.urlopen(req, timeout=60) as response:
+              response.read()
+          print("PROFILE_REKEY_AWAITING_SOURCE")
+          PY
+
+      - name: Remove local key material
+        if: always()
+        run: |
+          rm -f /tmp/browser-profile-transfer-private.enc
+          rm -f /tmp/browser-profile-transfer-public.pem
