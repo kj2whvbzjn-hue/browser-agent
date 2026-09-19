@@ -1,0 +1,32 @@
+name: ChatGPT Worker Launcher Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'ios/**'
+      - 'scripts/run-chatgpt-worker-launcher-tests.mjs'
+      - 'package.json'
+      - '.github/workflows/chatgpt-worker-launcher-tests.yml'
+  pull_request:
+    paths:
+      - 'ios/**'
+      - 'scripts/run-chatgpt-worker-launcher-tests.mjs'
+      - 'package.json'
+      - '.github/workflows/chatgpt-worker-launcher-tests.yml'
+
+jobs:
+  launcher-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run launcher tests
+        run: node scripts/run-chatgpt-worker-launcher-tests.mjs
