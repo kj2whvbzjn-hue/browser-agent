@@ -1,0 +1,177 @@
+name: AI OS Browser Worker Launcher
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_steps:
+        description: Maximum Gemini / Browser Agent turns
+        required: false
+        default: '80'
+        type: string
+  schedule:
+    - cron: '*/5 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-browser-session
+  cancel-in-progress: false
+
+jobs:
+  launch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch latest Scheduler dispatch
+        id: dispatch
+        run: |
+          set -euo pipefail
+          url="https://github.com/GK-studio-JP/ai-os-scheduler/releases/download/browser-worker-dispatch/browser-worker-plan.json"
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 2 "$url" -o /tmp/browser-worker-plan.json
+          git clone --depth 1 https://github.com/GK-studio-JP/ai-os-runtime-browser-worker.git /tmp/ai-os-runtime-browser-worker
+          out="$(python /tmp/ai-os-runtime-browser-worker/browser_worker_launcher.py --plan-file /tmp/browser-worker-plan.json --print-dispatch)"
+          if [ "$out" = "NO_DISPATCH" ]; then
+            echo "has_dispatch=false" >> "$GITHUB_OUTPUT"
+            echo "No Browser Worker dispatch."
+          else
+            echo "has_dispatch=true" >> "$GITHUB_OUTPUT"
+            echo "Browser Worker dispatch is available."
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        with:
+          node-version: '22'
+
+      - name: Install Browser Agent dependencies
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y xvfb x11vnc novnc websockify
+
+      - name: Require browser profile encryption key
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: |
+          test -n "$BROWSER_PROFILE_KEY" || { echo 'BROWSER_PROFILE_KEY secret is required'; exit 1; }
+
+      - name: Restore encrypted browser profile
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-${{ github.run_id }}
+          restore-keys: |
+            browser-profile-encrypted-${{ github.repository_id }}-
+
+      - name: Decrypt browser profile
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: |
+          rm -rf /tmp/browser-user-data
+          mkdir -p /tmp/browser-user-data
+          if [ -f /tmp/browser-profile.enc ]; then
+            node scripts/browser-profile-crypto.mjs decrypt /tmp/browser-user-data /tmp/browser-profile.enc
+          fi
+
+      - name: Connect runner to Tailscale
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Start display and Live View
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        env:
+          DISPLAY: ':99'
+        run: |
+          Xvfb :99 -screen 0 1440x900x24 -ac > /tmp/xvfb.log 2>&1 &
+          sleep 2
+          x11vnc -display :99 -forever -shared -nopw -listen 0.0.0.0 -rfbport 5900 > /tmp/x11vnc.log 2>&1 &
+          websockify --web=/usr/share/novnc 6080 localhost:5900 > /tmp/novnc.log 2>&1 &
+          sleep 2
+          TS_IP="$(tailscale ip -4 | head -n1)"
+          echo "http://${TS_IP}:6080/vnc.html?autoconnect=1&resize=scale" > /tmp/browser-live-url.txt
+
+      - name: Start private Browser Agent relay
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        env:
+          DISPLAY: ':99'
+          BROWSER_HEADLESS: 'false'
+          BROWSER_USER_DATA_DIR: /tmp/browser-user-data
+          BROWSER_SESSION_ID: ${{ github.run_id }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          BROWSER_SESSION_IDLE_MS: '3300000'
+        run: |
+          set -euo pipefail
+          node scripts/supabase-browser-session-bridge.mjs > /tmp/browser-relay.log 2>&1 &
+          echo $! > /tmp/browser-relay.pid
+
+      - name: Run Gemini Browser Worker
+        if: steps.dispatch.outputs.has_dispatch == 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          MAX_STEPS: ${{ inputs.max_steps || '80' }}
+          SESSION_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python /tmp/ai-os-runtime-browser-worker/browser_worker_launcher.py \
+            --plan-file /tmp/browser-worker-plan.json \
+            --session-id "$SESSION_ID" \
+            --max-steps "$MAX_STEPS"
+
+      - name: Wait for relay shutdown
+        if: steps.dispatch.outputs.has_dispatch == 'true' && always()
+        run: |
+          if [ -f /tmp/browser-relay.pid ]; then
+            pid="$(cat /tmp/browser-relay.pid)"
+            for _ in $(seq 1 20); do
+              if ! kill -0 "$pid" 2>/dev/null; then
+                exit 0
+              fi
+              sleep 1
+            done
+            kill "$pid" 2>/dev/null || true
+          fi
+
+      - name: Encrypt persistent browser profile
+        id: encrypt-profile
+        if: ${{ always() && !cancelled() && steps.dispatch.outputs.has_dispatch == 'true' }}
+        env:
+          BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+        run: |
+          set -euo pipefail
+          echo "cache_ready=false" >> "$GITHUB_OUTPUT"
+          if [ -n "$BROWSER_PROFILE_KEY" ] && [ -d /tmp/browser-user-data ]; then
+            rm -f /tmp/browser-profile.enc.next
+            node scripts/browser-profile-crypto.mjs encrypt /tmp/browser-user-data /tmp/browser-profile.enc.next
+            test -s /tmp/browser-profile.enc.next
+            mv /tmp/browser-profile.enc.next /tmp/browser-profile.enc
+            echo "cache_ready=true" >> "$GITHUB_OUTPUT"
+          fi
+          rm -rf /tmp/browser-user-data
+
+      - name: Save encrypted browser profile
+        if: ${{ always() && !cancelled() && steps.encrypt-profile.outputs.cache_ready == 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-${{ github.run_id }}
+
+      - name: Remove browser profile material
+        if: always()
+        run: |
+          rm -rf /tmp/browser-user-data
+          rm -f /tmp/browser-profile.enc /tmp/browser-profile.enc.next
