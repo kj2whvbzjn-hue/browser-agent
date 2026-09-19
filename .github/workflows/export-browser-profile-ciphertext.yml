@@ -1,0 +1,92 @@
+name: Export Browser Profile Ciphertext
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  export:
+    if: >-
+      github.repository == 'kj2whvbzjn-hue/browser-agent' &&
+      github.actor == github.repository_owner &&
+      (github.event_name == 'workflow_dispatch' || startsWith(github.event.issue.title, '[profile-cipher-export]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      TARGET_REPO: GK-studio-JP/browser-agent
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore encrypted browser profile
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-${{ github.run_id }}
+          restore-keys: |
+            browser-profile-encrypted-${{ github.repository_id }}-
+
+      - name: Upload ciphertext to private relay
+        id: transfer
+        run: |
+          set -euo pipefail
+          test -s /tmp/browser-profile.enc || { echo "::error::No encrypted browser profile cache found."; exit 1; }
+          transfer_id="gk-cipher-${GITHUB_RUN_ID}"
+          echo "transfer_id=$transfer_id" >> "$GITHUB_OUTPUT"
+          TRANSFER_ID="$transfer_id" python - <<'PY'
+          import base64, hashlib, json, os, urllib.parse, urllib.request
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          transfer_id = os.environ["TRANSFER_ID"]
+          payload = open("/tmp/browser-profile.enc", "rb").read()
+          digest = hashlib.sha256(payload).hexdigest()
+          chunk_size = 192 * 1024
+          chunks = [payload[i:i + chunk_size] for i in range(0, len(payload), chunk_size)]
+          headers = {
+              "apikey": key,
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal",
+              "User-Agent": "GitHubActions-BrowserProfileCipherExport/1.0",
+          }
+          def request(method, path, value=None):
+              data = None if value is None else json.dumps(value).encode()
+              req = urllib.request.Request(base + "/rest/v1/" + path, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  response.read()
+          request("POST", "browser_profile_transfers", {
+              "transfer_id": transfer_id,
+              "source_repo": os.environ["GITHUB_REPOSITORY"],
+              "target_repo": os.environ["TARGET_REPO"],
+              "status": "uploading",
+              "total_chunks": len(chunks),
+              "payload_sha256": digest,
+          })
+          for index, chunk in enumerate(chunks):
+              request("POST", "browser_profile_transfer_chunks", {
+                  "transfer_id": transfer_id,
+                  "chunk_index": index,
+                  "chunk_data": base64.b64encode(chunk).decode("ascii"),
+              })
+          encoded = urllib.parse.quote(transfer_id, safe="")
+          request("PATCH", f"browser_profile_transfers?transfer_id=eq.{encoded}", {"status": "ready"})
+          print(f"PROFILE_CIPHERTEXT_READY id={transfer_id} chunks={len(chunks)} sha256={digest}")
+          PY
+
+      - name: Comment queue issue
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" \
+            --body "Encrypted Browser Agent profile ciphertext is ready for GK import."
+
+      - name: Remove local ciphertext
+        if: always()
+        run: rm -f /tmp/browser-profile.enc
