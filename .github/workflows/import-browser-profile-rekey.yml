@@ -2,14 +2,14 @@ name: Import Browser Profile Rekey
 
 on:
   workflow_dispatch:
-  issues:
-    types: [opened]
     inputs:
       transfer_id:
         description: Optional rekey transfer id; blank uses newest ready transfer for this repository
         required: false
         default: ''
         type: string
+  issues:
+    types: [opened]
 
 permissions:
   contents: read
