@@ -14,6 +14,12 @@ This repository also contains a persistent browser-control path using GitHub Act
 
 When this repository is supplied as the browser-agent source, an AI should discover that document from this README and use it instead of requiring the user to restate setup details.
 
+### Semantic browser observation
+
+The persistent browser path uses a semantic observer rather than a fixed list of ordinary form controls. It combines DOM inspection with Chrome's Accessibility Tree and reports actionable controls across the main document, open Shadow DOM, and iframes. Each element includes an accessible name, nearby context, state flags, frame metadata, viewport/occlusion information, and generation-bound IDs. Actions return a compact before/after outcome diff so the caller can verify what changed before deciding the next step.
+
+The core execution path remains Playwright-based and does not require MCP. Existing MCP connector files are optional integration surfaces, not part of the browser/observer loop.
+
 ## Role
 
 `browser-agent` is the reusable browser test engine. Project-specific tests live under `projects/`, while `tasks/task.json` only selects which saved task should run next.
