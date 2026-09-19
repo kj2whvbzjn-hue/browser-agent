@@ -53,13 +53,16 @@ jobs:
           base = os.environ["SUPABASE_URL"].strip().rstrip("/")
           key = os.environ["SUPABASE_SECRET_KEY"].strip()
           transfer_id = os.environ["TRANSFER_ID"]
+          import base64
           public_key = open("/tmp/browser-profile-transfer-public.pem", encoding="utf-8").read()
+          private_key_encrypted = base64.b64encode(open("/tmp/browser-profile-transfer-private.enc", "rb").read()).decode("ascii")
           body = {
               "transfer_id": transfer_id,
               "source_repo": "kj2whvbzjn-hue/browser-agent",
               "target_repo": "GK-studio-JP/browser-agent",
               "status": "preparing",
               "transport_public_key": public_key,
+              "transport_private_key_encrypted": private_key_encrypted,
           }
           req = urllib.request.Request(
               base + "/rest/v1/browser_profile_transfers",
@@ -76,12 +79,6 @@ jobs:
               response.read()
           print(f"PROFILE_REKEY_REQUEST_REGISTERED id={transfer_id}")
           PY
-
-      - name: Save encrypted one-time private key
-        uses: actions/cache/save@v4
-        with:
-          path: /tmp/browser-profile-transfer-private.enc
-          key: browser-profile-transfer-private-${{ github.repository_id }}-${{ steps.transfer.outputs.transfer_id }}
 
       - name: Open request to source
         env:
