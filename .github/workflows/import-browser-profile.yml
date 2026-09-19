@@ -81,20 +81,29 @@ jobs:
           transfer_id = os.environ["TRANSFER_ID"]
           expected_chunks = int(os.environ["EXPECTED_CHUNKS"])
           expected_sha = os.environ["EXPECTED_SHA256"]
-          params = {
-              "select": "chunk_index,chunk_data",
-              "transfer_id": "eq." + transfer_id,
-              "order": "chunk_index.asc",
-              "limit": "1000",
-          }
-          req = urllib.request.Request(
-              base + "/rest/v1/browser_profile_transfer_chunks?" + urllib.parse.urlencode(params),
-              headers={"apikey": key, "User-Agent": "GitHubActions-BrowserProfileImport/1.0"},
-          )
-          with urllib.request.urlopen(req, timeout=120) as response:
-              rows = json.loads(response.read().decode())
+          rows = []
+          batch_size = 20
+          for offset in range(0, expected_chunks, batch_size):
+              params = {
+                  "select": "chunk_index,chunk_data",
+                  "transfer_id": "eq." + transfer_id,
+                  "order": "chunk_index.asc",
+                  "limit": str(batch_size),
+                  "offset": str(offset),
+              }
+              req = urllib.request.Request(
+                  base + "/rest/v1/browser_profile_transfer_chunks?" + urllib.parse.urlencode(params),
+                  headers={"apikey": key, "User-Agent": "GitHubActions-BrowserProfileImport/1.0"},
+              )
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  batch = json.loads(response.read().decode())
+              rows.extend(batch)
+              print(f"PROFILE_TRANSFER_DOWNLOAD offset={offset} rows={len(batch)}")
+
           if len(rows) != expected_chunks:
               raise SystemExit(f"Profile transfer chunk count mismatch: got {len(rows)}, expected {expected_chunks}")
+          if [row["chunk_index"] for row in rows] != list(range(expected_chunks)):
+              raise SystemExit("Profile transfer chunk ordering mismatch.")
           payload = b"".join(base64.b64decode(row["chunk_data"]) for row in rows)
           digest = hashlib.sha256(payload).hexdigest()
           if digest != expected_sha:
