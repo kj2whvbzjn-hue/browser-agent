@@ -20,6 +20,10 @@ The persistent browser path uses a semantic observer rather than a fixed list of
 
 The core execution path remains Playwright-based and does not require MCP. Existing MCP connector files are optional integration surfaces, not part of the browser/observer loop.
 
+### iPhone ChatGPT Worker Launcher
+
+For the iPhone-only handoff case, [`ios/chatgpt-worker-launcher.user.js`](./ios/chatgpt-worker-launcher.user.js) can start a separate ChatGPT work session from a GitHub URL in ordinary Safari. It passes only the Browser Agent URL plus the work repository/task reference, fills the startup prompt, and optionally presses Send. It does not read ChatGPT output. See [`ios/README.md`](./ios/README.md) for setup and the one-tap handoff URL format.
+
 ## Role
 
 `browser-agent` is the reusable browser test engine. Project-specific tests live under `projects/`, while `tasks/task.json` only selects which saved task should run next.
