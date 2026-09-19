@@ -1,0 +1,172 @@
+name: Export Browser Profile for Rekey
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  export:
+    if: >-
+      github.repository == 'kj2whvbzjn-hue/browser-agent' &&
+      github.actor == github.repository_owner &&
+      (github.event_name == 'workflow_dispatch' || startsWith(github.event.issue.title, '[profile-rekey-export]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      BROWSER_PROFILE_KEY: ${{ secrets.BROWSER_PROFILE_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require source secrets
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SECRET_KEY"
+          test -n "$BROWSER_PROFILE_KEY"
+
+      - name: Restore source encrypted browser profile
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-${{ github.run_id }}
+          restore-keys: |
+            browser-profile-encrypted-${{ github.repository_id }}-
+
+      - name: Resolve target rekey request
+        id: transfer
+        run: |
+          set -euo pipefail
+          test -s /tmp/browser-profile.enc || { echo "::error::No source browser profile cache found."; exit 1; }
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          params = {
+              "select": "transfer_id,transport_public_key",
+              "source_repo": "eq.kj2whvbzjn-hue/browser-agent",
+              "target_repo": "eq.GK-studio-JP/browser-agent",
+              "status": "eq.awaiting_source",
+              "order": "created_at.desc",
+              "limit": "1",
+          }
+          req = urllib.request.Request(
+              base + "/rest/v1/browser_profile_transfers?" + urllib.parse.urlencode(params),
+              headers={
+                  "apikey": key,
+                  "User-Agent": "GitHubActions-BrowserProfileRekeyExport/1.0",
+              },
+          )
+          with urllib.request.urlopen(req, timeout=60) as response:
+              rows = json.loads(response.read().decode())
+          if len(rows) != 1 or not rows[0].get("transport_public_key"):
+              raise SystemExit("No target rekey request is waiting.")
+          row = rows[0]
+          with open("/tmp/browser-profile-transfer-public.pem", "w", encoding="utf-8") as f:
+              f.write(row["transport_public_key"])
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"transfer_id={row['transfer_id']}\n")
+          print(f"PROFILE_REKEY_REQUEST_SELECTED id={row['transfer_id']}")
+          PY
+
+      - name: Decrypt source and encrypt for one-time transport
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/profile-source
+          mkdir -p /tmp/profile-source
+
+          BROWSER_PROFILE_KEY="$BROWSER_PROFILE_KEY" \
+            node scripts/browser-profile-crypto.mjs decrypt \
+              /tmp/profile-source /tmp/browser-profile.enc
+
+          node -e "process.stdout.write(require('node:crypto').randomBytes(32).toString('hex'))" \
+            > /tmp/browser-profile-transfer-secret.txt
+          chmod 600 /tmp/browser-profile-transfer-secret.txt
+
+          TRANSFER_SECRET="$(cat /tmp/browser-profile-transfer-secret.txt)"
+          BROWSER_PROFILE_KEY="$TRANSFER_SECRET" \
+            node scripts/browser-profile-crypto.mjs encrypt \
+              /tmp/profile-source /tmp/browser-profile-transfer.enc
+
+          node scripts/browser-profile-transfer-crypto.mjs wrap \
+            /tmp/browser-profile-transfer-public.pem \
+            /tmp/browser-profile-transfer-secret.txt \
+            /tmp/browser-profile-transfer-wrapped.txt
+
+          test -s /tmp/browser-profile-transfer.enc
+          test -s /tmp/browser-profile-transfer-wrapped.txt
+
+      - name: Upload rekey ciphertext
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, os, urllib.parse, urllib.request
+
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          transfer_id = os.environ["TRANSFER_ID"]
+          payload = open("/tmp/browser-profile-transfer.enc", "rb").read()
+          wrapped = open("/tmp/browser-profile-transfer-wrapped.txt", encoding="utf-8").read().strip()
+          digest = hashlib.sha256(payload).hexdigest()
+          chunk_size = 512 * 1024
+          chunks = [payload[i:i + chunk_size] for i in range(0, len(payload), chunk_size)]
+          headers = {
+              "apikey": key,
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal",
+              "User-Agent": "GitHubActions-BrowserProfileRekeyExport/1.0",
+          }
+
+          def request(method, path, value=None):
+              data = None if value is None else json.dumps(value).encode()
+              req = urllib.request.Request(base + "/rest/v1/" + path, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  response.read()
+
+          encoded = urllib.parse.quote(transfer_id, safe="")
+          request("PATCH", f"browser_profile_transfers?transfer_id=eq.{encoded}", {"status": "uploading"})
+
+          for index, chunk in enumerate(chunks):
+              request("POST", "browser_profile_transfer_chunks", {
+                  "transfer_id": transfer_id,
+                  "chunk_index": index,
+                  "chunk_data": base64.b64encode(chunk).decode("ascii"),
+              })
+
+          request("PATCH", f"browser_profile_transfers?transfer_id=eq.{encoded}", {
+              "status": "ready",
+              "total_chunks": len(chunks),
+              "payload_sha256": digest,
+              "wrapped_transport_secret": wrapped,
+          })
+          print(f"PROFILE_REKEY_READY id={transfer_id} chunks={len(chunks)} sha256={digest}")
+          PY
+
+      - name: Comment source queue issue
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "One-time encrypted Browser Agent profile rekey payload is ready for GK import."
+
+      - name: Remove local profile material
+        if: always()
+        run: |
+          rm -rf /tmp/profile-source
+          rm -f /tmp/browser-profile.enc
+          rm -f /tmp/browser-profile-transfer.enc
+          rm -f /tmp/browser-profile-transfer-secret.txt
+          rm -f /tmp/browser-profile-transfer-public.pem
+          rm -f /tmp/browser-profile-transfer-wrapped.txt
