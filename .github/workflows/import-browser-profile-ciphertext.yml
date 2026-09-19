@@ -1,0 +1,132 @@
+name: Import Browser Profile Ciphertext
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  import:
+    if: github.repository == 'GK-studio-JP/browser-agent' && github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve ciphertext transfer
+        id: transfer
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          params = {
+              "select": "transfer_id,total_chunks,payload_sha256",
+              "source_repo": "eq.kj2whvbzjn-hue/browser-agent",
+              "target_repo": "eq.GK-studio-JP/browser-agent",
+              "status": "eq.ready",
+              "order": "created_at.desc",
+              "limit": "1",
+          }
+          req = urllib.request.Request(
+              base + "/rest/v1/browser_profile_transfers?" + urllib.parse.urlencode(params),
+              headers={"apikey": key, "User-Agent": "GitHubActions-BrowserProfileCipherImport/1.0"},
+          )
+          with urllib.request.urlopen(req, timeout=60) as response:
+              rows = json.loads(response.read().decode())
+          if len(rows) != 1:
+              raise SystemExit("No ready profile ciphertext transfer found.")
+          row = rows[0]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"transfer_id={row['transfer_id']}\n")
+              f.write(f"total_chunks={row['total_chunks']}\n")
+              f.write(f"payload_sha256={row['payload_sha256']}\n")
+          print(f"PROFILE_CIPHERTEXT_SELECTED id={row['transfer_id']} chunks={row['total_chunks']}")
+          PY
+
+      - name: Download and verify ciphertext
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+          EXPECTED_CHUNKS: ${{ steps.transfer.outputs.total_chunks }}
+          EXPECTED_SHA256: ${{ steps.transfer.outputs.payload_sha256 }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, os, urllib.parse, urllib.request
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          transfer_id = os.environ["TRANSFER_ID"]
+          expected_chunks = int(os.environ["EXPECTED_CHUNKS"])
+          expected_sha = os.environ["EXPECTED_SHA256"]
+          rows = []
+          for offset in range(0, expected_chunks, 20):
+              params = {
+                  "select": "chunk_index,chunk_data",
+                  "transfer_id": "eq." + transfer_id,
+                  "order": "chunk_index.asc",
+                  "limit": "20",
+                  "offset": str(offset),
+              }
+              req = urllib.request.Request(
+                  base + "/rest/v1/browser_profile_transfer_chunks?" + urllib.parse.urlencode(params),
+                  headers={"apikey": key, "User-Agent": "GitHubActions-BrowserProfileCipherImport/1.0"},
+              )
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  rows.extend(json.loads(response.read().decode()))
+          if len(rows) != expected_chunks:
+              raise SystemExit(f"Profile ciphertext chunk count mismatch: got {len(rows)}, expected {expected_chunks}")
+          if [row["chunk_index"] for row in rows] != list(range(expected_chunks)):
+              raise SystemExit("Profile ciphertext chunk ordering mismatch.")
+          payload = b"".join(base64.b64decode(row["chunk_data"]) for row in rows)
+          digest = hashlib.sha256(payload).hexdigest()
+          if digest != expected_sha:
+              raise SystemExit("Profile ciphertext SHA-256 mismatch.")
+          with open("/tmp/browser-profile.enc", "wb") as f:
+              f.write(payload)
+          print(f"PROFILE_CIPHERTEXT_VERIFIED bytes={len(payload)} sha256={digest}")
+          PY
+
+      - name: Save GK browser profile ciphertext
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/browser-profile.enc
+          key: browser-profile-encrypted-${{ github.repository_id }}-import-${{ github.run_id }}
+
+      - name: Mark transfer consumed
+        env:
+          TRANSFER_ID: ${{ steps.transfer.outputs.transfer_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import datetime, json, os, urllib.parse, urllib.request
+          base = os.environ["SUPABASE_URL"].strip().rstrip("/")
+          key = os.environ["SUPABASE_SECRET_KEY"].strip()
+          tid = urllib.parse.quote(os.environ["TRANSFER_ID"], safe="")
+          headers = {
+              "apikey": key,
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal",
+              "User-Agent": "GitHubActions-BrowserProfileCipherImport/1.0",
+          }
+          def request(method, path, value=None):
+              data = None if value is None else json.dumps(value).encode()
+              req = urllib.request.Request(base + "/rest/v1/" + path, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  response.read()
+          request("PATCH", f"browser_profile_transfers?transfer_id=eq.{tid}", {
+              "status": "consumed",
+              "consumed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          })
+          request("DELETE", f"browser_profile_transfer_chunks?transfer_id=eq.{tid}")
+          print("PROFILE_CIPHERTEXT_CONSUMED")
+          PY
+
+      - name: Remove local ciphertext
+        if: always()
+        run: rm -f /tmp/browser-profile.enc
